@@ -50,10 +50,10 @@ function isUsingMockMode(): boolean {
   const url = process.env.DATABASE_URL || '';
   // Default URL from prisma init, empty URL, or unconfigured MongoDB templates
   if (
-    !url || 
-    url.includes('localhost:51213') || 
-    url.includes('prisma+postgres') || 
-    url.includes('xxxx') || 
+    !url ||
+    url.includes('localhost:51213') ||
+    url.includes('prisma+postgres') ||
+    url.includes('xxxx') ||
     url.includes('<cluster-address>')
   ) {
     return true;
@@ -189,7 +189,7 @@ export const db = {
       const mock = readMockDb();
       // Remove any existing website with the same subdomain in mock
       mock.websites = mock.websites.filter((w) => w.subdomain !== data.subdomain);
-      
+
       const newWebsite = {
         id: Math.random().toString(36).substring(2, 11),
         ...data,
