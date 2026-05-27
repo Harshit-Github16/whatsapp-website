@@ -15,6 +15,11 @@ const BusinessSchema = new mongoose.Schema(
             required: true,
             trim: true,
         },
+        ownerName: {
+            type: String,
+            default: '',
+            trim: true,
+        },
         category: {
             type: String,
             required: true,

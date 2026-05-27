@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 
 export default function Onboarding() {
-  const [step, setStep] = useState("NAME"); // NAME -> CATEGORY -> AI_DECISION -> ABOUT -> SERVICES -> LOGO -> HERO_IMAGE -> GALLERY -> PHONE -> EMAIL -> ADDRESS -> THEME -> PAYMENT -> COMPLETED
+  const [step, setStep] = useState("PHONE"); // PHONE -> OWNER_NAME -> NAME -> CATEGORY -> AI_DECISION -> ABOUT -> SERVICES -> LOGO -> HERO_IMAGE -> GALLERY -> EMAIL -> ADDRESS -> THEME -> PAYMENT -> COMPLETED
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isPayingLoading, setIsPayingLoading] = useState(false);
   const [messages, setMessages] = useState([
@@ -31,7 +31,7 @@ export default function Onboarding() {
     },
     {
       sender: "bot",
-      text: "First, what is your Business Name?",
+      text: "First, what is your WhatsApp/Phone Number?",
       time: "10:30 AM"
     }
   ]);
@@ -43,6 +43,7 @@ export default function Onboarding() {
   // Generated Site State
   const [siteData, setSiteData] = useState({
     businessName: "",
+    ownerName: "",
     slug: "",
     category: "",
     about: "",
@@ -60,6 +61,24 @@ export default function Onboarding() {
   const fileInputRef = useRef(null);
   const galleryInputRef = useRef(null);
 
+  // Refs for tracking state without closures
+  const siteDataRef = useRef(siteData);
+  const stepRef = useRef(step);
+  const aiGeneratedDataRef = useRef(aiGeneratedData);
+
+  // Sync refs with state changes
+  useEffect(() => {
+    siteDataRef.current = siteData;
+  }, [siteData]);
+
+  useEffect(() => {
+    stepRef.current = step;
+  }, [step]);
+
+  useEffect(() => {
+    aiGeneratedDataRef.current = aiGeneratedData;
+  }, [aiGeneratedData]);
+
   // Auto-scroll chat to bottom
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -72,14 +91,45 @@ export default function Onboarding() {
       try {
         const parsed = JSON.parse(saved);
         setSiteData(parsed);
+        siteDataRef.current = parsed;
+      } catch (e) {
+        console.error(e);
+      }
+    }
+
+    const savedStep = localStorage.getItem("whatssite_current_step");
+    if (savedStep) {
+      setStep(savedStep);
+      stepRef.current = savedStep;
+    }
+
+    const savedMessages = localStorage.getItem("whatssite_chat_messages");
+    if (savedMessages) {
+      try {
+        setMessages(JSON.parse(savedMessages));
       } catch (e) {
         console.error(e);
       }
     }
   }, []);
 
+  // Save/sync messages to localStorage
+  useEffect(() => {
+    if (messages && messages.length > 0) {
+      localStorage.setItem("whatssite_chat_messages", JSON.stringify(messages));
+    }
+  }, [messages]);
+
+  // Helper to update onboarding step and save to localStorage
+  const updateStep = (newStep) => {
+    stepRef.current = newStep;
+    setStep(newStep);
+    localStorage.setItem("whatssite_current_step", newStep);
+  };
+
   // Save current build state to database
   const saveBuildState = async (updated) => {
+    siteDataRef.current = updated;
     setSiteData(updated);
 
     // Also save to localStorage as backup
@@ -158,7 +208,7 @@ export default function Onboarding() {
     };
   };
 
-  // Upload image to Cloudinary
+  // Upload image to ImageKit
   const uploadImageToCloud = async (base64Image, folder = 'whatssite') => {
     try {
       const response = await fetch('/api/upload', {
@@ -212,7 +262,7 @@ export default function Onboarding() {
           { sender: "bot", text: `🛠️ *Services:*\n${services.join(", ")}.`, time: newTime },
           { sender: "bot", text: "Would you like to use these AI suggestions, or enter your own details manually?", time: newTime }
         ]);
-        setStep("AI_DECISION");
+        updateStep("AI_DECISION");
       } else {
         throw new Error("Invalid AI response");
       }
@@ -223,7 +273,7 @@ export default function Onboarding() {
         ...prev,
         { sender: "bot", text: "Please write a short, classy description about your business (About Us section):", time: newTime }
       ]);
-      setStep("ABOUT");
+      updateStep("ABOUT");
     } finally {
       setIsFetchingAi(false);
       setIsTyping(false);
@@ -263,30 +313,30 @@ export default function Onboarding() {
     const maxH = type === "logo" ? 150 : 600;
 
     compressImage(file, maxW, maxH, async (base64Data) => {
-      // Upload to Cloudinary
-      const cloudinaryUrl = await uploadImageToCloud(base64Data, `whatssite/${type}`);
+      // Upload to ImageKit
+      const uploadedUrl = await uploadImageToCloud(base64Data, `whatssite/${type}`);
 
       setIsTyping(false);
       const time = formatTime();
 
       if (type === "logo") {
-        const updated = { ...siteData, logoUrl: cloudinaryUrl };
+        const updated = { ...siteDataRef.current, logoUrl: uploadedUrl };
         await saveBuildState(updated);
         setMessages((prev) => [
           ...prev,
           { sender: "user", text: "📷 Uploaded Logo image", time },
           { sender: "bot", text: "Got it! Your logo has been saved. Now, let's select a hero banner image for your website homepage.", time }
         ]);
-        setStep("HERO_IMAGE");
+        updateStep("HERO_IMAGE");
       } else if (type === "hero") {
-        const updated = { ...siteData, heroImageUrl: cloudinaryUrl };
+        const updated = { ...siteDataRef.current, heroImageUrl: uploadedUrl };
         await saveBuildState(updated);
         setMessages((prev) => [
           ...prev,
           { sender: "user", text: "📷 Uploaded Hero image", time },
           { sender: "bot", text: "Awesome hero banner! Website visual updated. Now, please upload 2-3 gallery images (portfolio, office photos, products) so customers can see your work.", time }
         ]);
-        setStep("GALLERY");
+        updateStep("GALLERY");
       }
     });
   };
@@ -302,28 +352,23 @@ export default function Onboarding() {
     setIsTyping(true);
 
     compressImage(file, 600, 450, async (base64Data) => {
-      // Upload to Cloudinary
-      const cloudinaryUrl = await uploadImageToCloud(base64Data, 'whatssite/gallery');
+      // Upload to ImageKit
+      const uploadedUrl = await uploadImageToCloud(base64Data, 'whatssite/gallery');
 
       setIsTyping(false);
       const time = formatTime();
 
-      // Use functional update to always read the LATEST state (fixes stale closure bug)
-      setSiteData((prevData) => {
-        const updatedList = [...prevData.galleryUrls, cloudinaryUrl].slice(0, 4); // Limit to 4 images
-        const updated = { ...prevData, galleryUrls: updatedList };
+      const updatedList = [...siteDataRef.current.galleryUrls, uploadedUrl].slice(0, 4); // Limit to 4 images
+      const updated = { ...siteDataRef.current, galleryUrls: updatedList };
 
-        // Save to database
-        saveBuildState(updated);
+      // Save to database
+      await saveBuildState(updated);
 
-        setMessages((prev) => [
-          ...prev,
-          { sender: "user", text: `📷 Uploaded gallery image (${updatedList.length}/4)`, time },
-          { sender: "bot", text: `Added! You have ${updatedList.length} image(s) in your gallery. ${updatedList.length < 4 ? "Send another image to add more, or send 'done' to move to the next step." : "Gallery is full (4/4)! Type 'done' to proceed."}`, time }
-        ]);
-
-        return updated;
-      });
+      setMessages((prev) => [
+        ...prev,
+        { sender: "user", text: `📷 Uploaded gallery image (${updatedList.length}/4)`, time },
+        { sender: "bot", text: `Added! You have ${updatedList.length} image(s) in your gallery. ${updatedList.length < 4 ? "Send another image to add more, or send 'done' to move to the next step." : "Gallery is full (4/4)! Type 'done' to proceed."}`, time }
+      ]);
     });
   };
 
@@ -337,77 +382,107 @@ export default function Onboarding() {
 
     // Command Router
     if (lowerText === "edit name" || lowerText === "change name") {
-      setStep("NAME");
+      updateStep("NAME");
       botMsgs.push({ sender: "bot", text: "Sure, let's change your Business Name. What is the new name?", time });
       setMessages((prev) => [...prev, ...botMsgs]);
       return;
     }
     if (lowerText === "edit category" || lowerText === "change category") {
-      setStep("CATEGORY");
+      updateStep("CATEGORY");
       botMsgs.push({ sender: "bot", text: "What is your business category? (Clinic, Gym, Cafe, Salon, Real Estate)", time });
       setMessages((prev) => [...prev, ...botMsgs]);
       return;
     }
     if (lowerText === "edit about" || lowerText === "change about") {
-      setStep("ABOUT");
+      updateStep("ABOUT");
       botMsgs.push({ sender: "bot", text: "Let's update your business description (About Us section):", time });
       setMessages((prev) => [...prev, ...botMsgs]);
       return;
     }
     if (lowerText === "edit services" || lowerText === "change services") {
-      setStep("SERVICES");
+      updateStep("SERVICES");
       botMsgs.push({ sender: "bot", text: "Tell me the services you offer, separated by commas. You can add as many services as you want (e.g. Root Canal, Dental Implants, Teeth Whitening):", time });
       setMessages((prev) => [...prev, ...botMsgs]);
       return;
     }
     if (lowerText === "edit logo" || lowerText === "change logo") {
-      setStep("LOGO");
+      updateStep("LOGO");
       botMsgs.push({ sender: "bot", text: "Please upload your business logo image:", time });
       setMessages((prev) => [...prev, ...botMsgs]);
       return;
     }
     if (lowerText === "edit hero image" || lowerText === "change hero image") {
-      setStep("HERO_IMAGE");
+      updateStep("HERO_IMAGE");
       botMsgs.push({ sender: "bot", text: "Please upload a new hero banner image:", time });
       setMessages((prev) => [...prev, ...botMsgs]);
       return;
     }
     if (lowerText === "edit gallery" || lowerText === "change gallery") {
-      setStep("GALLERY");
+      updateStep("GALLERY");
       botMsgs.push({ sender: "bot", text: "Let's update your gallery. Upload images, and type 'done' when you are finished:", time });
       setMessages((prev) => [...prev, ...botMsgs]);
       return;
     }
     if (lowerText === "edit theme" || lowerText === "change theme") {
-      setStep("THEME");
+      updateStep("THEME");
       botMsgs.push({ sender: "bot", text: "Please select a theme: medical, gym, restaurant, salon, realestate", time });
       setMessages((prev) => [...prev, ...botMsgs]);
       return;
     }
     if (lowerText === "edit contact" || lowerText === "change contact") {
-      setStep("PHONE");
+      updateStep("PHONE");
       botMsgs.push({ sender: "bot", text: "What is your contact phone number?", time });
       setMessages((prev) => [...prev, ...botMsgs]);
       return;
     }
 
     // Step-by-Step Flow Logic
-    switch (step) {
+    switch (stepRef.current) {
+      case "PHONE": {
+        const cleanedPhone = userText.replace(/\D/g, "");
+        if (cleanedPhone.length < 10) {
+          botMsgs.push({ sender: "bot", text: "Please enter a valid 10-digit WhatsApp phone number:", time });
+        } else {
+          // Store phone and create a temp slug and draft business name to pass mongoose validation
+          const tempSlug = "temp-" + cleanedPhone;
+          const tempName = "Draft Business " + cleanedPhone;
+          const updated = {
+            ...siteDataRef.current,
+            phone: cleanedPhone,
+            slug: tempSlug,
+            businessName: tempName,
+            category: "Local Business"
+          };
+          saveBuildState(updated);
+          updateStep("OWNER_NAME");
+          botMsgs.push({ sender: "bot", text: "Got it! Your number has been registered. 📱", time });
+          botMsgs.push({ sender: "bot", text: "Next, what is your full name (Business Owner/Developer Name)?", time });
+        }
+        break;
+      }
+      case "OWNER_NAME": {
+        const updated = { ...siteDataRef.current, ownerName: userText };
+        saveBuildState(updated);
+        updateStep("NAME");
+        botMsgs.push({ sender: "bot", text: `Pleasure to meet you, ${userText}! 🤝`, time });
+        botMsgs.push({ sender: "bot", text: "Now, what is your Business Name?", time });
+        break;
+      }
       case "NAME": {
         const slug = getSlug(userText);
         if (!slug) {
           botMsgs.push({ sender: "bot", text: "Invalid business name. Please type a valid name:", time });
         } else {
-          const updated = { ...siteData, businessName: userText, slug: slug };
+          const updated = { ...siteDataRef.current, businessName: userText, slug: slug };
           saveBuildState(updated);
-          setStep("CATEGORY");
+          updateStep("CATEGORY");
           botMsgs.push({ sender: "bot", text: `Perfect! "${userText}" — great business name! 🎯`, time });
           botMsgs.push({ sender: "bot", text: "Now, what is your Business Category? (e.g. Dental Clinic, Fitness Gym, Coffee Shop, Beauty Salon, Real Estate)", time });
         }
         break;
       }
       case "CATEGORY": {
-        const updated = { ...siteData, category: userText };
+        const updated = { ...siteDataRef.current, category: userText };
         saveBuildState(updated);
         setMessages((prev) => [...prev, ...botMsgs]);
         // Trigger AI generation after a brief delay
@@ -419,15 +494,15 @@ export default function Onboarding() {
       case "AI_DECISION": {
         if (lowerText === "yes" || lowerText === "accept" || lowerText === "use ai" || lowerText === "use ai suggestions") {
           // Accept AI suggestions: skip ABOUT and SERVICES
-          if (aiGeneratedData) {
-            const updated = { ...siteData, about: aiGeneratedData.about, services: aiGeneratedData.services };
+          if (aiGeneratedDataRef.current) {
+            const updated = { ...siteDataRef.current, about: aiGeneratedDataRef.current.about, services: aiGeneratedDataRef.current.services };
             saveBuildState(updated);
           }
-          setStep("LOGO");
+          updateStep("LOGO");
           botMsgs.push({ sender: "bot", text: "✅ AI suggestions accepted! Your bio and services have been saved.", time });
           botMsgs.push({ sender: "bot", text: "Now let's add images to make your website look stunning. Please upload your business logo, or type 'skip' to use a default icon.", time });
         } else if (lowerText === "no" || lowerText === "manual" || lowerText === "enter manually") {
-          setStep("ABOUT");
+          updateStep("ABOUT");
           botMsgs.push({ sender: "bot", text: "No problem! Please write a short, classy description about your business (About Us section):", time });
         } else {
           botMsgs.push({ sender: "bot", text: "Please choose an option: tap 'Accept AI Suggestions' or 'Enter Manually' buttons below.", time });
@@ -435,9 +510,9 @@ export default function Onboarding() {
         break;
       }
       case "ABOUT": {
-        const updated = { ...siteData, about: userText };
+        const updated = { ...siteDataRef.current, about: userText };
         saveBuildState(updated);
-        setStep("SERVICES");
+        updateStep("SERVICES");
         botMsgs.push({ sender: "bot", text: `Got it! Now tell me the services you offer, separated by commas. You can add as many services as you want (e.g. Root Canal, Dental Implants, Teeth Whitening, Braces, Oral Surgery):`, time });
         break;
       }
@@ -446,9 +521,9 @@ export default function Onboarding() {
           .split(",")
           .map((s) => s.trim())
           .filter((s) => s.length > 0);
-        const updated = { ...siteData, services: list };
+        const updated = { ...siteDataRef.current, services: list };
         saveBuildState(updated);
-        setStep("LOGO");
+        updateStep("LOGO");
         botMsgs.push({ sender: "bot", text: "Great services list! Let's add images to make it look classy.", time });
         botMsgs.push({ sender: "bot", text: "Please upload your business logo. You can click 'Upload Logo' or type 'skip' to use a default logo icon.", time });
         break;
@@ -456,7 +531,7 @@ export default function Onboarding() {
       case "LOGO": {
         if (lowerText === "skip") {
           botMsgs.push({ sender: "bot", text: "Logo skipped. Now please upload a hero banner image or type 'skip' to use default:", time });
-          setStep("HERO_IMAGE");
+          updateStep("HERO_IMAGE");
         } else {
           botMsgs.push({ sender: "bot", text: "Please use the 'Upload Logo' button or type 'skip' to move forward:", time });
         }
@@ -465,7 +540,7 @@ export default function Onboarding() {
       case "HERO_IMAGE": {
         if (lowerText === "skip") {
           botMsgs.push({ sender: "bot", text: "Hero banner image skipped. Now please upload 2-3 images for your photo gallery, or type 'skip' / 'done' to move forward:", time });
-          setStep("GALLERY");
+          updateStep("GALLERY");
         } else {
           botMsgs.push({ sender: "bot", text: "Please use the 'Upload Hero Image' button or type 'skip' to move forward:", time });
         }
@@ -473,31 +548,24 @@ export default function Onboarding() {
       }
       case "GALLERY": {
         if (lowerText === "done" || lowerText === "skip") {
-          botMsgs.push({ sender: "bot", text: "Gallery finalized! What is your contact phone number?", time });
-          setStep("PHONE");
+          botMsgs.push({ sender: "bot", text: "Gallery finalized! What is your contact email address?", time });
+          updateStep("EMAIL");
         } else {
           botMsgs.push({ sender: "bot", text: "Please upload image files using the buttons, or type 'done' if you have finished uploading gallery images.", time });
         }
         break;
       }
-      case "PHONE": {
-        const updated = { ...siteData, phone: userText };
-        saveBuildState(updated);
-        setStep("EMAIL");
-        botMsgs.push({ sender: "bot", text: "Got it. What is your contact email address?", time });
-        break;
-      }
       case "EMAIL": {
-        const updated = { ...siteData, email: userText };
+        const updated = { ...siteDataRef.current, email: userText };
         saveBuildState(updated);
-        setStep("ADDRESS");
+        updateStep("ADDRESS");
         botMsgs.push({ sender: "bot", text: "What is your physical office address or shop location?", time });
         break;
       }
       case "ADDRESS": {
-        const updated = { ...siteData, address: userText };
+        const updated = { ...siteDataRef.current, address: userText };
         saveBuildState(updated);
-        setStep("THEME");
+        updateStep("THEME");
         botMsgs.push({ sender: "bot", text: "Awesome! Choose a layout theme by typing: medical, gym, restaurant, salon, realestate", time });
         break;
       }
@@ -505,9 +573,9 @@ export default function Onboarding() {
         const selectedTheme = userText.toLowerCase().replace(/\s+/g, "");
         const validThemes = ["medical", "gym", "restaurant", "salon", "realestate"];
         if (validThemes.includes(selectedTheme)) {
-          const updated = { ...siteData, theme: selectedTheme };
+          const updated = { ...siteDataRef.current, theme: selectedTheme };
           saveBuildState(updated);
-          setStep("PAYMENT");
+          updateStep("PAYMENT");
           botMsgs.push({ sender: "bot", text: `🎨 Theme "${selectedTheme}" selected! Your website is looking stunning.`, time });
           botMsgs.push({ sender: "bot", text: "🚀 Your website is ready to go live! Complete a one-time payment of ₹199 to publish your website.", time });
         } else {
@@ -541,7 +609,7 @@ export default function Onboarding() {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          slug: siteData.slug,
+          slug: siteDataRef.current.slug,
           paymentId: paymentId,
           paymentStatus: 'completed',
         }),
@@ -554,13 +622,13 @@ export default function Onboarding() {
       console.error('Error updating payment status:', error);
     }
 
-    setStep("COMPLETED");
+    updateStep("COMPLETED");
     const time = formatTime();
     setMessages((prev) => [
       ...prev,
       { sender: "user", text: `💳 Payment ₹199 successful! (ID: ${paymentId})`, time },
       { sender: "bot", text: "🎉 Woohoo! Payment confirmed! Your professional website is now officially LIVE!", time },
-      { sender: "bot", text: `🔗 Your website: ${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/${siteData.slug}`, time },
+      { sender: "bot", text: `🔗 Your website: http://${siteDataRef.current.slug}.whatssite.in`, time },
       { sender: "bot", text: "You can edit any section anytime from this chat using the controls below.", time }
     ]);
   };
@@ -583,7 +651,7 @@ export default function Onboarding() {
       const res = await fetch("/api/payment", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ businessName: siteData.businessName, slug: siteData.slug }),
+        body: JSON.stringify({ businessName: siteDataRef.current.businessName, slug: siteDataRef.current.slug }),
       });
       const { orderId, amount, currency, error } = await res.json();
       if (error || !orderId) throw new Error(error || "Order creation failed");
@@ -594,12 +662,12 @@ export default function Onboarding() {
         amount,
         currency,
         name: "WhatsSite",
-        description: `Website publishing — ${siteData.businessName}`,
+        description: `Website publishing — ${siteDataRef.current.businessName}`,
         order_id: orderId,
         prefill: {
-          name: siteData.businessName,
-          email: siteData.email || "",
-          contact: siteData.phone || "",
+          name: siteDataRef.current.businessName,
+          email: siteDataRef.current.email || "",
+          contact: siteDataRef.current.phone || "",
         },
         theme: { color: "#00a884" },
         handler: (response) => {
@@ -624,11 +692,11 @@ export default function Onboarding() {
   };
 
   const handleQuickThemeSelect = (themeId) => {
-    if (step === "THEME") {
+    if (stepRef.current === "THEME") {
       setInputValue(themeId);
       handleSendMessage(themeId);
     } else {
-      const updated = { ...siteData, theme: themeId };
+      const updated = { ...siteDataRef.current, theme: themeId };
       saveBuildState(updated);
       const time = formatTime();
       setMessages((prev) => [
@@ -640,10 +708,10 @@ export default function Onboarding() {
   };
 
   return (
-    <div className="h-screen w-screen bg-[#dadbd3] flex items-center justify-center font-sans overflow-hidden select-none relative">
+    <div className="h-screen w-screen bg-[#e1e2da] bg-gradient-to-tr from-[#d6d8d0] via-[#e1e2da] to-[#d6d8d0] flex items-center justify-center font-sans overflow-hidden select-none relative">
 
       {/* WhatsApp Green decorative background band at top */}
-      <div className="absolute top-0 left-0 w-full h-[127px] bg-[#00a884] z-0"></div>
+      <div className="absolute top-0 left-0 w-full h-[127px] bg-gradient-to-r from-emerald-600 to-teal-500 z-0 shadow-sm"></div>
 
       {/* Hidden file selectors */}
       <input
@@ -662,7 +730,7 @@ export default function Onboarding() {
       />
 
       {/* Center Container: Simulated WhatsApp Web Layout */}
-      <div className="w-full max-w-[1396px] h-[95vh] bg-white rounded-none md:rounded-2xl shadow-2xl flex overflow-hidden z-10 relative border border-slate-200/40">
+      <div className="w-full max-w-[1396px] h-[95vh] bg-white rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.15)] flex overflow-hidden z-10 relative border border-slate-200/40">
 
         {/* LEFT SIDEBAR: Mock WhatsApp Chats (Desktop-only) */}
         <div className="hidden md:flex flex-col w-[380px] shrink-0 bg-white border-r border-[#e9edef]">
@@ -671,18 +739,18 @@ export default function Onboarding() {
           <div className="h-[60px] bg-[#f0f2f5] px-4 py-3 flex items-center justify-between border-b border-[#e9edef]">
             <Link
               href="/"
-              className="flex items-center gap-1 bg-white hover:bg-slate-50 text-slate-700 font-bold px-3 py-1.5 rounded-lg border shadow-sm text-xs transition-all hover:scale-102"
+              className="flex items-center gap-1.5 bg-white hover:bg-slate-50 text-slate-700 font-extrabold px-3 py-1.5 rounded-xl border border-slate-200 shadow-sm text-xs transition-all hover:scale-105 active:scale-95"
             >
-              <ArrowLeft className="w-3.5 h-3.5" /> Home
+              <ArrowLeft className="w-3.5 h-3.5" /> Back to Home
             </Link>
             <div className="flex gap-4 text-[#54656f] items-center">
-              <button title="Status Updates" className="hover:text-slate-800 transition-colors cursor-pointer">
+              <button title="Status Updates" className="hover:text-slate-800 transition-colors cursor-pointer hover:scale-105 active:scale-95">
                 <Globe className="w-5 h-5" />
               </button>
-              <button title="New Chat" className="hover:text-slate-800 transition-colors cursor-pointer">
+              <button title="New Chat" className="hover:text-slate-800 transition-colors cursor-pointer hover:scale-105 active:scale-95">
                 <MessageSquare className="w-5 h-5" />
               </button>
-              <button title="Settings" className="hover:text-slate-800 transition-colors cursor-pointer">
+              <button title="Settings" className="hover:text-slate-800 transition-colors cursor-pointer hover:scale-105 active:scale-95">
                 <MoreVertical className="w-5 h-5" />
               </button>
             </div>
@@ -690,7 +758,7 @@ export default function Onboarding() {
 
           {/* Search Field Bar */}
           <div className="bg-white px-3 py-2 flex items-center border-b border-[#e9edef]">
-            <div className="bg-[#f0f2f5] flex items-center gap-3 w-full px-3.5 py-1.5 rounded-lg">
+            <div className="bg-[#f0f2f5] flex items-center gap-3 w-full px-3.5 py-2 rounded-xl">
               <Search className="w-4 h-4 text-[#677781]" />
               <input
                 type="text"
@@ -705,10 +773,10 @@ export default function Onboarding() {
           <div className="flex-1 overflow-y-auto bg-white flex flex-col">
 
             {/* Active WhatsApp Bot Chat */}
-            <div className="flex items-center gap-3.5 px-4.5 py-3 bg-[#f0f2f5] cursor-pointer border-b border-[#e9edef] transition-colors relative">
-              <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white text-lg font-black shrink-0 relative shadow-sm border border-emerald-400/20">
+            <div className="flex items-center gap-3.5 px-4.5 py-3.5 bg-[#f0f2f5] cursor-pointer border-b border-[#e9edef] transition-all relative">
+              <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white text-lg font-black shrink-0 relative shadow-md border border-emerald-400/20">
                 🤖
-                <span className="absolute bottom-0 right-0 w-3 h-3 bg-emerald-400 border-2 border-white rounded-full"></span>
+                <span className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-emerald-400 border-2 border-white rounded-full"></span>
               </div>
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-baseline mb-0.5">
@@ -716,10 +784,10 @@ export default function Onboarding() {
                     WhatsSite Bot
                     <span className="bg-emerald-500 text-white rounded-full p-0.5 text-[7px]" title="Verified Creator Bot">✓</span>
                   </span>
-                  <span className="text-[10px] text-emerald-600 font-bold">Online</span>
+                  <span className="text-[10px] text-emerald-600 font-extrabold uppercase tracking-wide">Online</span>
                 </div>
-                <p className="text-xs text-slate-500 truncate font-semibold">
-                  {step === "COMPLETED" ? `🎉 Live at: localhost:3000/${siteData.slug}` : "Building your premium website..."}
+                <p className="text-xs text-slate-600 truncate font-bold">
+                  {step === "COMPLETED" ? `🎉 Live at: ${siteData.slug}.whatssite.in` : "Building your premium website..."}
                 </p>
               </div>
             </div>

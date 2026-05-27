@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import { v2 as cloudinary } from 'cloudinary';
+import ImageKit from '@imagekit/nodejs';
 
-// Configure Cloudinary
-cloudinary.config({
-    cloud_name: process.env.CLOUDINARY_CLOUD_NAME || 'demo',
-    api_key: process.env.CLOUDINARY_API_KEY || '',
-    api_secret: process.env.CLOUDINARY_API_SECRET || '',
+// Initialize ImageKit
+const imagekit = new ImageKit({
+    publicKey: process.env.IMAGE_KIT_PUBLIC_KEY || '',
+    privateKey: process.env.IMAGE_KIT_PRIVATE_KEY || '',
+    urlEndpoint: process.env.IMAGE_KIT_URL_ENDPOINT || 'https://ik.imagekit.io/whatssite'
 });
 
 export async function POST(request) {
@@ -19,27 +19,23 @@ export async function POST(request) {
             );
         }
 
-        // Upload to Cloudinary
-        const uploadResponse = await cloudinary.uploader.upload(image, {
+        // Upload image to ImageKit
+        const uploadResponse = await imagekit.files.upload({
+            file: image, // Supports base64 data strings
+            fileName: `img_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
             folder: folder,
-            resource_type: 'auto',
-            transformation: [
-                { width: 1200, height: 1200, crop: 'limit' },
-                { quality: 'auto:good' },
-                { fetch_format: 'auto' },
-            ],
         });
 
         return NextResponse.json(
             {
                 success: true,
-                url: uploadResponse.secure_url,
-                publicId: uploadResponse.public_id,
+                url: uploadResponse.url,
+                publicId: uploadResponse.fileId,
             },
             { status: 200 }
         );
     } catch (error) {
-        console.error('Error uploading image:', error);
+        console.error('Error uploading image to ImageKit:', error);
         return NextResponse.json(
             { error: 'Failed to upload image', details: error.message },
             { status: 500 }

@@ -39,7 +39,7 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const data = await request.json();
-        const { slug, businessName, category, about, services, logoUrl, heroImageUrl, galleryUrls, phone, email, address, theme } = data;
+        const { slug, businessName, category, about, services, logoUrl, heroImageUrl, galleryUrls, phone, email, address, theme, ownerName } = data;
 
         if (!slug || !businessName) {
             return NextResponse.json(
@@ -50,12 +50,19 @@ export async function POST(request) {
 
         await connectDB();
 
-        // Check if business already exists
-        let business = await Business.findOne({ slug });
+        // Check if business already exists by phone first, then by slug
+        let business = null;
+        if (phone) {
+            business = await Business.findOne({ phone });
+        }
+        if (!business && slug) {
+            business = await Business.findOne({ slug });
+        }
 
         if (business) {
             // Update existing business
             business.businessName = businessName;
+            business.ownerName = ownerName || business.ownerName;
             business.category = category || business.category;
             business.about = about || business.about;
             business.services = services || business.services;
@@ -66,6 +73,9 @@ export async function POST(request) {
             business.email = email || business.email;
             business.address = address || business.address;
             business.theme = theme || business.theme;
+            if (slug && !slug.startsWith('temp-')) {
+                business.slug = slug;
+            }
 
             await business.save();
 
@@ -78,6 +88,7 @@ export async function POST(request) {
             business = new Business({
                 slug,
                 businessName,
+                ownerName: ownerName || '',
                 category: category || 'Local Business',
                 about: about || '',
                 services: services || [],

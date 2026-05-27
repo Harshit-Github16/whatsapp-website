@@ -9,7 +9,8 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "cloudinary": "^2.10.0",
+    "@imagekit/nodejs": "^7.6.2",
+    "imagekit": "^6.0.0",
     "lucide-react": "^1.16.0",
     "mongoose": "^9.6.2",
     "next": "16.2.6",
