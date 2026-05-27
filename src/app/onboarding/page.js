@@ -78,12 +78,31 @@ export default function Onboarding() {
     }
   }, []);
 
-  // Save current build state
-  const saveBuildState = (updated) => {
+  // Save current build state to database
+  const saveBuildState = async (updated) => {
     setSiteData(updated);
+
+    // Also save to localStorage as backup
     localStorage.setItem("whatssite_current_build", JSON.stringify(updated));
     if (updated.slug) {
       localStorage.setItem(`whatssite_site_${updated.slug}`, JSON.stringify(updated));
+    }
+
+    // Save to database if slug exists
+    if (updated.slug && updated.businessName) {
+      try {
+        const response = await fetch('/api/business', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(updated),
+        });
+
+        if (!response.ok) {
+          console.error('Failed to save to database');
+        }
+      } catch (error) {
+        console.error('Error saving to database:', error);
+      }
     }
   };
 
@@ -137,6 +156,28 @@ export default function Onboarding() {
         callback(dataUrl);
       };
     };
+  };
+
+  // Upload image to Cloudinary
+  const uploadImageToCloud = async (base64Image, folder = 'whatssite') => {
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ image: base64Image, folder }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        return data.url;
+      } else {
+        console.error('Failed to upload image');
+        return base64Image; // Fallback to base64
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      return base64Image; // Fallback to base64
+    }
   };
 
   // Fetch AI-generated bio and services from Groq API
@@ -221,13 +262,16 @@ export default function Onboarding() {
     const maxW = type === "logo" ? 150 : 800;
     const maxH = type === "logo" ? 150 : 600;
 
-    compressImage(file, maxW, maxH, (base64Data) => {
+    compressImage(file, maxW, maxH, async (base64Data) => {
+      // Upload to Cloudinary
+      const cloudinaryUrl = await uploadImageToCloud(base64Data, `whatssite/${type}`);
+
       setIsTyping(false);
       const time = formatTime();
 
       if (type === "logo") {
-        const updated = { ...siteData, logoUrl: base64Data };
-        saveBuildState(updated);
+        const updated = { ...siteData, logoUrl: cloudinaryUrl };
+        await saveBuildState(updated);
         setMessages((prev) => [
           ...prev,
           { sender: "user", text: "📷 Uploaded Logo image", time },
@@ -235,8 +279,8 @@ export default function Onboarding() {
         ]);
         setStep("HERO_IMAGE");
       } else if (type === "hero") {
-        const updated = { ...siteData, heroImageUrl: base64Data };
-        saveBuildState(updated);
+        const updated = { ...siteData, heroImageUrl: cloudinaryUrl };
+        await saveBuildState(updated);
         setMessages((prev) => [
           ...prev,
           { sender: "user", text: "📷 Uploaded Hero image", time },
@@ -257,20 +301,20 @@ export default function Onboarding() {
 
     setIsTyping(true);
 
-    compressImage(file, 600, 450, (base64Data) => {
+    compressImage(file, 600, 450, async (base64Data) => {
+      // Upload to Cloudinary
+      const cloudinaryUrl = await uploadImageToCloud(base64Data, 'whatssite/gallery');
+
       setIsTyping(false);
       const time = formatTime();
 
       // Use functional update to always read the LATEST state (fixes stale closure bug)
       setSiteData((prevData) => {
-        const updatedList = [...prevData.galleryUrls, base64Data].slice(0, 4); // Limit to 4 images
+        const updatedList = [...prevData.galleryUrls, cloudinaryUrl].slice(0, 4); // Limit to 4 images
         const updated = { ...prevData, galleryUrls: updatedList };
 
-        // Persist to localStorage
-        localStorage.setItem("whatssite_current_build", JSON.stringify(updated));
-        if (updated.slug) {
-          localStorage.setItem(`whatssite_site_${updated.slug}`, JSON.stringify(updated));
-        }
+        // Save to database
+        saveBuildState(updated);
 
         setMessages((prev) => [
           ...prev,
@@ -290,7 +334,7 @@ export default function Onboarding() {
 
     // Check for Edit Commands or Quick Buttons
     const lowerText = userText.toLowerCase();
-    
+
     // Command Router
     if (lowerText === "edit name" || lowerText === "change name") {
       setStep("NAME");
@@ -487,16 +531,36 @@ export default function Onboarding() {
   };
 
   // Payment success — called after Razorpay confirms payment
-  const handlePaymentSuccess = (paymentId) => {
+  const handlePaymentSuccess = async (paymentId) => {
     setShowPaymentModal(false);
     setIsPayingLoading(false);
+
+    // Update payment status in database
+    try {
+      const response = await fetch('/api/business', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          slug: siteData.slug,
+          paymentId: paymentId,
+          paymentStatus: 'completed',
+        }),
+      });
+
+      if (response.ok) {
+        console.log('Payment status updated and website published!');
+      }
+    } catch (error) {
+      console.error('Error updating payment status:', error);
+    }
+
     setStep("COMPLETED");
     const time = formatTime();
     setMessages((prev) => [
       ...prev,
       { sender: "user", text: `💳 Payment ₹199 successful! (ID: ${paymentId})`, time },
       { sender: "bot", text: "🎉 Woohoo! Payment confirmed! Your professional website is now officially LIVE!", time },
-      { sender: "bot", text: `🔗 Your website: http://localhost:3000/${siteData.slug}`, time },
+      { sender: "bot", text: `🔗 Your website: ${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/${siteData.slug}`, time },
       { sender: "bot", text: "You can edit any section anytime from this chat using the controls below.", time }
     ]);
   };
@@ -577,7 +641,7 @@ export default function Onboarding() {
 
   return (
     <div className="h-screen w-screen bg-[#dadbd3] flex items-center justify-center font-sans overflow-hidden select-none relative">
-      
+
       {/* WhatsApp Green decorative background band at top */}
       <div className="absolute top-0 left-0 w-full h-[127px] bg-[#00a884] z-0"></div>
 
@@ -599,10 +663,10 @@ export default function Onboarding() {
 
       {/* Center Container: Simulated WhatsApp Web Layout */}
       <div className="w-full max-w-[1396px] h-[95vh] bg-white rounded-none md:rounded-2xl shadow-2xl flex overflow-hidden z-10 relative border border-slate-200/40">
-        
+
         {/* LEFT SIDEBAR: Mock WhatsApp Chats (Desktop-only) */}
         <div className="hidden md:flex flex-col w-[380px] shrink-0 bg-white border-r border-[#e9edef]">
-          
+
           {/* Sidebar Profile Header */}
           <div className="h-[60px] bg-[#f0f2f5] px-4 py-3 flex items-center justify-between border-b border-[#e9edef]">
             <Link
@@ -623,7 +687,7 @@ export default function Onboarding() {
               </button>
             </div>
           </div>
-          
+
           {/* Search Field Bar */}
           <div className="bg-white px-3 py-2 flex items-center border-b border-[#e9edef]">
             <div className="bg-[#f0f2f5] flex items-center gap-3 w-full px-3.5 py-1.5 rounded-lg">
@@ -639,7 +703,7 @@ export default function Onboarding() {
 
           {/* Chats Feed List */}
           <div className="flex-1 overflow-y-auto bg-white flex flex-col">
-            
+
             {/* Active WhatsApp Bot Chat */}
             <div className="flex items-center gap-3.5 px-4.5 py-3 bg-[#f0f2f5] cursor-pointer border-b border-[#e9edef] transition-colors relative">
               <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center text-white text-lg font-black shrink-0 relative shadow-sm border border-emerald-400/20">
@@ -713,7 +777,7 @@ export default function Onboarding() {
 
         {/* RIGHT SIDE: The Main WhatsApp Chat Window */}
         <div className="flex-1 flex flex-col bg-[#efeae2] relative overflow-hidden h-full">
-          
+
           {/* Chat Window Header */}
           <div className="h-[60px] bg-[#f0f2f5] px-4 py-3 flex items-center justify-between border-b border-[#e9edef] shrink-0">
             <div className="flex items-center gap-3">
@@ -721,7 +785,7 @@ export default function Onboarding() {
               <Link href="/" className="md:hidden p-2 bg-white border border-slate-200 rounded-lg text-slate-600 hover:text-slate-800 mr-1 shadow-sm transition-all">
                 <ArrowLeft className="w-4 h-4" />
               </Link>
-              
+
               <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center text-white text-lg font-black shrink-0 relative shadow-inner">
                 🤖
                 <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-400 border-2 border-white rounded-full"></span>
@@ -757,7 +821,7 @@ export default function Onboarding() {
 
           {/* Messages Feed Area */}
           <div className="flex-1 overflow-y-auto p-4 sm:p-6 flex flex-col gap-3.5 relative">
-            
+
             {/* CSS repeating background doodle mock overlay */}
             <div className="absolute inset-0 bg-[#efeae2]/95 z-0 pointer-events-none"></div>
 
@@ -767,11 +831,10 @@ export default function Onboarding() {
                 return (
                   <div
                     key={idx}
-                    className={`p-3 rounded-lg max-w-[85%] sm:max-w-[70%] shadow-sm text-xs sm:text-sm leading-relaxed relative ${
-                      isBot
-                        ? "bg-white text-slate-800 self-start rounded-tl-none border border-white/50"
-                        : "bg-[#dcf8c6] text-slate-800 self-end rounded-tr-none border border-[#dcf8c6]/50"
-                    }`}
+                    className={`p-3 rounded-lg max-w-[85%] sm:max-w-[70%] shadow-sm text-xs sm:text-sm leading-relaxed relative ${isBot
+                      ? "bg-white text-slate-800 self-start rounded-tl-none border border-white/50"
+                      : "bg-[#dcf8c6] text-slate-800 self-end rounded-tr-none border border-[#dcf8c6]/50"
+                      }`}
                   >
                     {/* Visual indicators for WhatsApp bubbles */}
                     {isBot ? (
@@ -878,7 +941,7 @@ export default function Onboarding() {
                   <span className="text-xs text-slate-500 font-extrabold">
                     Gallery Uploads ({siteData.galleryUrls.length}/4 images):
                   </span>
-                  
+
                   <button
                     onClick={() => galleryInputRef.current.click()}
                     className="bg-brand-green hover:bg-brand-green-hover text-white py-3 px-4 rounded-xl font-bold text-xs flex items-center justify-center gap-2 shadow transition-all hover:scale-102 cursor-pointer"
@@ -1018,11 +1081,10 @@ export default function Onboarding() {
                       <button
                         key={t}
                         onClick={() => handleQuickThemeSelect(t)}
-                        className={`font-bold py-2.5 px-3.5 rounded-xl text-xs text-left flex items-center justify-between border transition-all cursor-pointer ${
-                          siteData.theme === t
-                            ? "bg-emerald-50 border-brand-green text-brand-green-dark"
-                            : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700"
-                        }`}
+                        className={`font-bold py-2.5 px-3.5 rounded-xl text-xs text-left flex items-center justify-between border transition-all cursor-pointer ${siteData.theme === t
+                          ? "bg-emerald-50 border-brand-green text-brand-green-dark"
+                          : "bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700"
+                          }`}
                       >
                         <span className="capitalize">{t}</span>
                         {siteData.theme === t && <Check className="w-3.5 h-3.5 text-brand-green" />}
@@ -1033,7 +1095,7 @@ export default function Onboarding() {
               )}
 
             </div>
-            
+
             <div ref={chatEndRef} />
           </div>
 
@@ -1055,7 +1117,7 @@ export default function Onboarding() {
             >
               <Paperclip className="w-4.5 h-4.5" />
             </button>
-            
+
             <input
               type="text"
               value={inputValue}
@@ -1063,7 +1125,7 @@ export default function Onboarding() {
               placeholder="Type your message here..."
               className="flex-1 bg-white rounded-full border border-slate-200 px-4.5 py-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-emerald-500 font-semibold text-slate-800 placeholder-slate-400"
             />
-            
+
             <button
               type="submit"
               className="w-12 h-12 bg-[#008f6c] hover:bg-[#007357] text-white rounded-full flex items-center justify-center shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer shrink-0"
@@ -1141,11 +1203,10 @@ export default function Onboarding() {
               <button
                 onClick={handleRazorpayPayment}
                 disabled={isPayingLoading}
-                className={`w-full text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${
-                  isPayingLoading
-                    ? "bg-emerald-300 cursor-not-allowed"
-                    : "bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 hover:scale-101"
-                }`}
+                className={`w-full text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${isPayingLoading
+                  ? "bg-emerald-300 cursor-not-allowed"
+                  : "bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 hover:scale-101"
+                  }`}
               >
                 {isPayingLoading ? (
                   <>
