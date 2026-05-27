@@ -1,3 +1,7 @@
+# WhatsSite
+
+WhatsSite is an AI-powered website builder that lets you create professional business websites through WhatsApp in just 5 minutes.
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
 ## Getting Started

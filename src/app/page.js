@@ -145,13 +145,15 @@ export default function Home() {
           <div className="flex justify-between items-center h-20">
             {/* Logo */}
             <div className="flex items-center gap-2 cursor-pointer">
-              <div className="w-10 h-10 bg-brand-green rounded-xl flex items-center justify-center text-white shadow-md shadow-brand-green/20">
-                <svg className="w-6 h-6 fill-current" viewBox="0 0 24 24">
-                  <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436.002 9.858-4.417 9.86-9.86.001-2.638-1.024-5.117-2.884-6.979C16.587 1.91 14.113.887 11.483.887c-5.443 0-9.866 4.418-9.868 9.861-.001 1.737.457 3.432 1.328 4.931l-1.008 3.682 3.771-.989z" />
-                </svg>
-              </div>
+              <Image
+                src="/logo.png"
+                alt="WhatsSite Logo"
+                width={40}
+                height={40}
+                className="rounded-xl shadow-md"
+              />
               <span className="text-xl font-bold tracking-tight text-slate-900">
-                SiteOn<span className="text-brand-green">WhatsApp</span>
+                Whats<span className="text-brand-green">Site</span>
               </span>
             </div>
 
@@ -537,8 +539,8 @@ export default function Home() {
                               key={t.id}
                               onClick={() => setActiveTheme(t.id)}
                               className={`text-[8.5px] font-bold py-1.5 px-2 rounded border text-left flex items-center justify-between transition-all ${activeTheme === t.id
-                                  ? "bg-emerald-50 border-brand-green text-brand-green-dark shadow-sm"
-                                  : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
+                                ? "bg-emerald-50 border-brand-green text-brand-green-dark shadow-sm"
+                                : "bg-white border-slate-200 text-slate-700 hover:bg-slate-50"
                                 }`}
                             >
                               {t.name}
@@ -910,23 +912,73 @@ export default function Home() {
             </p>
           </div>
 
-          {/* Pricing Card */}
-          <div className="max-w-md mx-auto">
+          {/* Pricing Cards Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
 
-            {/* Single Plan Card */}
-            <div className="bg-white rounded-2xl p-8 border-2 border-brand-green shadow-xl flex flex-col justify-between relative overflow-hidden hover:scale-[1.01] transition-transform duration-300">
-              {/* Popular Badge */}
-              <div className="absolute top-0 right-0 bg-brand-green text-white text-[10px] font-extrabold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
-                Limited Offer
-              </div>
-
+            {/* Basic Plan Card */}
+            <div className="bg-white rounded-2xl p-8 border-2 border-slate-200 shadow-lg flex flex-col justify-between relative overflow-hidden hover:scale-[1.02] transition-transform duration-300">
               <div>
-                <h3 className="text-xl font-bold text-slate-800 mb-2 text-center">Full Access Plan</h3>
-                <p className="text-slate-400 text-xs mb-6 text-center">Get everything you need to grow your business online.</p>
+                <h3 className="text-xl font-bold text-slate-800 mb-2 text-center">Basic Plan</h3>
+                <p className="text-slate-400 text-xs mb-6 text-center">Perfect for getting started quickly</p>
 
                 <div className="flex flex-col items-center justify-center mb-6">
                   <div className="flex items-baseline gap-1">
                     <span className="text-5xl font-extrabold text-slate-900">₹199</span>
+                    <span className="text-slate-500 text-sm font-semibold">/ website</span>
+                  </div>
+                  <span className="text-[10px] text-slate-600 font-bold bg-slate-100 px-2 py-0.5 rounded mt-2">One-time payment</span>
+                </div>
+
+                <ul className="space-y-4 mb-8">
+                  <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
+                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
+                    Free subdomain (yourname.whatssite.com)
+                  </li>
+                  <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
+                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
+                    All Premium themes (Clinic, Gym, Restaurant, Salon)
+                  </li>
+                  <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
+                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
+                    100% Ad-Free (No watermarks)
+                  </li>
+                  <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
+                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
+                    Unlimited edits via WhatsApp
+                  </li>
+                  <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
+                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
+                    Mobile responsive layout
+                  </li>
+                  <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
+                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
+                    Basic SEO optimization
+                  </li>
+                </ul>
+              </div>
+
+              <Link
+                href="/onboarding"
+                className="w-full text-center bg-slate-700 hover:bg-slate-800 text-white py-4 rounded-xl font-bold transition-all shadow-lg block text-[15px]"
+              >
+                Get Started
+              </Link>
+            </div>
+
+            {/* Premium Plan Card */}
+            <div className="bg-white rounded-2xl p-8 border-2 border-brand-green shadow-xl flex flex-col justify-between relative overflow-hidden hover:scale-[1.02] transition-transform duration-300">
+              {/* Popular Badge */}
+              <div className="absolute top-0 right-0 bg-brand-green text-white text-[10px] font-extrabold px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
+                Most Popular
+              </div>
+
+              <div>
+                <h3 className="text-xl font-bold text-slate-800 mb-2 text-center">Premium Plan</h3>
+                <p className="text-slate-400 text-xs mb-6 text-center">Custom domain & fully customized website</p>
+
+                <div className="flex flex-col items-center justify-center mb-6">
+                  <div className="flex items-baseline gap-1">
+                    <span className="text-5xl font-extrabold text-slate-900">₹2,999</span>
                     <span className="text-slate-500 text-sm font-semibold">/ website</span>
                   </div>
                   <span className="text-[10px] text-brand-green font-bold bg-emerald-50 px-2 py-0.5 rounded mt-2">One-time payment</span>
@@ -935,27 +987,31 @@ export default function Home() {
                 <ul className="space-y-4 mb-8">
                   <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
                     <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Connect your own Custom Domain (e.g. business.com)
+                    <span className="font-bold text-brand-green">Custom Domain (e.g. yourbusiness.com)</span>
                   </li>
                   <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
                     <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Unlock all Premium themes (Clinic, Gym, Restaurant, Salon)
+                    <span className="font-bold text-brand-green">Fully Customized Website Design</span>
                   </li>
                   <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
                     <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    100% Ad-Free (No watermarks or branding)
+                    All Premium themes + Custom layouts
                   </li>
                   <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
                     <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Unlimited edits directly from WhatsApp
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Advanced SEO tags & mobile responsive layout
+                    Advanced SEO & Google Analytics
                   </li>
                   <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
                     <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
                     Priority 24/7 customer support
+                  </li>
+                  <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
+                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
+                    Free SSL certificate & hosting
+                  </li>
+                  <li className="flex items-center gap-3 text-slate-600 text-sm font-medium">
+                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
+                    Contact forms & WhatsApp integration
                   </li>
                 </ul>
               </div>
@@ -964,7 +1020,7 @@ export default function Home() {
                 href="/onboarding"
                 className="w-full text-center bg-brand-green hover:bg-brand-green-hover text-white py-4 rounded-xl font-bold transition-all shadow-lg shadow-brand-green/20 block text-[15px]"
               >
-                Create Your Website
+                Get Premium
               </Link>
             </div>
           </div>
@@ -1139,12 +1195,14 @@ export default function Home() {
             {/* Logo/About column */}
             <div className="lg:col-span-5">
               <div className="flex items-center gap-2 text-white font-bold text-xl mb-4 cursor-pointer">
-                <div className="w-9 h-9 bg-brand-green rounded-lg flex items-center justify-center text-white">
-                  <svg className="w-5.5 h-5.5 fill-current" viewBox="0 0 24 24">
-                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436.002 9.858-4.417 9.86-9.86.001-2.638-1.024-5.117-2.884-6.979C16.587 1.91 14.113.887 11.483.887c-5.443 0-9.866 4.418-9.868 9.861-.001 1.737.457 3.432 1.328 4.931l-1.008 3.682 3.771-.989z" />
-                  </svg>
-                </div>
-                <span>SiteOn<span className="text-brand-green">WhatsApp</span></span>
+                <Image
+                  src="/logo.png"
+                  alt="WhatsSite Logo"
+                  width={36}
+                  height={36}
+                  className="rounded-lg"
+                />
+                <span>Whats<span className="text-brand-green">Site</span></span>
               </div>
               <p className="text-slate-400 text-sm max-w-sm leading-relaxed">
                 Building digital presence for small businesses, one chat at a time.
