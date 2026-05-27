@@ -84,8 +84,8 @@ export const db = {
   async testConnection(): Promise<boolean> {
     if (isUsingMockMode()) return false;
     try {
-      // Simple raw query to test connection
-      await getPrisma().$executeRaw`SELECT 1`;
+      // Simple query to test connection (compatible with both SQL and MongoDB)
+      await getPrisma().user.findFirst();
       return true;
     } catch {
       return false;

@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
     // Retrieve existing website to verify ownership
     const website = await db.getWebsiteBySubdomain(subdomain || '');
     const userWebsites = await db.getWebsitesByUserId(session.user.id);
-    const ownsWebsite = userWebsites.some((w) => w.id === id);
+    const ownsWebsite = userWebsites.some((w: any) => w.id === id);
 
     if (!ownsWebsite) {
       return NextResponse.json({ error: 'Forbidden: You do not own this website' }, { status: 403 });
