@@ -20,7 +20,9 @@ import {
 } from "lucide-react";
 
 export default function Onboarding() {
-  const [step, setStep] = useState("NAME"); // NAME -> CATEGORY -> AI_DECISION -> ABOUT -> SERVICES -> LOGO -> HERO_IMAGE -> GALLERY -> PHONE -> EMAIL -> ADDRESS -> THEME -> COMPLETED
+  const [step, setStep] = useState("NAME"); // NAME -> CATEGORY -> AI_DECISION -> ABOUT -> SERVICES -> LOGO -> HERO_IMAGE -> GALLERY -> PHONE -> EMAIL -> ADDRESS -> THEME -> PAYMENT -> COMPLETED
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [isPayingLoading, setIsPayingLoading] = useState(false);
   const [messages, setMessages] = useState([
     {
       sender: "bot",
@@ -250,20 +252,34 @@ export default function Onboarding() {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Reset input so same file can be re-selected if needed
+    e.target.value = "";
+
     setIsTyping(true);
 
     compressImage(file, 600, 450, (base64Data) => {
       setIsTyping(false);
       const time = formatTime();
-      const updatedList = [...siteData.galleryUrls, base64Data].slice(0, 4); // Limit to 4 images max
-      const updated = { ...siteData, galleryUrls: updatedList };
-      saveBuildState(updated);
 
-      setMessages((prev) => [
-        ...prev,
-        { sender: "user", text: `📷 Uploaded gallery image (${updatedList.length}/4)`, time },
-        { sender: "bot", text: `Added! You have ${updatedList.length} image(s) in your gallery. Send another image to add more, or send 'done' to move to the next step.`, time }
-      ]);
+      // Use functional update to always read the LATEST state (fixes stale closure bug)
+      setSiteData((prevData) => {
+        const updatedList = [...prevData.galleryUrls, base64Data].slice(0, 4); // Limit to 4 images
+        const updated = { ...prevData, galleryUrls: updatedList };
+
+        // Persist to localStorage
+        localStorage.setItem("siteonwhatsapp_current_build", JSON.stringify(updated));
+        if (updated.slug) {
+          localStorage.setItem(`siteonwhatsapp_site_${updated.slug}`, JSON.stringify(updated));
+        }
+
+        setMessages((prev) => [
+          ...prev,
+          { sender: "user", text: `📷 Uploaded gallery image (${updatedList.length}/4)`, time },
+          { sender: "bot", text: `Added! You have ${updatedList.length} image(s) in your gallery. ${updatedList.length < 4 ? "Send another image to add more, or send 'done' to move to the next step." : "Gallery is full (4/4)! Type 'done' to proceed."}`, time }
+        ]);
+
+        return updated;
+      });
     });
   };
 
@@ -341,7 +357,7 @@ export default function Onboarding() {
           const updated = { ...siteData, businessName: userText, slug: slug };
           saveBuildState(updated);
           setStep("CATEGORY");
-          botMsgs.push({ sender: "bot", text: `Got it! Your website URL will be: http://localhost:3000/${slug}`, time });
+          botMsgs.push({ sender: "bot", text: `Perfect! "${userText}" — great business name! 🎯`, time });
           botMsgs.push({ sender: "bot", text: "Now, what is your Business Category? (e.g. Dental Clinic, Fitness Gym, Coffee Shop, Beauty Salon, Real Estate)", time });
         }
         break;
@@ -447,13 +463,16 @@ export default function Onboarding() {
         if (validThemes.includes(selectedTheme)) {
           const updated = { ...siteData, theme: selectedTheme };
           saveBuildState(updated);
-          setStep("COMPLETED");
-          botMsgs.push({ sender: "bot", text: "🎉 Boom! Your professional, classy website is officially live!", time });
-          botMsgs.push({ sender: "bot", text: `Check it out here: http://localhost:3000/${siteData.slug}`, time });
-          botMsgs.push({ sender: "bot", text: "You can edit your sections anytime directly from this chat by clicking options below or using commands.", time });
+          setStep("PAYMENT");
+          botMsgs.push({ sender: "bot", text: `🎨 Theme "${selectedTheme}" selected! Your website is looking stunning.`, time });
+          botMsgs.push({ sender: "bot", text: "🚀 Your website is ready to go live! Complete a one-time payment of ₹199 to publish your website.", time });
         } else {
           botMsgs.push({ sender: "bot", text: "Please type a valid theme: medical, gym, restaurant, salon, realestate", time });
         }
+        break;
+      }
+      case "PAYMENT": {
+        botMsgs.push({ sender: "bot", text: "💳 Please complete the ₹199 payment to publish your website. Click the 'Go Live' button below.", time });
         break;
       }
       case "COMPLETED": {
@@ -467,7 +486,79 @@ export default function Onboarding() {
     setMessages((prev) => [...prev, ...botMsgs]);
   };
 
-  // Quick theme selector handler
+  // Payment success — called after Razorpay confirms payment
+  const handlePaymentSuccess = (paymentId) => {
+    setShowPaymentModal(false);
+    setIsPayingLoading(false);
+    setStep("COMPLETED");
+    const time = formatTime();
+    setMessages((prev) => [
+      ...prev,
+      { sender: "user", text: `💳 Payment ₹199 successful! (ID: ${paymentId})`, time },
+      { sender: "bot", text: "🎉 Woohoo! Payment confirmed! Your professional website is now officially LIVE!", time },
+      { sender: "bot", text: `🔗 Your website: http://localhost:3000/${siteData.slug}`, time },
+      { sender: "bot", text: "You can edit any section anytime from this chat using the controls below.", time }
+    ]);
+  };
+
+  // Real Razorpay Checkout handler
+  const handleRazorpayPayment = async () => {
+    setIsPayingLoading(true);
+    try {
+      // 1. Load Razorpay script dynamically
+      await new Promise((resolve, reject) => {
+        if (window.Razorpay) { resolve(); return; }
+        const script = document.createElement("script");
+        script.src = "https://checkout.razorpay.com/v1/checkout.js";
+        script.onload = resolve;
+        script.onerror = reject;
+        document.body.appendChild(script);
+      });
+
+      // 2. Create server-side order
+      const res = await fetch("/api/payment", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ businessName: siteData.businessName, slug: siteData.slug }),
+      });
+      const { orderId, amount, currency, error } = await res.json();
+      if (error || !orderId) throw new Error(error || "Order creation failed");
+
+      // 3. Open Razorpay checkout
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount,
+        currency,
+        name: "SiteOnWhatsApp",
+        description: `Website publishing — ${siteData.businessName}`,
+        order_id: orderId,
+        prefill: {
+          name: siteData.businessName,
+          email: siteData.email || "",
+          contact: siteData.phone || "",
+        },
+        theme: { color: "#00a884" },
+        handler: (response) => {
+          handlePaymentSuccess(response.razorpay_payment_id);
+        },
+        modal: {
+          ondismiss: () => setIsPayingLoading(false),
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.on("payment.failed", () => {
+        setIsPayingLoading(false);
+        alert("Payment failed. Please try again.");
+      });
+      rzp.open();
+    } catch (err) {
+      console.error("Payment error:", err);
+      setIsPayingLoading(false);
+      alert("Could not initiate payment. Please try again.");
+    }
+  };
+
   const handleQuickThemeSelect = (themeId) => {
     if (step === "THEME") {
       setInputValue(themeId);
@@ -815,6 +906,38 @@ export default function Onboarding() {
                 </div>
               )}
 
+              {/* PAYMENT Step - Go Live card */}
+              {step === "PAYMENT" && (
+                <div className="bg-white rounded-2xl p-4 border border-emerald-200 max-w-[85%] sm:max-w-[70%] self-start shadow-lg flex flex-col gap-3 relative animate-fade-in z-20">
+                  <div className="absolute -left-2.5 top-0 w-3 h-3 bg-white" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 0)" }}></div>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-lg">🚀</span>
+                    <span className="text-xs font-extrabold text-slate-700">Your website is ready!</span>
+                  </div>
+                  <div className="bg-gradient-to-br from-emerald-50 to-green-50 border border-emerald-200 rounded-xl p-3 flex items-center justify-between">
+                    <div>
+                      <p className="text-xs text-slate-500 font-semibold">One-time publishing fee</p>
+                      <p className="text-2xl font-black text-emerald-600">₹199</p>
+                      <p className="text-[10px] text-slate-400 font-semibold">Lifetime hosting included</p>
+                    </div>
+                    <div className="text-3xl">🌐</div>
+                  </div>
+                  <ul className="flex flex-col gap-1">
+                    {["Custom domain-ready URL", "Mobile responsive design", "WhatsApp chat integration", "Lifetime free hosting"].map((f) => (
+                      <li key={f} className="flex items-center gap-1.5 text-[10px] text-slate-600 font-semibold">
+                        <Check className="w-3 h-3 text-emerald-500 shrink-0" />{f}
+                      </li>
+                    ))}
+                  </ul>
+                  <button
+                    onClick={() => setShowPaymentModal(true)}
+                    className="bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 text-white py-3.5 px-4 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 shadow-lg transition-all hover:scale-102 cursor-pointer"
+                  >
+                    💳 Pay ₹199 &amp; Go Live!
+                  </button>
+                </div>
+              )}
+
               {/* COMPLETED State - Quick command panels */}
               {step === "COMPLETED" && (
                 <div className="bg-white/95 border border-slate-200/80 rounded-2xl p-4 self-start w-full max-w-[90%] sm:max-w-[70%] shadow-md flex flex-col gap-3.5 mt-2 animate-fade-in relative z-20">
@@ -953,6 +1076,95 @@ export default function Onboarding() {
 
       </div>
 
+      {/* ========== PAYMENT MODAL ========== */}
+      {showPaymentModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(6px)" }}>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-sm overflow-hidden animate-fade-in">
+
+            {/* Modal Header */}
+            <div className="bg-gradient-to-r from-emerald-500 to-green-500 p-5 text-white text-center relative">
+              <div className="text-4xl mb-1">🌐</div>
+              <h2 className="text-lg font-black">Publish Your Website</h2>
+              <p className="text-xs text-emerald-100 font-semibold mt-0.5">One-time payment • Lifetime hosting</p>
+              <button
+                onClick={() => setShowPaymentModal(false)}
+                className="absolute top-3 right-3 w-7 h-7 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white font-black text-sm transition-all cursor-pointer"
+              >
+                ×
+              </button>
+            </div>
+
+            {/* Pricing breakdown */}
+            <div className="p-5 flex flex-col gap-4">
+              <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100">
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-xs text-slate-500 font-semibold">Website for</span>
+                  <span className="text-xs font-extrabold text-slate-800">{siteData.businessName || "Your Business"}</span>
+                </div>
+                <div className="flex justify-between items-center mb-2">
+                  <span className="text-xs text-slate-500 font-semibold">Theme</span>
+                  <span className="text-xs font-extrabold text-slate-800 capitalize">{siteData.theme}</span>
+                </div>
+                <div className="border-t border-slate-200 mt-2 pt-2 flex justify-between items-center">
+                  <span className="text-sm font-extrabold text-slate-700">Total</span>
+                  <span className="text-2xl font-black text-emerald-600">₹199</span>
+                </div>
+              </div>
+
+              {/* Feature bullets */}
+              <div className="grid grid-cols-2 gap-2">
+                {[
+                  { icon: "🌐", label: "Live URL" },
+                  { icon: "📱", label: "Mobile ready" },
+                  { icon: "💬", label: "WhatsApp chat" },
+                  { icon: "🔒", label: "Secure hosting" },
+                  { icon: "♾️", label: "No renewal fee" },
+                  { icon: "⚡", label: "Instant publish" },
+                ].map(({ icon, label }) => (
+                  <div key={label} className="flex items-center gap-1.5 bg-emerald-50 border border-emerald-100 rounded-xl px-2.5 py-2">
+                    <span className="text-sm">{icon}</span>
+                    <span className="text-[10px] font-bold text-emerald-700">{label}</span>
+                  </div>
+                ))}
+              </div>
+
+              {/* UPI / Payment simulation */}
+              <div className="bg-blue-50 border border-blue-100 rounded-2xl p-3 flex items-center gap-3">
+                <div className="w-9 h-9 bg-blue-600 rounded-xl flex items-center justify-center text-white font-black text-xs shrink-0">UPI</div>
+                <div>
+                  <p className="text-xs font-extrabold text-slate-700">Pay via UPI / Card / NetBanking</p>
+                  <p className="text-[10px] text-slate-400 font-semibold">Razorpay secured checkout</p>
+                </div>
+              </div>
+
+              {/* Pay button */}
+              <button
+                onClick={handleRazorpayPayment}
+                disabled={isPayingLoading}
+                className={`w-full text-white py-4 rounded-2xl font-black text-sm flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer ${
+                  isPayingLoading
+                    ? "bg-emerald-300 cursor-not-allowed"
+                    : "bg-gradient-to-r from-emerald-500 to-green-500 hover:from-emerald-600 hover:to-green-600 hover:scale-101"
+                }`}
+              >
+                {isPayingLoading ? (
+                  <>
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                    Opening Razorpay...
+                  </>
+                ) : (
+                  <>💳 Pay ₹199 &amp; Publish Now</>
+                )}
+              </button>
+
+              <p className="text-center text-[10px] text-slate-400 font-semibold">
+                🔒 100% Secure • Instant activation • Money-back guarantee
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+
