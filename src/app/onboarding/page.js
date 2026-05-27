@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 
 export default function Onboarding() {
-  const [step, setStep] = useState("NAME"); // NAME -> CATEGORY -> ABOUT -> SERVICES -> LOGO -> HERO_IMAGE -> GALLERY -> PHONE -> EMAIL -> ADDRESS -> THEME -> COMPLETED
+  const [step, setStep] = useState("NAME"); // NAME -> CATEGORY -> AI_DECISION -> ABOUT -> SERVICES -> LOGO -> HERO_IMAGE -> GALLERY -> PHONE -> EMAIL -> ADDRESS -> THEME -> COMPLETED
   const [messages, setMessages] = useState([
     {
       sender: "bot",
@@ -35,6 +35,8 @@ export default function Onboarding() {
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isFetchingAi, setIsFetchingAi] = useState(false);
+  const [aiGeneratedData, setAiGeneratedData] = useState(null); // { about, services }
 
   // Generated Site State
   const [siteData, setSiteData] = useState({
@@ -133,6 +135,56 @@ export default function Onboarding() {
         callback(dataUrl);
       };
     };
+  };
+
+  // Fetch AI-generated bio and services from Groq API
+  const fetchAiSuggestions = async (businessName, category) => {
+    setIsFetchingAi(true);
+    setIsTyping(true);
+    const time = formatTime();
+
+    // Show a bot thinking message immediately
+    setMessages((prev) => [
+      ...prev,
+      { sender: "bot", text: `✨ Generating AI suggestions for "${category}"...`, time }
+    ]);
+
+    try {
+      const res = await fetch("/api/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ businessName, category })
+      });
+
+      const data = await res.json();
+      const { about, services } = data;
+
+      if (about && Array.isArray(services)) {
+        setAiGeneratedData({ about, services });
+        const newTime = formatTime();
+        setMessages((prev) => [
+          ...prev,
+          { sender: "bot", text: `🤖 AI has drafted the following for your ${category} website:`, time: newTime },
+          { sender: "bot", text: `📝 *About Us:*\n${about}`, time: newTime },
+          { sender: "bot", text: `🛠️ *Services:*\n${services.join(", ")}.`, time: newTime },
+          { sender: "bot", text: "Would you like to use these AI suggestions, or enter your own details manually?", time: newTime }
+        ]);
+        setStep("AI_DECISION");
+      } else {
+        throw new Error("Invalid AI response");
+      }
+    } catch (err) {
+      console.error("AI fetch error:", err);
+      const newTime = formatTime();
+      setMessages((prev) => [
+        ...prev,
+        { sender: "bot", text: "Please write a short, classy description about your business (About Us section):", time: newTime }
+      ]);
+      setStep("ABOUT");
+    } finally {
+      setIsFetchingAi(false);
+      setIsTyping(false);
+    }
   };
 
   const handleSendMessage = (textToSend = null) => {
@@ -297,8 +349,29 @@ export default function Onboarding() {
       case "CATEGORY": {
         const updated = { ...siteData, category: userText };
         saveBuildState(updated);
-        setStep("ABOUT");
-        botMsgs.push({ sender: "bot", text: `Perfect. Please write a short, classy description about your business (About Us section):`, time });
+        setMessages((prev) => [...prev, ...botMsgs]);
+        // Trigger AI generation after a brief delay
+        setTimeout(() => {
+          fetchAiSuggestions(updated.businessName, userText);
+        }, 600);
+        return; // Early return - fetchAiSuggestions will update step
+      }
+      case "AI_DECISION": {
+        if (lowerText === "yes" || lowerText === "accept" || lowerText === "use ai" || lowerText === "use ai suggestions") {
+          // Accept AI suggestions: skip ABOUT and SERVICES
+          if (aiGeneratedData) {
+            const updated = { ...siteData, about: aiGeneratedData.about, services: aiGeneratedData.services };
+            saveBuildState(updated);
+          }
+          setStep("LOGO");
+          botMsgs.push({ sender: "bot", text: "✅ AI suggestions accepted! Your bio and services have been saved.", time });
+          botMsgs.push({ sender: "bot", text: "Now let's add images to make your website look stunning. Please upload your business logo, or type 'skip' to use a default icon.", time });
+        } else if (lowerText === "no" || lowerText === "manual" || lowerText === "enter manually") {
+          setStep("ABOUT");
+          botMsgs.push({ sender: "bot", text: "No problem! Please write a short, classy description about your business (About Us section):", time });
+        } else {
+          botMsgs.push({ sender: "bot", text: "Please choose an option: tap 'Accept AI Suggestions' or 'Enter Manually' buttons below.", time });
+        }
         break;
       }
       case "ABOUT": {
@@ -568,7 +641,7 @@ export default function Onboarding() {
                   <span className="bg-emerald-500 text-white rounded-full p-0.5 text-[6.5px]">✓</span>
                 </h2>
                 <span className="text-[10px] text-emerald-600 font-bold block leading-none">
-                  {isTyping ? "typing..." : "Online"}
+                  {isFetchingAi ? "✨ Generating AI suggestions..." : isTyping ? "typing..." : "Online"}
                 </span>
               </div>
             </div>
@@ -628,6 +701,40 @@ export default function Onboarding() {
                   <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce"></span>
                   <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-100"></span>
                   <span className="w-1.5 h-1.5 bg-slate-400 rounded-full animate-bounce delay-200"></span>
+                </div>
+              )}
+
+              {/* AI Fetching spinner overlay */}
+              {isFetchingAi && (
+                <div className="bg-white rounded-2xl p-4 border border-emerald-200 max-w-[85%] sm:max-w-[70%] self-start shadow-md flex items-center gap-3 relative z-20">
+                  <div className="absolute -left-2.5 top-0 w-3 h-3 bg-white" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 0)" }}></div>
+                  <div className="w-7 h-7 border-[3px] border-emerald-500 border-t-transparent rounded-full animate-spin shrink-0"></div>
+                  <div>
+                    <p className="text-xs font-extrabold text-emerald-700">Groq AI is working...</p>
+                    <p className="text-[10px] text-slate-400 font-semibold mt-0.5">Drafting your business bio and service suggestions</p>
+                  </div>
+                </div>
+              )}
+
+              {/* AI_DECISION quick-reply buttons */}
+              {step === "AI_DECISION" && !isFetchingAi && (
+                <div className="bg-white rounded-2xl p-4 border border-slate-200/80 max-w-[85%] sm:max-w-[70%] self-start shadow-md flex flex-col gap-3 relative animate-fade-in z-20">
+                  <div className="absolute -left-2.5 top-0 w-3 h-3 bg-white" style={{ clipPath: "polygon(100% 0, 100% 100%, 0 0)" }}></div>
+                  <span className="text-xs text-slate-500 font-extrabold flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-500 animate-pulse" /> Choose your preference:
+                  </span>
+                  <button
+                    onClick={() => handleSendMessage("yes")}
+                    className="bg-brand-green hover:bg-brand-green-hover text-white py-3.5 px-5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 shadow-md transition-all hover:scale-102 cursor-pointer"
+                  >
+                    <Check className="w-4 h-4" /> ✨ Accept AI Suggestions
+                  </button>
+                  <button
+                    onClick={() => handleSendMessage("manual")}
+                    className="bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 px-5 rounded-xl font-bold text-xs flex items-center justify-center gap-2 border border-slate-200 transition-all hover:scale-101 cursor-pointer"
+                  >
+                    ✏️ Enter Manually Instead
+                  </button>
                 </div>
               )}
 
