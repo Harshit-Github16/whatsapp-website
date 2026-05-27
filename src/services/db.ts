@@ -48,8 +48,14 @@ function writeMockDb(data: MockDatabaseSchema) {
 // We check if DATABASE_URL environment variable is set to default or invalid, or if Prisma fails a connection
 function isUsingMockMode(): boolean {
   const url = process.env.DATABASE_URL || '';
-  // Default URL from prisma init, or empty URL
-  if (!url || url.includes('localhost:51213') || url.includes('prisma+postgres')) {
+  // Default URL from prisma init, empty URL, or unconfigured MongoDB templates
+  if (
+    !url || 
+    url.includes('localhost:51213') || 
+    url.includes('prisma+postgres') || 
+    url.includes('xxxx') || 
+    url.includes('<cluster-address>')
+  ) {
     return true;
   }
   return false;

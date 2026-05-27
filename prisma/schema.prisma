@@ -1,5 +1,6 @@
 datasource db {
-  provider = "postgresql"
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
 }
 
 generator client {
@@ -8,7 +9,7 @@ generator client {
 }
 
 model User {
-  id          String    @id @default(uuid())
+  id          String    @id @default(uuid()) @map("_id")
   phoneNumber String    @unique
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -17,7 +18,7 @@ model User {
 }
 
 model Website {
-  id           String   @id @default(uuid())
+  id           String   @id @default(uuid()) @map("_id")
   subdomain    String   @unique
   businessName String
   category     String
@@ -38,7 +39,7 @@ model Website {
 }
 
 model OnboardingSession {
-  id            String   @id @default(uuid())
+  id            String   @id @default(uuid()) @map("_id")
   phoneNumber   String   @unique // User's WhatsApp phone number
   step          String   // 'WELCOME' | 'NAME' | 'CATEGORY' | 'LOGO' | 'GALLERY' | 'PHONE' | 'EMAIL' | 'ADDRESS' | 'SERVICES' | 'ABOUT' | 'THEME' | 'COMPLETED'
   businessName  String?
@@ -56,7 +57,7 @@ model OnboardingSession {
 }
 
 model Session {
-  id        String   @id @default(uuid())
+  id        String   @id @default(uuid()) @map("_id")
   token     String   @unique
   userId    String
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
