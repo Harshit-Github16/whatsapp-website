@@ -1,0 +1,65 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider   = "prisma-client-js"
+  engineType = "library"
+}
+
+model User {
+  id          String    @id @default(uuid())
+  phoneNumber String    @unique
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  websites    Website[]
+  sessions    Session[]
+}
+
+model Website {
+  id           String   @id @default(uuid())
+  subdomain    String   @unique
+  businessName String
+  category     String
+  logoUrl      String?
+  galleryUrls  Json     // JSON array of image strings
+  contactPhone String?
+  contactEmail String?
+  address      String?
+  services     Json     // JSON array of service strings
+  about        String?
+  theme        String   // 'modern' | 'minimal' | 'luxury' | 'medical' | 'restaurant' | 'gym'
+  isPublished  Boolean  @default(true)
+  config       Json     // JSON tree representing sections configurations
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+model OnboardingSession {
+  id            String   @id @default(uuid())
+  phoneNumber   String   @unique // User's WhatsApp phone number
+  step          String   // 'WELCOME' | 'NAME' | 'CATEGORY' | 'LOGO' | 'GALLERY' | 'PHONE' | 'EMAIL' | 'ADDRESS' | 'SERVICES' | 'ABOUT' | 'THEME' | 'COMPLETED'
+  businessName  String?
+  category      String?
+  logoUrl       String?
+  galleryUrls   Json     // JSON array of image strings
+  contactPhone  String?
+  contactEmail  String?
+  address       String?
+  services      Json     // JSON array of service strings
+  about         String?
+  theme         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+}
