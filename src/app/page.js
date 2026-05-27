@@ -124,7 +124,7 @@ export default function Home() {
     },
     {
       q: "Can I connect my own custom domain?",
-      a: "Absolutely! We provide a free subdomain (e.g., yourname.siteonwhatsapp.com), and you can connect your own domain (e.g., www.yourbusiness.com) easily from our dashboard."
+      a: "Absolutely! We provide a free subdomain (e.g., yourname.whatssite.com), and you can connect your own domain (e.g., www.yourbusiness.com) easily from our dashboard."
     },
     {
       q: "How do I edit or update my website?",
@@ -132,7 +132,7 @@ export default function Home() {
     },
     {
       q: "Are the websites mobile responsive?",
-      a: "Yes, every website built by SiteOnWhatsApp is fully optimized for mobile devices, tablets, and desktop computers to ensure a seamless experience."
+      a: "Yes, every website built by WhatsSite is fully optimized for mobile devices, tablets, and desktop computers to ensure a seamless experience."
     }
   ];
 
@@ -330,7 +330,7 @@ export default function Home() {
                   </div>
                   <div className="bg-white/80 text-[11px] text-slate-400 font-medium px-4 py-1.5 rounded-md flex-1 text-center max-w-[260px] mx-auto truncate flex items-center justify-center gap-1">
                     <span className="w-1.5 h-1.5 bg-brand-green rounded-full animate-pulse"></span>
-                    sharma-clinic.siteonwhatsapp.com
+                    sharma-clinic.whatssite.com
                   </div>
                 </div>
 
@@ -456,7 +456,7 @@ export default function Home() {
                       </div>
                       <div>
                         <div className="text-[11px] font-extrabold flex items-center gap-1">
-                          SiteOnWhatsApp Bot
+                          WhatsSite Bot
                           <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-ping"></span>
                         </div>
                         <span className="text-[8px] text-emerald-200/90 font-medium">Online</span>
@@ -1072,8 +1072,8 @@ export default function Home() {
                   </div>
                   <div>
                     <h4 className="font-bold text-slate-800 text-sm mb-0.5">Email Support</h4>
-                    <a href="mailto:support@siteonwhatsapp.com" className="text-slate-500 text-sm hover:text-brand-green transition-colors">
-                      support@siteonwhatsapp.com
+                    <a href="mailto:support@whatssite.com" className="text-slate-500 text-sm hover:text-brand-green transition-colors">
+                      support@whatssite.com
                     </a>
                   </div>
                 </div>
@@ -1196,7 +1196,7 @@ export default function Home() {
 
           {/* Bottom copyright */}
           <div className="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 font-semibold gap-4">
-            <span>© 2024 SiteOnWhatsApp. All rights reserved.</span>
+            <span>© 2024 WhatsSite. All rights reserved.</span>
             <div className="flex gap-4">
               <a href="#" className="hover:text-white">Terms</a>
               <a href="#" className="hover:text-white">Privacy</a>

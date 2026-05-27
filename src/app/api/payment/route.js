@@ -1,19 +1,32 @@
-import Razorpay from "razorpay";
+import { createRequire } from "module";
 
-const razorpay = new Razorpay({
-  key_id: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
-  key_secret: process.env.RAZORPAY_KEY_SECRET,
-});
+const require = createRequire(import.meta.url);
 
 export async function POST(req) {
   try {
+    const keyId = process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID;
+    const keySecret = process.env.RAZORPAY_KEY_SECRET;
+
+    if (!keyId || !keySecret) {
+      return Response.json(
+        { error: "Payment gateway not configured. Set RAZORPAY env variables on Vercel." },
+        { status: 500 }
+      );
+    }
+
+    const Razorpay = require("razorpay");
+    const razorpay = new Razorpay({
+      key_id: keyId,
+      key_secret: keySecret,
+    });
+
     const body = await req.json();
     const { businessName, slug } = body;
 
     const order = await razorpay.orders.create({
       amount: 19900, // ₹199 in paise
       currency: "INR",
-      receipt: `receipt_${slug}_${Date.now()}`,
+      receipt: `rcpt_${(slug || "site").slice(0, 15)}_${Date.now().toString(36)}`,
       notes: {
         businessName: businessName || "Business Website",
         slug: slug || "",
@@ -23,7 +36,8 @@ export async function POST(req) {
 
     return Response.json({ orderId: order.id, amount: order.amount, currency: order.currency });
   } catch (error) {
-    console.error("Razorpay order creation failed:", error);
-    return Response.json({ error: "Failed to create payment order" }, { status: 500 });
+    console.error("Razorpay error:", error);
+    const msg = error?.message || error?.error?.description || JSON.stringify(error);
+    return Response.json({ error: `Payment failed: ${msg}` }, { status: 500 });
   }
 }

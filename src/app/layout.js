@@ -8,7 +8,7 @@ const plusJakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata = {
-  title: "SiteOnWhatsApp - Get Your Business Website Live in 5 Minutes",
+  title: "WhatsSite - Get Your Business Website Live in 5 Minutes",
   description: "No coding. Just chat with our bot, send your business details, and we'll build your professional website instantly.",
 };
 

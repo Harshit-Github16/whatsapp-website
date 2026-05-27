@@ -26,7 +26,7 @@ export default function Onboarding() {
   const [messages, setMessages] = useState([
     {
       sender: "bot",
-      text: "Hi there! 👋 Welcome to SiteOnWhatsApp website builder. Let's create a premium website for your business in 5 minutes!",
+      text: "Hi there! 👋 Welcome to WhatsSite website builder. Let's create a premium website for your business in 5 minutes!",
       time: "10:30 AM"
     },
     {
@@ -67,7 +67,7 @@ export default function Onboarding() {
 
   // Load default/pre-existing onboarding if any
   useEffect(() => {
-    const saved = localStorage.getItem("siteonwhatsapp_current_build");
+    const saved = localStorage.getItem("whatssite_current_build");
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -81,9 +81,9 @@ export default function Onboarding() {
   // Save current build state
   const saveBuildState = (updated) => {
     setSiteData(updated);
-    localStorage.setItem("siteonwhatsapp_current_build", JSON.stringify(updated));
+    localStorage.setItem("whatssite_current_build", JSON.stringify(updated));
     if (updated.slug) {
-      localStorage.setItem(`siteonwhatsapp_site_${updated.slug}`, JSON.stringify(updated));
+      localStorage.setItem(`whatssite_site_${updated.slug}`, JSON.stringify(updated));
     }
   };
 
@@ -267,9 +267,9 @@ export default function Onboarding() {
         const updated = { ...prevData, galleryUrls: updatedList };
 
         // Persist to localStorage
-        localStorage.setItem("siteonwhatsapp_current_build", JSON.stringify(updated));
+        localStorage.setItem("whatssite_current_build", JSON.stringify(updated));
         if (updated.slug) {
-          localStorage.setItem(`siteonwhatsapp_site_${updated.slug}`, JSON.stringify(updated));
+          localStorage.setItem(`whatssite_site_${updated.slug}`, JSON.stringify(updated));
         }
 
         setMessages((prev) => [
@@ -529,7 +529,7 @@ export default function Onboarding() {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
         amount,
         currency,
-        name: "SiteOnWhatsApp",
+        name: "WhatsSite",
         description: `Website publishing — ${siteData.businessName}`,
         order_id: orderId,
         prefill: {
@@ -649,7 +649,7 @@ export default function Onboarding() {
               <div className="flex-1 min-w-0">
                 <div className="flex justify-between items-baseline mb-0.5">
                   <span className="font-extrabold text-sm text-slate-850 flex items-center gap-1.5">
-                    SiteOnWhatsApp Bot
+                    WhatsSite Bot
                     <span className="bg-emerald-500 text-white rounded-full p-0.5 text-[7px]" title="Verified Creator Bot">✓</span>
                   </span>
                   <span className="text-[10px] text-emerald-600 font-bold">Online</span>
@@ -728,7 +728,7 @@ export default function Onboarding() {
               </div>
               <div>
                 <h2 className="font-extrabold text-sm text-slate-850 flex items-center gap-1.5 leading-snug">
-                  SiteOnWhatsApp Bot
+                  WhatsSite Bot
                   <span className="bg-emerald-500 text-white rounded-full p-0.5 text-[6.5px]">✓</span>
                 </h2>
                 <span className="text-[10px] text-emerald-600 font-bold block leading-none">
