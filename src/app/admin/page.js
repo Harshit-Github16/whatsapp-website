@@ -316,7 +316,6 @@ export default function AdminDashboard() {
     );
   }
 
-  // Section names mapping
   const sectionLabels = {
     home: "Hero Header",
     about: "About Story",
@@ -328,21 +327,21 @@ export default function AdminDashboard() {
 
   // RENDER: Dashboard Editor
   return (
-    <div className="h-screen w-screen bg-slate-950 flex flex-col font-sans text-slate-300 overflow-hidden">
+    <div className="h-screen w-screen bg-slate-50 flex flex-col font-sans text-slate-700 overflow-hidden">
       
       {/* Top Header */}
-      <header className="h-[65px] border-b border-slate-850 px-6 flex items-center justify-between bg-slate-900/60 backdrop-blur shrink-0 relative z-20">
+      <header className="h-[65px] border-b border-slate-200 px-6 flex items-center justify-between bg-white shrink-0 relative z-20 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 bg-brand-green/10 border border-brand-green/20 rounded-xl flex items-center justify-center text-brand-green font-black">
+          <div className="w-9 h-9 bg-brand-green/10 border border-brand-green/20 rounded-xl flex items-center justify-center text-brand-green font-black shadow-sm">
             W
           </div>
           <div>
-            <h1 className="text-sm font-black text-white leading-snug flex items-center gap-2">
+            <h1 className="text-sm font-black text-slate-900 leading-snug flex items-center gap-2">
               {businessData.businessName}
-              <span className="bg-emerald-500/10 text-brand-green text-[9px] font-black px-2 py-0.5 rounded border border-emerald-500/20 uppercase tracking-wider">Editor Mode</span>
+              <span className="bg-emerald-50 text-brand-green text-[9px] font-black px-2 py-0.5 rounded border border-emerald-255 uppercase tracking-wider">Editor Mode</span>
             </h1>
-            <span className="text-[10px] text-slate-400 font-semibold block leading-none mt-0.5">
-              Live Preview URL: <a href={`/${businessData.slug}`} target="_blank" className="text-brand-green hover:underline">{businessData.slug}.whatssite.in</a>
+            <span className="text-[10px] text-slate-500 font-semibold block leading-none mt-0.5">
+              Live Website: <a href={`/${businessData.slug}`} target="_blank" className="text-brand-green hover:underline">{businessData.slug}.whatssite.in</a>
             </span>
           </div>
         </div>
@@ -350,7 +349,7 @@ export default function AdminDashboard() {
         {/* Global actions */}
         <div className="flex items-center gap-4">
           {saveMessage && (
-            <span className="text-xs font-bold text-slate-200 bg-slate-900 border border-slate-800 px-4 py-2 rounded-xl animate-fade-in">
+            <span className="text-xs font-bold text-slate-800 bg-white border border-slate-200 px-4 py-2 rounded-xl shadow-sm animate-fade-in">
               {saveMessage}
             </span>
           )}
@@ -364,7 +363,7 @@ export default function AdminDashboard() {
           </button>
           <button
             onClick={handleLogout}
-            className="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-400 hover:text-white px-4 py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center gap-1.5 cursor-pointer"
+            className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 hover:text-slate-900 px-4 py-2.5 rounded-xl font-bold text-xs transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
           >
             <LogOut className="w-3.5 h-3.5" />
             Logout
@@ -376,10 +375,10 @@ export default function AdminDashboard() {
       <div className="flex-1 flex overflow-hidden">
         
         {/* Left Side: Settings Sidebar Editor (Scrollable) */}
-        <div className="w-[450px] bg-slate-900/40 border-r border-slate-850 flex flex-col shrink-0">
+        <div className="w-[450px] bg-slate-50 border-r border-slate-200 flex flex-col shrink-0">
           
           {/* Tabs Navigation */}
-          <div className="flex border-b border-slate-850 px-2 py-1.5 gap-1 shrink-0 bg-slate-950/40">
+          <div className="flex border-b border-slate-200 px-2 py-1.5 gap-1 shrink-0 bg-white shadow-sm">
             {[
               { id: "general", label: "General", icon: Settings },
               { id: "theme", label: "Theme", icon: Palette },
@@ -392,8 +391,8 @@ export default function AdminDashboard() {
                 onClick={() => setActiveTab(id)}
                 className={`flex-1 flex flex-col items-center gap-1 py-2 px-1 rounded-xl text-[10px] font-bold tracking-wide transition-all cursor-pointer ${
                   activeTab === id
-                    ? "bg-slate-800 text-white shadow-inner"
-                    : "text-slate-450 hover:text-slate-200 hover:bg-slate-850/50"
+                    ? "bg-slate-105 text-slate-900 shadow-inner"
+                    : "text-slate-500 hover:text-slate-900 hover:bg-slate-50"
                 }`}
               >
                 <Icon className="w-4.5 h-4.5" />
@@ -408,69 +407,69 @@ export default function AdminDashboard() {
             {/* TAB 1: General Info */}
             {activeTab === "general" && (
               <div className="space-y-5 animate-fade-in">
-                <div className="border-b border-slate-800 pb-3">
-                  <h3 className="text-sm font-black text-white flex items-center gap-2"><Settings className="w-4 h-4 text-brand-green" /> General Settings</h3>
+                <div className="border-b border-slate-200 pb-3">
+                  <h3 className="text-sm font-black text-slate-900 flex items-center gap-2"><Settings className="w-4 h-4 text-brand-green" /> General Settings</h3>
                   <p className="text-[10px] text-slate-500 font-semibold mt-1">Configure your primary business profile details</p>
                 </div>
 
                 <div className="space-y-4">
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Business Name</label>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Business Name</label>
                     <input
                       type="text"
                       value={businessData.businessName || ""}
                       onChange={(e) => handleInputChange("businessName", e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-850 focus:border-brand-green text-white text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors"
+                      className="w-full bg-white border border-slate-200 focus:border-brand-green text-slate-900 text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors shadow-sm"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Owner / Manager Name</label>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Owner / Manager Name</label>
                     <input
                       type="text"
                       value={businessData.ownerName || ""}
                       onChange={(e) => handleInputChange("ownerName", e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-850 focus:border-brand-green text-white text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors"
+                      className="w-full bg-white border border-slate-200 focus:border-brand-green text-slate-900 text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors shadow-sm"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Business Category</label>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Business Category</label>
                     <input
                       type="text"
                       value={businessData.category || ""}
                       onChange={(e) => handleInputChange("category", e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-850 focus:border-brand-green text-white text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors"
+                      className="w-full bg-white border border-slate-200 focus:border-brand-green text-slate-900 text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors shadow-sm"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Phone Number</label>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Phone Number</label>
                     <input
                       type="text"
                       value={businessData.phone || ""}
                       onChange={(e) => handleInputChange("phone", e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-850 focus:border-brand-green text-white text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors"
+                      className="w-full bg-white border border-slate-200 focus:border-brand-green text-slate-900 text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors shadow-sm"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Email Support</label>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Email Support</label>
                     <input
                       type="email"
                       value={businessData.email || ""}
                       onChange={(e) => handleInputChange("email", e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-850 focus:border-brand-green text-white text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors"
+                      className="w-full bg-white border border-slate-200 focus:border-brand-green text-slate-900 text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors shadow-sm"
                     />
                   </div>
 
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Office Address</label>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Office Address</label>
                     <textarea
                       rows="3"
                       value={businessData.address || ""}
                       onChange={(e) => handleInputChange("address", e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-850 focus:border-brand-green text-white text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors resize-none"
+                      className="w-full bg-white border border-slate-200 focus:border-brand-green text-slate-900 text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors resize-none shadow-sm"
                     ></textarea>
                   </div>
                 </div>
@@ -480,15 +479,15 @@ export default function AdminDashboard() {
             {/* TAB 2: Theme Layout Picker */}
             {activeTab === "theme" && (
               <div className="space-y-5 animate-fade-in">
-                <div className="border-b border-slate-800 pb-3">
-                  <h3 className="text-sm font-black text-white flex items-center gap-2"><Palette className="w-4 h-4 text-brand-green" /> Theme Layout</h3>
+                <div className="border-b border-slate-200 pb-3">
+                  <h3 className="text-sm font-black text-slate-900 flex items-center gap-2"><Palette className="w-4 h-4 text-brand-green" /> Theme Layout</h3>
                   <p className="text-[10px] text-slate-500 font-semibold mt-1">Select the styling and visual color preset of your page</p>
                 </div>
 
                 <div className="grid grid-cols-1 gap-3">
                   {[
                     { id: "medical", label: "Medical & Health Care", desc: "Sleek blue & slate design for clinics and doctors", emoji: "🦷" },
-                    { id: "gym", label: "Gym & Fitness Club", desc: "Aggressive dark-slate & red styling for energy", emoji: "🏋️‍♂️" },
+                    { id: "gym", label: "Gym & Fitness Club", desc: "Aggressive styling with bold contrasts for high energy", emoji: "🏋️‍♂️" },
                     { id: "restaurant", label: "Restaurant & Bistro", desc: "Warm stone-white & amber layout for bakeries & food hubs", emoji: "☕" },
                     { id: "salon", label: "Salon & Spa Sanctuary", desc: "Soft blush-white & pink layout for grooming centers", emoji: "✨" },
                     { id: "realestate", label: "Real Estate Brokerage", desc: "Modern clean & teal preset for property agencies", emoji: "🏢" }
@@ -498,13 +497,13 @@ export default function AdminDashboard() {
                       onClick={() => handleInputChange("theme", t.id)}
                       className={`p-4.5 rounded-2xl border text-left flex items-start gap-4 transition-all cursor-pointer ${
                         businessData.theme === t.id
-                          ? "bg-slate-800/80 border-brand-green text-white shadow-md shadow-brand-green/5"
-                          : "bg-slate-950/40 border-slate-850 hover:border-slate-800 text-slate-400"
+                          ? "bg-emerald-50 border-brand-green text-slate-900 shadow-md shadow-brand-green/5"
+                          : "bg-white border-slate-200 hover:border-slate-350 text-slate-550"
                       }`}
                     >
                       <span className="text-3xl filter drop-shadow">{t.emoji}</span>
                       <div>
-                        <h4 className="text-xs font-extrabold text-white capitalize">{t.label}</h4>
+                        <h4 className="text-xs font-extrabold text-slate-900 capitalize">{t.label}</h4>
                         <p className="text-[9.5px] text-slate-500 font-semibold mt-1 leading-normal">{t.desc}</p>
                       </div>
                     </button>
@@ -516,8 +515,8 @@ export default function AdminDashboard() {
             {/* TAB 3: Section Reordering */}
             {activeTab === "sections" && (
               <div className="space-y-5 animate-fade-in">
-                <div className="border-b border-slate-800 pb-3">
-                  <h3 className="text-sm font-black text-white flex items-center gap-2"><Layers className="w-4 h-4 text-brand-green" /> Section Ordering</h3>
+                <div className="border-b border-slate-200 pb-3">
+                  <h3 className="text-sm font-black text-slate-900 flex items-center gap-2"><Layers className="w-4 h-4 text-brand-green" /> Section Ordering</h3>
                   <p className="text-[10px] text-slate-500 font-semibold mt-1">Reorder the layout sections of your website instantly</p>
                 </div>
 
@@ -525,11 +524,11 @@ export default function AdminDashboard() {
                   {(businessData.sectionOrder || ["home", "about", "services", "gallery", "testimonials", "contact"]).map((section, idx, arr) => (
                     <div
                       key={section}
-                      className="bg-slate-950/40 border border-slate-850 rounded-2xl px-5 py-4.5 flex items-center justify-between"
+                      className="bg-white border border-slate-200 rounded-2xl px-5 py-4.5 flex items-center justify-between shadow-sm"
                     >
                       <div className="flex items-center gap-3">
-                        <span className="w-6 h-6 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-[10px] font-black text-slate-400">{idx + 1}</span>
-                        <span className="text-xs font-bold text-white capitalize">{sectionLabels[section] || section}</span>
+                        <span className="w-6 h-6 rounded-lg bg-slate-50 border border-slate-205 flex items-center justify-center text-[10px] font-black text-slate-500">{idx + 1}</span>
+                        <span className="text-xs font-bold text-slate-900 capitalize">{sectionLabels[section] || section}</span>
                       </div>
 
                       {/* Direction controls */}
@@ -537,14 +536,14 @@ export default function AdminDashboard() {
                         <button
                           onClick={() => moveSection(idx, -1)}
                           disabled={idx === 0}
-                          className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                          className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 disabled:opacity-30 disabled:pointer-events-none cursor-pointer shadow-sm"
                         >
                           <ArrowUp className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => moveSection(idx, 1)}
                           disabled={idx === arr.length - 1}
-                          className="w-8 h-8 rounded-lg bg-slate-900 border border-slate-800 flex items-center justify-center text-slate-400 hover:text-white disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                          className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-600 hover:text-slate-900 disabled:opacity-30 disabled:pointer-events-none cursor-pointer shadow-sm"
                         >
                           <ArrowDown className="w-3.5 h-3.5" />
                         </button>
@@ -561,24 +560,24 @@ export default function AdminDashboard() {
                 
                 {/* About Editor */}
                 <div className="space-y-4">
-                  <div className="border-b border-slate-800 pb-3">
-                    <h3 className="text-sm font-black text-white flex items-center gap-2"><FileText className="w-4 h-4 text-brand-green" /> About Us Story</h3>
+                  <div className="border-b border-slate-200 pb-3">
+                    <h3 className="text-sm font-black text-slate-900 flex items-center gap-2"><FileText className="w-4 h-4 text-brand-green" /> About Us Story</h3>
                   </div>
                   <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Story bio description</label>
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Story bio description</label>
                     <textarea
                       rows="6"
                       value={businessData.about || ""}
                       onChange={(e) => handleInputChange("about", e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-850 focus:border-brand-green text-white text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors resize-none leading-relaxed"
+                      className="w-full bg-white border border-slate-200 focus:border-brand-green text-slate-900 text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors resize-none leading-relaxed shadow-sm"
                     ></textarea>
                   </div>
                 </div>
 
                 {/* Services Editor */}
-                <div className="space-y-4 pt-4 border-t border-slate-850">
-                  <div className="border-b border-slate-800 pb-3">
-                    <h3 className="text-sm font-black text-white flex items-center gap-2"><Sparkles className="w-4 h-4 text-brand-green" /> Key Services</h3>
+                <div className="space-y-4 pt-4 border-t border-slate-200">
+                  <div className="border-b border-slate-200 pb-3">
+                    <h3 className="text-sm font-black text-slate-900 flex items-center gap-2"><Sparkles className="w-4 h-4 text-brand-green" /> Key Services</h3>
                   </div>
 
                   {/* Add service form */}
@@ -588,7 +587,7 @@ export default function AdminDashboard() {
                       placeholder="e.g. Teeth Whitening"
                       value={newService}
                       onChange={(e) => setNewService(e.target.value)}
-                      className="flex-1 bg-slate-950 border border-slate-850 focus:border-brand-green text-white text-xs font-semibold rounded-xl px-4 py-2.5 focus:outline-none"
+                      className="flex-1 bg-white border border-slate-200 focus:border-brand-green text-slate-900 text-xs font-semibold rounded-xl px-4 py-2.5 focus:outline-none shadow-sm"
                     />
                     <button
                       onClick={addService}
@@ -603,12 +602,12 @@ export default function AdminDashboard() {
                     {(businessData.services || []).map((service, idx) => (
                       <div
                         key={idx}
-                        className="bg-slate-950/40 border border-slate-850 rounded-xl px-4 py-2.5 flex items-center justify-between text-xs text-white"
+                        className="bg-white border border-slate-200 rounded-xl px-4 py-2.5 flex items-center justify-between text-xs text-slate-900 shadow-sm"
                       >
                         <span className="font-semibold">{service}</span>
                         <button
                           onClick={() => removeService(idx)}
-                          className="text-slate-500 hover:text-red-400 p-1.5 transition-colors cursor-pointer"
+                          className="text-slate-400 hover:text-red-500 p-1.5 transition-colors cursor-pointer"
                         >
                           <Trash className="w-3.5 h-3.5" />
                         </button>
@@ -625,16 +624,16 @@ export default function AdminDashboard() {
             {/* TAB 5: Images & Uploads (Logo, Banner, Gallery) */}
             {activeTab === "images" && (
               <div className="space-y-6 animate-fade-in">
-                <div className="border-b border-slate-800 pb-3">
-                  <h3 className="text-sm font-black text-white flex items-center gap-2"><ImageIcon className="w-4 h-4 text-brand-green" /> Images &amp; Cloud Uploads</h3>
+                <div className="border-b border-slate-200 pb-3">
+                  <h3 className="text-sm font-black text-slate-900 flex items-center gap-2"><ImageIcon className="w-4 h-4 text-brand-green" /> Images &amp; Cloud Uploads</h3>
                   <p className="text-[10px] text-slate-500 font-semibold mt-1">Upload and compress images using Cloudinary integration</p>
                 </div>
 
                 {/* Logo Editor */}
-                <div className="space-y-3.5 p-4 bg-slate-950/40 border border-slate-850 rounded-2xl">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Business Logo</span>
+                <div className="space-y-3.5 p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">Business Logo</span>
                   {businessData.logoUrl && (
-                    <div className="relative w-16 h-16 rounded-xl border border-slate-850 overflow-hidden bg-slate-900 flex items-center justify-center p-1">
+                    <div className="relative w-16 h-16 rounded-xl border border-slate-200 overflow-hidden bg-slate-50 flex items-center justify-center p-1">
                       <img src={businessData.logoUrl} alt="Logo" className="w-full h-full object-contain rounded" />
                     </div>
                   )}
@@ -642,15 +641,15 @@ export default function AdminDashboard() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleImageUpload(e, "logo")}
-                    className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-white hover:file:bg-slate-700 file:cursor-pointer"
+                    className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 file:cursor-pointer"
                   />
                 </div>
 
                 {/* Hero Banner Editor */}
-                <div className="space-y-3.5 p-4 bg-slate-950/40 border border-slate-850 rounded-2xl">
-                  <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Hero Header Banner</span>
+                <div className="space-y-3.5 p-4 bg-white border border-slate-200 rounded-2xl shadow-sm">
+                  <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest block">Hero Header Banner</span>
                   {businessData.heroImageUrl && (
-                    <div className="relative aspect-[16/9] rounded-xl border border-slate-850 overflow-hidden bg-slate-900">
+                    <div className="relative aspect-[16/9] rounded-xl border border-slate-200 overflow-hidden bg-slate-50">
                       <img src={businessData.heroImageUrl} alt="Hero" className="w-full h-full object-cover" />
                     </div>
                   )}
@@ -658,25 +657,25 @@ export default function AdminDashboard() {
                     type="file"
                     accept="image/*"
                     onChange={(e) => handleImageUpload(e, "hero")}
-                    className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-800 file:text-white hover:file:bg-slate-700 file:cursor-pointer"
+                    className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 file:cursor-pointer"
                   />
                 </div>
 
                 {/* Gallery Images Editor (Up to 4 images) */}
                 <div className="space-y-4 pt-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Business Gallery (Max 4)</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Business Gallery (Max 4)</span>
                     <span className="text-[10px] text-slate-500 font-bold">{(businessData.galleryUrls || []).length}/4</span>
                   </div>
 
                   {/* Add gallery image slot */}
                   {(businessData.galleryUrls || []).length < 4 && (
-                    <div className="p-3 border border-dashed border-slate-800 rounded-2xl">
+                    <div className="p-3 border border-dashed border-slate-200 rounded-2xl bg-white shadow-sm">
                       <input
                         type="file"
                         accept="image/*"
                         onChange={(e) => handleImageUpload(e, "gallery_add")}
-                        className="block w-full text-xs text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-850 file:text-slate-300 hover:file:bg-slate-800 file:cursor-pointer"
+                        className="block w-full text-xs text-slate-505 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 file:cursor-pointer"
                       />
                     </div>
                   )}
@@ -686,12 +685,12 @@ export default function AdminDashboard() {
                     {(businessData.galleryUrls || []).map((url, idx) => (
                       <div
                         key={idx}
-                        className="relative aspect-[4/3] rounded-2xl border border-slate-850 overflow-hidden bg-slate-900 group"
+                        className="relative aspect-[4/3] rounded-2xl border border-slate-200 overflow-hidden bg-slate-50 group"
                       >
                         <img src={url} alt={`Gallery ${idx}`} className="w-full h-full object-cover" />
                         <button
                           onClick={() => removeGalleryImage(idx)}
-                          className="absolute top-2 right-2 w-7 h-7 bg-red-600/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow cursor-pointer"
+                          className="absolute top-2 right-2 w-7 h-7 bg-red-655/90 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity shadow cursor-pointer"
                         >
                           <Trash className="w-3.5 h-3.5" />
                         </button>
@@ -705,7 +704,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Footer Save Button sticky in settings sidebar */}
-          <div className="p-4 bg-slate-950/60 border-t border-slate-850 flex flex-col gap-2 shrink-0">
+          <div className="p-4 bg-white border-t border-slate-200 flex flex-col gap-2 shrink-0 shadow-lg">
             <button
               onClick={handleSave}
               disabled={saveLoading}
@@ -719,17 +718,17 @@ export default function AdminDashboard() {
         </div>
 
         {/* Right Side: Live Iframe Website Preview */}
-        <div className="flex-1 bg-slate-950 flex flex-col relative h-full">
+        <div className="flex-1 bg-slate-100 flex flex-col relative h-full">
           
           {/* Preview Navigation Header */}
-          <div className="h-[45px] bg-slate-900 border-b border-slate-850 px-6 flex items-center justify-between shrink-0 text-xs font-bold text-slate-400">
-            <span className="flex items-center gap-2">
+          <div className="h-[45px] bg-white border-b border-slate-200 px-6 flex items-center justify-between shrink-0 text-xs font-bold text-slate-550 shadow-sm">
+            <span className="flex items-center gap-2 text-slate-700">
               <Eye className="w-4 h-4 text-brand-green animate-pulse" /> Live Website Preview
             </span>
             <div className="flex gap-4">
               <button
                 onClick={() => setPreviewKey(prev => prev + 1)}
-                className="hover:text-white flex items-center gap-1.5 transition-colors cursor-pointer"
+                className="hover:text-slate-900 flex items-center gap-1.5 transition-colors cursor-pointer text-slate-550"
                 title="Refresh preview frame"
               >
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh Preview
@@ -745,9 +744,9 @@ export default function AdminDashboard() {
           </div>
 
           {/* Iframe Preview container */}
-          <div className="flex-1 bg-slate-900 p-6 flex justify-center items-center overflow-hidden">
+          <div className="flex-1 bg-slate-100 p-6 flex justify-center items-center overflow-hidden">
             {/* Classy Device Mock wrapper */}
-            <div className="w-full h-full max-w-[1080px] bg-white rounded-2xl shadow-2xl border border-slate-800 overflow-hidden relative">
+            <div className="w-full h-full max-w-[1080px] bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden relative">
               <iframe
                 key={previewKey}
                 src={`/${businessData.slug}`}
