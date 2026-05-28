@@ -148,7 +148,7 @@ export default function Home() {
     {
       name: "Dr. Ananya Sharma",
       role: "Founder, Sharma Dental Clinic",
-      image: "https://images.unsplash.com/photo-1594824813573-246434de83fb?w=100&auto=format&fit=crop&q=60",
+      image: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=100&auto=format&fit=crop&q=60",
       content: "WhatsSite built my clinic website in 4 minutes! Clients are booking appointments online, and I update services via WhatsApp.",
       stars: 5,
     },
@@ -493,41 +493,41 @@ export default function Home() {
           </div>
 
           {/* Connected Layout Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center max-w-6xl mx-auto">
 
             {/* Left Column: Generated Phone Mockup Image */}
-            <div className="lg:col-span-5 flex items-center justify-center relative">
+            <div className="flex items-center justify-center relative py-8">
               {/* Ambient glow behind phone */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                <div className="w-72 h-72 bg-emerald-400/20 rounded-full blur-3xl"></div>
+                <div className="w-[28rem] h-[28rem] bg-emerald-400/15 rounded-full blur-3xl"></div>
               </div>
-              <div className="relative w-full max-w-xs mx-auto drop-shadow-2xl hover:scale-[1.02] transition-transform duration-500">
+              <div className="relative w-full max-w-sm lg:max-w-md xl:max-w-lg mx-auto drop-shadow-[0_40px_60px_rgba(0,0,0,0.18)] hover:scale-[1.02] transition-transform duration-500">
                 <Image
                   src="/whatsapp_onboarding_mockup.png"
                   alt="WhatsApp AI Bot onboarding chat on mobile phone"
-                  width={400}
-                  height={800}
+                  width={600}
+                  height={1200}
                   className="w-full h-auto object-contain"
                   priority
                 />
                 {/* Floating "Live" badge */}
-                <div className="absolute top-6 -right-4 bg-white border border-emerald-100 shadow-xl rounded-2xl px-3 py-2 flex items-center gap-2">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse block"></span>
-                  <span className="text-[11px] font-black text-slate-800">AI Bot Live</span>
+                <div className="absolute top-8 -right-6 bg-white border border-emerald-100 shadow-2xl rounded-2xl px-4 py-2.5 flex items-center gap-2.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse block shrink-0"></span>
+                  <span className="text-xs font-black text-slate-800 whitespace-nowrap">AI Bot Live</span>
                 </div>
                 {/* Floating "Generated" badge */}
-                <div className="absolute bottom-10 -left-4 bg-white border border-slate-100 shadow-xl rounded-2xl px-3 py-2 flex items-center gap-2">
-                  <span className="text-base">🎉</span>
+                <div className="absolute bottom-16 -left-6 bg-white border border-slate-100 shadow-2xl rounded-2xl px-4 py-2.5 flex items-center gap-3">
+                  <span className="text-xl shrink-0">🎉</span>
                   <div>
-                    <p className="text-[10px] font-black text-slate-800 leading-tight">Website Ready!</p>
-                    <p className="text-[9px] text-emerald-600 font-bold">In under 2 mins</p>
+                    <p className="text-xs font-black text-slate-800 leading-tight">Website Ready!</p>
+                    <p className="text-[10px] text-emerald-600 font-bold">In under 2 mins</p>
                   </div>
                 </div>
               </div>
             </div>
 
             {/* Right Column: Step-by-Step Flow List */}
-            <div className="lg:col-span-7 flex flex-col gap-6">
+            <div className="flex flex-col gap-6">
               {[
                 { num: "01", title: "Start Chat on WhatsApp", desc: "Scan our code or click START. The bot immediately registers your phone number to begin onboarding." },
                 { num: "02", title: "Provide Basic Business Info", desc: "Answer simple questions regarding your business name, services, timings, and location address." },
@@ -675,7 +675,7 @@ export default function Home() {
 
           {/* Section Header */}
           <div className="text-center max-w-2xl mx-auto mb-16">
-            <span className="text-[12px] font-bold text-brand-green uppercase tracking-widest block mb-3.5">
+            <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
               Features
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
@@ -872,7 +872,7 @@ export default function Home() {
 
           {/* Section Header */}
           <div className="text-center max-w-xl mx-auto mb-16">
-            <span className="text-[12px] font-bold text-brand-green uppercase tracking-widest block mb-3.5">
+            <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
               TEMPLATE
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
@@ -1003,7 +1003,7 @@ export default function Home() {
             {/* Explanation Content Column */}
             <div className="lg:col-span-5 flex flex-col justify-center gap-6">
               <div>
-                <span className="text-[12px] font-black text-brand-green uppercase tracking-widest block mb-3.5">
+                <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
                   Visual Customizer
                 </span>
                 <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight leading-tight">
@@ -1050,68 +1050,128 @@ export default function Home() {
       </section>
 
       {/* 5. Stats & Client Showcase Section */}
-      <section className="bg-[#0B0F19] text-white py-20 relative overflow-hidden border-t border-slate-900">
-        {/* Subtle grid pattern background overlay */}
-        <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-10"></div>
-        {/* Glowing background gradients */}
-        <div className="absolute top-0 right-0 w-[30rem] h-[30rem] bg-emerald-950/30 rounded-full blur-3xl opacity-50 pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-80 h-80 bg-brand-green/5 rounded-full blur-3xl pointer-events-none -translate-x-1/3 translate-y-1/3"></div>
+      <section className="relative py-24 overflow-hidden border-t border-slate-100">
+        {/* Premium gradient mesh background */}
+        <div className="absolute inset-0 bg-gradient-to-br from-slate-50 via-white to-emerald-50/30"></div>
+        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(ellipse_80%_60%_at_50%_-10%,rgba(16,185,129,0.08),transparent)]"></div>
+        {/* Dot grid pattern */}
+        <div className="absolute inset-0 opacity-[0.03]" style={{backgroundImage: 'radial-gradient(circle, #10b981 1px, transparent 1px)', backgroundSize: '28px 28px'}}></div>
+        <div className="absolute bottom-0 right-0 w-[40rem] h-[24rem] bg-gradient-to-tl from-teal-100/30 to-transparent rounded-full blur-3xl pointer-events-none"></div>
+
+        <style jsx global>{`
+          @keyframes brand-scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+          }
+          .animate-brand-scroll {
+            display: flex;
+            width: max-content;
+            animation: brand-scroll 30s linear infinite;
+          }
+          .animate-brand-scroll:hover {
+            animation-play-state: paused;
+          }
+        `}</style>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
           {/* Stats Grid */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-16 justify-items-center text-center">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-5 mb-20">
+            {[
+              { icon: <MessageSquare className="w-7 h-7" />, value: "10K+", label: "Websites Live", sub: "& growing daily", gradient: "from-emerald-500 to-teal-400" },
+              { icon: <Globe className="w-7 h-7" />, value: "150+", label: "Business Categories", sub: "fully supported", gradient: "from-teal-500 to-cyan-400" },
+              { icon: <Check className="w-7 h-7" />, value: "99.9%", label: "Uptime SLA", sub: "enterprise reliability", gradient: "from-emerald-400 to-green-500" },
+              { icon: <Zap className="w-7 h-7" />, value: "1.2M+", label: "Monthly Visitors", sub: "across all sites", gradient: "from-green-500 to-teal-500" },
+            ].map((stat, i) => (
+              <div
+                key={i}
+                className="group relative bg-white/80 backdrop-blur-sm border border-white rounded-3xl p-7 shadow-[0_4px_24px_rgba(0,0,0,0.06)] hover:shadow-[0_12px_40px_rgba(16,185,129,0.15)] hover:-translate-y-2 transition-all duration-400 overflow-hidden"
+              >
+                {/* Corner glow */}
+                <div className={`absolute -top-8 -right-8 w-24 h-24 bg-gradient-to-br ${stat.gradient} rounded-full blur-2xl opacity-10 group-hover:opacity-20 transition-opacity duration-300`}></div>
+                {/* Top accent bar */}
+                <div className={`absolute top-0 left-6 right-6 h-0.5 bg-gradient-to-r ${stat.gradient} rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300`}></div>
 
-            {/* Stat 1 */}
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-14 h-14 bg-slate-900/60 border border-slate-800 rounded-2xl flex items-center justify-center text-brand-green shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all hover:border-brand-green/30 hover:scale-105 duration-300">
-                <MessageSquare className="w-6 h-6" />
+                {/* Icon */}
+                <div className={`w-13 h-13 w-12 h-12 bg-gradient-to-br ${stat.gradient} rounded-2xl flex items-center justify-center text-white shadow-lg mb-5 group-hover:scale-110 transition-transform duration-300`}>
+                  {stat.icon}
+                </div>
+
+                {/* Value */}
+                <div className={`text-4xl sm:text-5xl font-extrabold tracking-tight bg-gradient-to-br ${stat.gradient} bg-clip-text text-transparent mb-1`}>
+                  {stat.value}
+                </div>
+                <p className="text-sm font-extrabold text-slate-800 mb-0.5">{stat.label}</p>
+                <p className="text-[11px] text-slate-400 font-semibold">{stat.sub}</p>
               </div>
-              <h4 className="text-3xl sm:text-4xl font-extrabold mb-0.5 text-white tracking-tight">10K+</h4>
-              <p className="text-[11px] text-emerald-400 font-bold uppercase tracking-[0.15em]">Websites Live</p>
-            </div>
-
-            {/* Stat 2 */}
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-14 h-14 bg-slate-900/60 border border-slate-800 rounded-2xl flex items-center justify-center text-brand-green shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all hover:border-brand-green/30 hover:scale-105 duration-300">
-                <Globe className="w-6 h-6" />
-              </div>
-              <h4 className="text-3xl sm:text-4xl font-extrabold mb-0.5 text-white tracking-tight">150+</h4>
-              <p className="text-[11px] text-emerald-400 font-bold uppercase tracking-[0.15em]">Business Categories</p>
-            </div>
-
-            {/* Stat 3 */}
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-14 h-14 bg-slate-900/60 border border-slate-800 rounded-2xl flex items-center justify-center text-brand-green shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all hover:border-brand-green/30 hover:scale-105 duration-300">
-                <Check className="w-6 h-6" />
-              </div>
-              <h4 className="text-3xl sm:text-4xl font-extrabold mb-0.5 text-white tracking-tight">99.9%</h4>
-              <p className="text-[11px] text-emerald-400 font-bold uppercase tracking-[0.15em]">Uptime SLA</p>
-            </div>
-
-            {/* Stat 4 */}
-            <div className="flex flex-col items-center gap-3">
-              <div className="w-14 h-14 bg-slate-900/60 border border-slate-800 rounded-2xl flex items-center justify-center text-brand-green shadow-[0_4px_20px_rgba(0,0,0,0.3)] transition-all hover:border-brand-green/30 hover:scale-105 duration-300">
-                <Zap className="w-6 h-6" />
-              </div>
-              <h4 className="text-3xl sm:text-4xl font-extrabold mb-0.5 text-white tracking-tight">1.2M+</h4>
-              <p className="text-[11px] text-emerald-400 font-bold uppercase tracking-[0.15em]">Monthly Visitors</p>
-            </div>
-
+            ))}
           </div>
 
-          {/* Trusted Client Showcase Logos */}
-          <div className="border-t border-slate-800/80 pt-12">
-            <p className="text-center text-[10px] text-slate-500 uppercase tracking-[0.2em] font-bold mb-8">
-              Trusted by local leaders worldwide
+          {/* Trusted Businesses Marquee */}
+          <div className="relative">
+            <p className="text-center text-[10px] text-slate-400 uppercase tracking-[0.25em] font-black mb-8">
+              ✦ Trusted by local businesses across India ✦
             </p>
-            <div className="flex flex-wrap items-center justify-center gap-y-6 gap-x-12 sm:gap-x-16 opacity-75">
-              <span className="text-slate-400 font-bold text-xs tracking-[0.15em] uppercase hover:text-white transition-colors duration-200 cursor-default">Sharma Dental</span>
-              <span className="text-slate-400 font-bold text-xs tracking-[0.15em] uppercase hover:text-white transition-colors duration-200 cursor-default">The Royal Cafe</span>
-              <span className="text-slate-400 font-bold text-xs tracking-[0.15em] uppercase hover:text-white transition-colors duration-200 cursor-default">FitZone Gym</span>
-              <span className="text-slate-400 font-bold text-xs tracking-[0.15em] uppercase hover:text-white transition-colors duration-200 cursor-default">Bloom Boutique</span>
-              <span className="text-slate-400 font-bold text-xs tracking-[0.15em] uppercase hover:text-white transition-colors duration-200 cursor-default">Urban Realty</span>
-              <span className="text-slate-400 font-bold text-xs tracking-[0.15em] uppercase hover:text-white transition-colors duration-200 cursor-default">Elegance Salon</span>
+
+            {/* Marquee container */}
+            <div className="relative w-full overflow-hidden">
+              {/* Fade edges */}
+              <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+              <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
+
+              <div className="animate-brand-scroll gap-3 flex">
+                {[
+                  { name: "Sharma Dental", icon: "🦷" },
+                  { name: "The Royal Cafe", icon: "☕" },
+                  { name: "FitZone Gym", icon: "💪" },
+                  { name: "Bloom Boutique", icon: "👗" },
+                  { name: "Urban Realty", icon: "🏠" },
+                  { name: "Elegance Salon", icon: "💇" },
+                  { name: "PetCare Clinic", icon: "🐾" },
+                  { name: "Organic Kitchen", icon: "🥗" },
+                  { name: "QuickWash Laundry", icon: "👕" },
+                  { name: "KS Law Partners", icon: "⚖️" },
+                  { name: "Sunrise Bakery", icon: "🥐" },
+                  { name: "TechFix Studio", icon: "💻" },
+                  { name: "Nirmaan Builders", icon: "🏗️" },
+                  { name: "Medplus Pharmacy", icon: "💊" },
+                  { name: "Starlight Events", icon: "🎉" },
+                  { name: "GreenLeaf Nursery", icon: "🌿" },
+                  { name: "AutoCare Garage", icon: "🔧" },
+                  { name: "Radiance Spa", icon: "✨" },
+                  { name: "CloudNine Travels", icon: "✈️" },
+                  { name: "Pixel Art Studio", icon: "🎨" },
+                  // Duplicate for seamless loop
+                  { name: "Sharma Dental", icon: "🦷" },
+                  { name: "The Royal Cafe", icon: "☕" },
+                  { name: "FitZone Gym", icon: "💪" },
+                  { name: "Bloom Boutique", icon: "👗" },
+                  { name: "Urban Realty", icon: "🏠" },
+                  { name: "Elegance Salon", icon: "💇" },
+                  { name: "PetCare Clinic", icon: "🐾" },
+                  { name: "Organic Kitchen", icon: "🥗" },
+                  { name: "QuickWash Laundry", icon: "👕" },
+                  { name: "KS Law Partners", icon: "⚖️" },
+                  { name: "Sunrise Bakery", icon: "🥐" },
+                  { name: "TechFix Studio", icon: "💻" },
+                  { name: "Nirmaan Builders", icon: "🏗️" },
+                  { name: "Medplus Pharmacy", icon: "💊" },
+                  { name: "Starlight Events", icon: "🎉" },
+                  { name: "GreenLeaf Nursery", icon: "🌿" },
+                  { name: "AutoCare Garage", icon: "🔧" },
+                  { name: "Radiance Spa", icon: "✨" },
+                  { name: "CloudNine Travels", icon: "✈️" },
+                  { name: "Pixel Art Studio", icon: "🎨" },
+                ].map((biz, idx) => (
+                  <span
+                    key={idx}
+                    className="shrink-0 flex items-center gap-2 bg-white border border-slate-200/80 text-slate-600 font-bold text-[12px] tracking-wide px-4 py-2.5 rounded-full shadow-sm hover:bg-emerald-50 hover:border-emerald-200 hover:text-emerald-700 transition-all duration-200 cursor-default whitespace-nowrap"
+                  >
+                    <span className="text-sm">{biz.icon}</span>
+                    {biz.name}
+                  </span>
+                ))}
+              </div>
             </div>
           </div>
 
@@ -1119,7 +1179,7 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section (2-Row Opposite Slider) */}
-      <section className="py-20 bg-white border-t border-slate-100 overflow-hidden relative">
+      <section className="py-20 bg-[#0B0F19] border-t border-slate-900 overflow-hidden relative">
         <style jsx global>{`
           @keyframes marquee {
             0% { transform: translateX(0%); }
@@ -1141,18 +1201,19 @@ export default function Home() {
           }
         `}</style>
 
-        <div className="absolute top-0 left-0 w-80 h-80 bg-emerald-50 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
+        <div className="absolute top-0 left-0 w-80 h-80 bg-emerald-900/20 rounded-full blur-3xl opacity-60 pointer-events-none"></div>
+        <div className="absolute bottom-0 right-0 w-96 h-96 bg-teal-900/10 rounded-full blur-3xl opacity-40 pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-16 relative z-10">
           {/* Header */}
           <div className="text-center max-w-xl mx-auto">
-            <span className="text-[12px] font-bold text-brand-green uppercase tracking-widest block mb-3.5">
+            <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
               TESTIMONIALS
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-white mb-4 tracking-tight">
               Loved by Thousands of Businesses
             </h2>
-            <p className="text-slate-500 text-base font-semibold">
+            <p className="text-slate-400 text-base font-semibold">
               Read how small businesses are scaling with WhatsSite.
             </p>
           </div>
@@ -1163,27 +1224,37 @@ export default function Home() {
 
           {/* Row 1: Left Scrolling */}
           <div className="relative w-full flex items-center overflow-hidden py-1">
-            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-20 pointer-events-none"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-20 pointer-events-none"></div>
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#0B0F19] to-transparent z-20 pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#0B0F19] to-transparent z-20 pointer-events-none"></div>
 
-            <div className="animate-marquee-custom flex gap-6">
+            <div className="animate-marquee-custom flex gap-5">
               {[...testimonialsRow1, ...testimonialsRow1].map((item, idx) => (
                 <div
                   key={idx}
-                  className="w-[320px] sm:w-[360px] bg-slate-50 border border-slate-200/60 p-6 rounded-2xl flex flex-col justify-between hover:shadow-md hover:border-slate-300 transition-all duration-300 shrink-0"
+                  className="w-[320px] sm:w-[360px] bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-2xl flex flex-col justify-between hover:bg-white/8 hover:border-emerald-500/30 hover:shadow-[0_0_30px_rgba(16,185,129,0.08)] transition-all duration-300 shrink-0 relative overflow-hidden"
                 >
-                  <p className="text-slate-650 text-sm leading-relaxed mb-6 font-medium italic">
-                    "{item.content}"
+                  {/* Quote mark */}
+                  <span className="absolute top-4 right-5 text-5xl text-emerald-500/10 font-black leading-none select-none">❝</span>
+                  {/* Stars */}
+                  <div className="flex gap-0.5 mb-4">
+                    {[1,2,3,4,5].map(s => <span key={s} className="text-amber-400 text-xs">★</span>)}
+                  </div>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6 font-medium flex-1">
+                    &ldquo;{item.content}&rdquo;
                   </p>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 border-t border-white/8 pt-4">
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="w-10 h-10 rounded-full object-cover shadow-sm"
+                      className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500/30 shadow-md"
+                      onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='flex'; }}
                     />
+                    <div className="w-10 h-10 rounded-full bg-emerald-800 text-emerald-300 text-xs font-black items-center justify-center hidden shrink-0">
+                      {item.name.charAt(0)}
+                    </div>
                     <div>
-                      <h4 className="font-extrabold text-xs text-slate-800">{item.name}</h4>
-                      <p className="text-[10px] text-slate-400 font-bold">{item.role}</p>
+                      <h4 className="font-extrabold text-xs text-white">{item.name}</h4>
+                      <p className="text-[10px] text-emerald-400 font-bold">{item.role}</p>
                     </div>
                   </div>
                 </div>
@@ -1193,27 +1264,37 @@ export default function Home() {
 
           {/* Row 2: Right Scrolling */}
           <div className="relative w-full flex items-center overflow-hidden py-1">
-            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-white to-transparent z-20 pointer-events-none"></div>
-            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-white to-transparent z-20 pointer-events-none"></div>
+            <div className="absolute left-0 top-0 bottom-0 w-32 bg-gradient-to-r from-[#0B0F19] to-transparent z-20 pointer-events-none"></div>
+            <div className="absolute right-0 top-0 bottom-0 w-32 bg-gradient-to-l from-[#0B0F19] to-transparent z-20 pointer-events-none"></div>
 
-            <div className="animate-marquee-reverse-custom flex gap-6">
+            <div className="animate-marquee-reverse-custom flex gap-5">
               {[...testimonialsRow2, ...testimonialsRow2].map((item, idx) => (
                 <div
                   key={idx}
-                  className="w-[320px] sm:w-[360px] bg-slate-50 border border-slate-200/60 p-6 rounded-2xl flex flex-col justify-between hover:shadow-md hover:border-slate-300 transition-all duration-300 shrink-0"
+                  className="w-[320px] sm:w-[360px] bg-white/5 backdrop-blur-sm border border-white/10 p-6 rounded-2xl flex flex-col justify-between hover:bg-white/8 hover:border-emerald-500/30 hover:shadow-[0_0_30px_rgba(16,185,129,0.08)] transition-all duration-300 shrink-0 relative overflow-hidden"
                 >
-                  <p className="text-slate-650 text-sm leading-relaxed mb-6 font-medium italic">
-                    "{item.content}"
+                  {/* Quote mark */}
+                  <span className="absolute top-4 right-5 text-5xl text-emerald-500/10 font-black leading-none select-none">❝</span>
+                  {/* Stars */}
+                  <div className="flex gap-0.5 mb-4">
+                    {[1,2,3,4,5].map(s => <span key={s} className="text-amber-400 text-xs">★</span>)}
+                  </div>
+                  <p className="text-slate-300 text-sm leading-relaxed mb-6 font-medium flex-1">
+                    &ldquo;{item.content}&rdquo;
                   </p>
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-3 border-t border-white/8 pt-4">
                     <img
                       src={item.image}
                       alt={item.name}
-                      className="w-10 h-10 rounded-full object-cover shadow-sm"
+                      className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500/30 shadow-md"
+                      onError={(e) => { e.target.style.display='none'; e.target.nextSibling.style.display='flex'; }}
                     />
+                    <div className="w-10 h-10 rounded-full bg-emerald-800 text-emerald-300 text-xs font-black items-center justify-center hidden shrink-0">
+                      {item.name.charAt(0)}
+                    </div>
                     <div>
-                      <h4 className="font-extrabold text-xs text-slate-800">{item.name}</h4>
-                      <p className="text-[10px] text-slate-400 font-bold">{item.role}</p>
+                      <h4 className="font-extrabold text-xs text-white">{item.name}</h4>
+                      <p className="text-[10px] text-emerald-400 font-bold">{item.role}</p>
                     </div>
                   </div>
                 </div>
@@ -1492,7 +1573,7 @@ export default function Home() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-6xl mx-auto">
             {/* Left side: Texts */}
             <div className="lg:col-span-5 flex flex-col items-center lg:items-start text-center lg:text-left">
-              <span className="text-[12px] font-bold text-brand-green uppercase tracking-widest block mb-3.5">
+              <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
                 TRY DEMO
               </span>
               <h2 className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-4">
@@ -1584,7 +1665,7 @@ export default function Home() {
 
           {/* Header */}
           <div className="text-center max-w-xl mx-auto mb-16">
-            <span className="text-[12px] font-bold text-brand-green uppercase tracking-widest block mb-3.5">
+            <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
               Contact Us
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
