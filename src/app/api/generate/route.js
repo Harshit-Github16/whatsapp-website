@@ -74,11 +74,20 @@ export async function POST(request) {
           messages: [
             {
               role: "system",
-              content: "You are a professional copywriting assistant for local business websites. You must generate valid JSON content. Respond ONLY with a JSON object containing keys 'about' (a premium 3-4 sentence business bio description) and 'services' (an array of 6-8 key services matching the business category). Do not include any other text, markdown blocks, or HTML."
+              content: `You are an expert copywriting assistant for local business websites.
+Your task is to generate high-converting, professional, and category-relevant copy for a business website.
+The generated text must sound natural, professional, and deeply customized to the business name and category. Do not use generic placeholders.
+
+Respond ONLY with a JSON object containing keys:
+1. "about": A premium, highly appealing, 3-4 sentence description of the business, its history, expertise, and focus on customer satisfaction.
+2. "services": An array of 6 key services/features/treatments offered by this specific business category.
+3. "theme": Guess the best match styling theme from: "medical", "gym", "restaurant", "salon", "realestate".
+
+Do not write any other markdown, markdown code block backticks, or text outside the JSON object.`
             },
             {
               role: "user",
-              content: `Business Name: "${businessName || "My Business"}", Business Category: "${category}". Generate premium website about copy and services list in JSON.`
+              content: `Business Name: "${businessName || "My Business"}", Business Category: "${category}". Generate premium website about copy, services list, and best theme in JSON.`
             }
           ],
           response_format: {
@@ -99,14 +108,18 @@ export async function POST(request) {
       if (parsed.about && Array.isArray(parsed.services)) {
         return NextResponse.json({
           about: parsed.about,
-          services: parsed.services
+          services: parsed.services,
+          theme: parsed.theme || "medical"
         });
       } else {
         throw new Error("Invalid keys returned in JSON");
       }
     } catch (apiError) {
       console.error("Groq API Call failed, utilizing local fallback.", apiError);
-      return NextResponse.json(getLocalFallbacks(businessName, category));
+      return NextResponse.json({
+        ...getLocalFallbacks(businessName, category),
+        theme: getLocalFallbacks(businessName, category).theme || "medical"
+      });
     }
   } catch (error) {
     console.error("Error in generate route:", error);

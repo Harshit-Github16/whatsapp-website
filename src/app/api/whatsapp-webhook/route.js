@@ -79,11 +79,20 @@ const generateAICopy = async (businessName, category) => {
         messages: [
           {
             role: "system",
-            content: "You are a professional copywriting assistant for local business websites. You must generate valid JSON content. Respond ONLY with a JSON object containing keys 'about' (a premium 3-4 sentence business bio description) and 'services' (an array of 6 key services matching the business category). Do not include any other text."
+            content: `You are an expert copywriting assistant for local business websites.
+Your task is to generate high-converting, professional, and category-relevant copy for a business website.
+The generated text must sound natural, professional, and deeply customized to the business name and category. Do not use generic placeholders.
+
+Respond ONLY with a JSON object containing keys:
+1. "about": A premium, highly appealing, 3-4 sentence description of the business, its history, expertise, and focus on customer satisfaction.
+2. "services": An array of 6 key services/features/treatments offered by this specific business category.
+3. "theme": Guess the best match styling theme from: "medical", "gym", "restaurant", "salon", "realestate".
+
+Do not write any other markdown, markdown code block backticks, or text outside the JSON object.`
           },
           {
             role: "user",
-            content: `Business Name: "${businessName}", Business Category: "${category}". Generate premium website about copy and services list in JSON.`
+            content: `Business Name: "${businessName}", Business Category: "${category}". Generate premium website about copy, services list, and best theme in JSON.`
           }
         ],
         response_format: { type: "json_object" },
@@ -95,12 +104,17 @@ const generateAICopy = async (businessName, category) => {
     const data = await response.json();
     const parsed = JSON.parse(data.choices[0].message.content);
     
-    // Guess theme
+    // Guess theme fallback if AI doesn't return allowed enum
     const local = getLocalFallbacks(businessName, category);
+    const validThemes = ["medical", "gym", "restaurant", "salon", "realestate"];
+    const chosenTheme = (parsed.theme && validThemes.includes(parsed.theme.toLowerCase())) 
+      ? parsed.theme.toLowerCase() 
+      : local.theme;
+
     return {
       about: parsed.about || local.about,
       services: parsed.services || local.services,
-      theme: local.theme
+      theme: chosenTheme
     };
   } catch (err) {
     console.error("AI fetch failed, falling back:", err);

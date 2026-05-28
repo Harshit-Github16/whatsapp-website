@@ -218,12 +218,8 @@ export default function AdminDashboard() {
             handleInputChange("galleryUrls", currentGallery);
           } else if (type === "gallery_add") {
             const currentGallery = [...(businessData.galleryUrls || [])];
-            if (currentGallery.length < 4) {
-              currentGallery.push(data.url);
-              handleInputChange("galleryUrls", currentGallery);
-            } else {
-              alert("Maximum 4 gallery images allowed.");
-            }
+            currentGallery.push(data.url);
+            handleInputChange("galleryUrls", currentGallery);
           }
           setSaveMessage("✅ Image uploaded. Click Save to publish.");
         } else {
@@ -685,24 +681,22 @@ export default function AdminDashboard() {
                   />
                 </div>
 
-                {/* Gallery Images Editor (Up to 4 images) */}
+                {/* Gallery Images Editor (No limits) */}
                 <div className="space-y-4 pt-2">
                   <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Business Gallery (Max 4)</span>
-                    <span className="text-[10px] text-slate-500 font-bold">{(businessData.galleryUrls || []).length}/4</span>
+                    <span className="text-[10px] font-bold text-slate-500 uppercase tracking-widest">Business Gallery Showcase</span>
+                    <span className="text-[10px] text-slate-500 font-bold">{(businessData.galleryUrls || []).length} images</span>
                   </div>
 
                   {/* Add gallery image slot */}
-                  {(businessData.galleryUrls || []).length < 4 && (
-                    <div className="p-3 border border-dashed border-slate-200 rounded-2xl bg-white shadow-sm">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) => handleImageUpload(e, "gallery_add")}
-                        className="block w-full text-xs text-slate-505 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 file:cursor-pointer"
-                      />
-                    </div>
-                  )}
+                  <div className="p-3 border border-dashed border-slate-200 rounded-2xl bg-white shadow-sm">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e, "gallery_add")}
+                      className="block w-full text-xs text-slate-505 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-slate-100 file:text-slate-800 hover:file:bg-slate-200 file:cursor-pointer"
+                    />
+                  </div>
 
                   {/* Gallery grid listing */}
                   <div className="grid grid-cols-2 gap-3.5">
