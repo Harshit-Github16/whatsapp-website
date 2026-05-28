@@ -259,12 +259,14 @@ export default function Home() {
               >
                 Login
               </Link>
-              <Link
-                href="/onboarding"
-                className="bg-brand-green hover:bg-brand-green-hover text-white px-6 py-3 rounded-full font-bold transition-all duration-300 shadow-lg shadow-brand-green/20 hover:scale-[1.02]"
+              <a
+                href="https://wa.me/14155238886?text=join%20thee-unknown"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-brand-green hover:bg-brand-green-hover text-white px-6 py-3 rounded-full font-bold transition-all duration-300 shadow-lg shadow-brand-green/20 hover:scale-[1.02] text-center"
               >
                 Get Started
-              </Link>
+              </a>
             </div>
 
             {/* Mobile menu button */}
@@ -332,13 +334,15 @@ export default function Home() {
               >
                 Login
               </Link>
-              <Link
-                href="/onboarding"
+              <a
+                href="https://wa.me/14155238886?text=join%20thee-unknown"
+                target="_blank"
+                rel="noopener noreferrer"
                 onClick={() => setMobileMenuOpen(false)}
                 className="bg-brand-green hover:bg-brand-green-hover text-white text-center py-3.5 rounded-full font-bold shadow-lg shadow-brand-green/20"
               >
                 Get Started
-              </Link>
+              </a>
             </div>
           </div>
         )}
@@ -391,15 +395,17 @@ export default function Home() {
 
               {/* CTA Action Buttons */}
               <div className="flex flex-col sm:flex-row gap-4 w-full sm:w-auto mb-8">
-                <Link
-                  href="/onboarding"
+                <a
+                  href="https://wa.me/14155238886?text=join%20thee-unknown"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="bg-brand-green hover:bg-brand-green-hover text-white px-8 py-4.5 rounded-full font-bold flex items-center justify-center gap-2.5 shadow-xl shadow-brand-green/30 hover:shadow-brand-green/45 hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 text-[16px]"
                 >
                   <svg className="w-5 h-5 fill-current shrink-0" viewBox="0 0 24 24">
                     <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.458L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436.002 9.858-4.417 9.86-9.86.001-2.638-1.024-5.117-2.884-6.979C16.587 1.91 14.113.887 11.483.887c-5.443 0-9.866 4.418-9.868 9.861-.001 1.737.457 3.432 1.328 4.931l-1.008 3.682 3.771-.989z" />
                   </svg>
                   Start on WhatsApp
-                </Link>
+                </a>
                 <a
                   href="#themes"
                   className="bg-white hover:bg-slate-50 border-2 border-slate-200 text-slate-800 px-8 py-4.5 rounded-full font-bold flex items-center justify-center gap-2 hover:border-slate-300 transition-all duration-300 text-[16px] shadow-sm"
@@ -862,14 +868,7 @@ export default function Home() {
           </div>
 
           {/* View All Templates button */}
-          <div className="text-center">
-            <Link
-              href="/onboarding"
-              className="inline-flex items-center gap-1.5 text-sm font-bold text-brand-green-dark hover:text-brand-green transition-colors border-b border-emerald-200 hover:border-brand-green pb-0.5"
-            >
-              View All Templates <ArrowRight className="w-3.5 h-3.5" />
-            </Link>
-          </div>
+
 
         </div>
       </section>
@@ -1176,12 +1175,14 @@ export default function Home() {
                 </ul>
               </div>
 
-              <Link
-                href="/onboarding"
+              <a
+                href="https://wa.me/14155238886?text=join%20thee-unknown"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full text-center bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 py-3.5 rounded-xl font-bold transition-all shadow-sm block text-[14px]"
               >
                 Get Started
-              </Link>
+              </a>
             </div>
 
             {/* Premium Plan Card */}
@@ -1230,12 +1231,14 @@ export default function Home() {
                 </ul>
               </div>
 
-              <Link
-                href="/onboarding"
+              <a
+                href="https://wa.me/14155238886?text=join%20thee-unknown"
+                target="_blank"
+                rel="noopener noreferrer"
                 className="w-full text-center bg-brand-green hover:bg-brand-green-hover text-white py-3.5 rounded-xl font-bold transition-all shadow-md block text-[14px]"
               >
                 Get Started
-              </Link>
+              </a>
             </div>
           </div>
         </div>
@@ -1247,7 +1250,7 @@ export default function Home() {
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b_1px,transparent_1px),linear-gradient(to_bottom,#1e293b_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-10"></div>
         {/* Glowing background gradients */}
         <div className="absolute top-1/2 left-1/2 w-[30rem] h-[30rem] bg-emerald-950/20 rounded-full blur-3xl opacity-50 pointer-events-none -translate-x-1/2 -translate-y-1/2"></div>
-        
+
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-6xl mx-auto">
             {/* Left side: Texts */}
@@ -1262,12 +1265,14 @@ export default function Home() {
                 Experience the power of AI website builder.
               </p>
               <div className="flex gap-4">
-                <Link
-                  href="/onboarding"
-                  className="bg-brand-green hover:bg-brand-green-hover text-white px-7 py-3 rounded-full font-bold shadow-md transition-all hover:scale-[1.02]"
+                <a
+                  href="https://wa.me/14155238886?text=join%20thee-unknown"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-brand-green hover:bg-brand-green-hover text-white px-7 py-3 rounded-full font-bold shadow-md transition-all hover:scale-[1.02] text-center"
                 >
                   Try Demo
-                </Link>
+                </a>
                 <button
                   onClick={() => alert("Demo video is coming soon!")}
                   className="bg-slate-900/60 hover:bg-slate-800 border border-slate-800 text-slate-300 px-7 py-3.5 rounded-full font-bold transition-all shadow-sm"
@@ -1418,7 +1423,7 @@ export default function Home() {
                   </p>
                 </div>
                 <a
-                  href="https://wa.me/15709898569?text=SUPPORT"
+                  href="https://wa.me/14155238886?text=join%20thee-unknown"
                   target="_blank"
                   rel="noreferrer"
                   className="bg-brand-green hover:bg-brand-green-hover text-white text-center py-3.5 px-6 rounded-lg font-bold transition-all shadow-md flex items-center justify-center gap-2 w-full"

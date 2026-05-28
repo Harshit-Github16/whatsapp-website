@@ -575,9 +575,33 @@ export default function Onboarding() {
         if (validThemes.includes(selectedTheme)) {
           const updated = { ...siteDataRef.current, theme: selectedTheme };
           saveBuildState(updated);
-          updateStep("PAYMENT");
           botMsgs.push({ sender: "bot", text: `🎨 Theme "${selectedTheme}" selected! Your website is looking stunning.`, time });
-          botMsgs.push({ sender: "bot", text: "🚀 Your website is ready to go live! Complete a one-time payment of ₹199 to publish your website.", time });
+          botMsgs.push({ sender: "bot", text: "🚀 Publishing your website instantly...", time });
+
+          // Auto-publish without payment
+          setTimeout(async () => {
+            try {
+              await fetch('/api/business', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                  slug: siteDataRef.current.slug,
+                  paymentId: 'FREE_PROMO',
+                  paymentStatus: 'completed',
+                }),
+              });
+            } catch (error) {
+              console.error('Auto-publish failed:', error);
+            }
+            updateStep("COMPLETED");
+            const innerTime = formatTime();
+            setMessages((prev) => [
+              ...prev,
+              { sender: "bot", text: "🎉 Woohoo! Your professional website is now officially LIVE!", time: innerTime },
+              { sender: "bot", text: `🔗 Your website: http://${siteDataRef.current.slug}.whatssite.in`, time: innerTime },
+              { sender: "bot", text: "You can edit any section anytime from this chat using the controls below.", time: innerTime }
+            ]);
+          }, 1500);
         } else {
           botMsgs.push({ sender: "bot", text: "Please type a valid theme: medical, gym, restaurant, salon, realestate", time });
         }
