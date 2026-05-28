@@ -341,7 +341,7 @@ export default function AdminDashboard() {
               <span className="bg-emerald-50 text-brand-green text-[9px] font-black px-2 py-0.5 rounded border border-emerald-255 uppercase tracking-wider">Editor Mode</span>
             </h1>
             <span className="text-[10px] text-slate-500 font-semibold block leading-none mt-0.5">
-              Live Website: <a href={`/${businessData.slug}`} target="_blank" className="text-brand-green hover:underline">{businessData.slug}.whatssite.in</a>
+              Live Website: <a href={`/${originalData?.slug || businessData.slug}`} target="_blank" className="text-brand-green hover:underline">whatssite.in/{originalData?.slug || businessData.slug}</a>
             </span>
           </div>
         </div>
@@ -421,6 +421,30 @@ export default function AdminDashboard() {
                       onChange={(e) => handleInputChange("businessName", e.target.value)}
                       className="w-full bg-white border border-slate-200 focus:border-brand-green text-slate-900 text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none transition-colors shadow-sm"
                     />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-[10px] font-bold text-slate-500 uppercase tracking-widest flex items-center gap-1">
+                      Website URL Slug <span className="text-slate-400 font-normal">(Address)</span>
+                    </label>
+                    <div className="flex rounded-xl shadow-sm overflow-hidden border border-slate-205 focus-within:border-brand-green transition-colors bg-white">
+                      <span className="bg-slate-100 text-slate-500 text-[11px] font-bold px-3 flex items-center border-r border-slate-200 select-none">
+                        whatssite.in/
+                      </span>
+                      <input
+                        type="text"
+                        value={businessData.slug || ""}
+                        onChange={(e) => {
+                          const val = e.target.value.toLowerCase().replace(/[^a-z0-9-_]/g, '-').replace(/-+/g, '-');
+                          handleInputChange("slug", val);
+                        }}
+                        className="flex-1 bg-white text-slate-900 text-xs font-semibold px-3 py-3 focus:outline-none"
+                        placeholder="my-url-slug"
+                      />
+                    </div>
+                    <p className="text-[9px] text-slate-400 font-bold">
+                      ⚠️ Note: Changing your slug will change your website address instantly.
+                    </p>
                   </div>
 
                   <div className="space-y-1.5">
@@ -733,8 +757,8 @@ export default function AdminDashboard() {
               >
                 <RefreshCw className="w-3.5 h-3.5" /> Refresh Preview
               </button>
-              <a
-                href={`/${businessData.slug}`}
+               <a
+                href={`/${originalData?.slug || businessData.slug}`}
                 target="_blank"
                 className="text-brand-green hover:text-brand-green-hover flex items-center gap-1 transition-all"
               >
@@ -749,7 +773,7 @@ export default function AdminDashboard() {
             <div className="w-full h-full max-w-[1080px] bg-white rounded-2xl shadow-xl border border-slate-200 overflow-hidden relative">
               <iframe
                 key={previewKey}
-                src={`/${businessData.slug}`}
+                src={`/${originalData?.slug || businessData.slug}`}
                 className="w-full h-full border-none select-none"
                 title="Website live preview"
               />

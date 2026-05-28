@@ -39,7 +39,7 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const data = await request.json();
-        const { slug, businessName, category, about, services, logoUrl, heroImageUrl, galleryUrls, phone, email, address, theme, ownerName } = data;
+        const { slug, businessName, category, about, services, logoUrl, heroImageUrl, galleryUrls, phone, email, address, theme, ownerName, sectionOrder } = data;
 
         if (!slug || !businessName) {
             return NextResponse.json(
@@ -48,19 +48,34 @@ export async function POST(request) {
             );
         }
 
+        // Clean slug: lowercase, replace spaces with hyphens, remove special characters
+        const cleanSlug = slug.toLowerCase().trim().replace(/[^a-z0-9-_]/g, '-').replace(/-+/g, '-');
+
         await connectDB();
 
-        // Check if business already exists by phone first, then by slug
+        // Check if business already exists by phone first, then by old slug
         let business = null;
         if (phone) {
             business = await Business.findOne({ phone });
         }
-        if (!business && slug) {
-            business = await Business.findOne({ slug });
+        if (!business && cleanSlug) {
+            business = await Business.findOne({ slug: cleanSlug });
         }
 
         if (business) {
-            // Update existing business
+            // Check if slug is being changed, and if so, check if new slug is already taken by another business
+            if (cleanSlug && cleanSlug !== business.slug) {
+                const existingWithSlug = await Business.findOne({ slug: cleanSlug });
+                if (existingWithSlug && existingWithSlug._id.toString() !== business._id.toString()) {
+                    return NextResponse.json(
+                        { error: 'This URL slug is already taken. Please choose another one.' },
+                        { status: 400 }
+                    );
+                }
+                business.slug = cleanSlug;
+            }
+
+            // Update existing business details
             business.businessName = businessName;
             business.ownerName = ownerName || business.ownerName;
             business.category = category || business.category;
@@ -73,8 +88,8 @@ export async function POST(request) {
             business.email = email || business.email;
             business.address = address || business.address;
             business.theme = theme || business.theme;
-            if (slug && !slug.startsWith('temp-')) {
-                business.slug = slug;
+            if (sectionOrder) {
+                business.sectionOrder = sectionOrder;
             }
 
             await business.save();
@@ -84,9 +99,18 @@ export async function POST(request) {
                 { status: 200 }
             );
         } else {
+            // Check if slug is already taken before creating new
+            const existingWithSlug = await Business.findOne({ slug: cleanSlug });
+            if (existingWithSlug) {
+                return NextResponse.json(
+                    { error: 'This URL slug is already taken. Please choose another one.' },
+                    { status: 400 }
+                );
+            }
+
             // Create new business
             business = new Business({
-                slug,
+                slug: cleanSlug,
                 businessName,
                 ownerName: ownerName || '',
                 category: category || 'Local Business',
@@ -99,6 +123,7 @@ export async function POST(request) {
                 email: email || '',
                 address: address || '',
                 theme: theme || 'medical',
+                sectionOrder: sectionOrder || ['home', 'about', 'services', 'gallery', 'testimonials', 'contact'],
                 isPublished: false,
                 paymentStatus: 'pending',
             });
