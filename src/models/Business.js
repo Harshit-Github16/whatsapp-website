@@ -83,6 +83,10 @@ const BusinessSchema = new mongoose.Schema(
             type: String,
             default: 'OWNER_NAME',
         },
+        sectionOrder: {
+            type: [String],
+            default: ['home', 'about', 'services', 'gallery', 'testimonials', 'contact'],
+        },
     },
     {
         timestamps: true,
