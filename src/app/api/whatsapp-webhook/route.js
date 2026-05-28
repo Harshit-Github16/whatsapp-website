@@ -145,6 +145,11 @@ export async function POST(request) {
     // Extract clean phone number
     const phone = fromPhone.replace('whatsapp:', '');
 
+    // Get live website URL dynamically based on request host
+    const host = request.headers.get('x-forwarded-host') || request.headers.get('host') || 'whatsapp-website-hazel.vercel.app';
+    const protocol = request.headers.get('x-forwarded-proto') || 'https';
+    const websiteUrl = `${protocol}://${host}/${business.slug}`;
+
     // Search for existing business under onboarding
     let business = await Business.findOne({ phone });
 
@@ -276,14 +281,14 @@ export async function POST(request) {
           business.set('onboardingStep', 'COMPLETED');
           await business.save();
 
-          return twimlResponse(`🎉 *Congratulations!* Your professional website is now LIVE!\n\n🔗 *Link:* http://${business.slug}.whatssite.in\n\nYour customers can view it instantly! Type anything to get the options.`);
+          return twimlResponse(`🎉 *Congratulations!* Your professional website is now LIVE!\n\n🔗 *Link:* ${websiteUrl}\n\nYour customers can view it instantly! Type anything to get the options.`);
         } else {
           return twimlResponse(`Please choose a valid theme:\n- *medical*\n- *gym*\n- *restaurant*\n- *salon*\n- *realestate*`);
         }
       }
 
       case 'COMPLETED': {
-        return twimlResponse(`Your website is live at: http://${business.slug}.whatssite.in 🚀\n\nYou can edit it anytime from the web dashboard. Have a wonderful day!`);
+        return twimlResponse(`Your website is live at: ${websiteUrl} 🚀\n\nYou can edit it anytime from the web dashboard. Have a wonderful day!`);
       }
 
       default: {
