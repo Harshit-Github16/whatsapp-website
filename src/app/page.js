@@ -253,12 +253,7 @@ export default function Home() {
 
             {/* Right CTAs */}
             <div className="hidden md:flex items-center gap-4">
-              <Link
-                href="/admin"
-                className="text-slate-700 hover:text-slate-900 font-bold text-[15px] px-4 py-2 hover:bg-slate-50 rounded-lg transition-colors"
-              >
-                Login
-              </Link>
+
               <a
                 href="https://wa.me/14155238886?text=join%20thee-unknown"
                 target="_blank"
@@ -483,7 +478,7 @@ export default function Home() {
         <div className="absolute bottom-1/4 right-0 w-[40rem] h-[40rem] bg-teal-100/10 rounded-full blur-3xl opacity-40 pointer-events-none translate-x-1/2"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          
+
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-20">
             <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
@@ -499,7 +494,7 @@ export default function Home() {
 
           {/* Connected Layout Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-6xl mx-auto">
-            
+
             {/* Left Column: Generated Phone Mockup Image */}
             <div className="lg:col-span-5 flex items-center justify-center relative">
               {/* Ambient glow behind phone */}
@@ -566,7 +561,7 @@ export default function Home() {
         <div className="absolute top-1/2 left-1/2 w-[35rem] h-[35rem] bg-emerald-150/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          
+
           {/* Section Header */}
           <div className="text-center max-w-xl mx-auto mb-16">
             <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
@@ -616,7 +611,7 @@ export default function Home() {
                 key={idx}
                 className="bg-white border border-slate-200/80 rounded-2xl shadow-md overflow-hidden flex flex-col justify-between hover:shadow-2xl hover:border-slate-350 transition-all duration-350 hover:-translate-y-1.5 group"
               >
-                
+
                 {/* Browser Mockup Container */}
                 <div>
                   <div className="bg-slate-900 px-3.5 py-2.5 flex items-center gap-1.5 border-b border-slate-800">
@@ -992,7 +987,7 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
-            
+
             {/* Visual mock Column */}
             <div className="lg:col-span-7 relative w-full aspect-square sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 bg-slate-50 hover:scale-[1.01] transition-transform duration-500">
               <Image
@@ -1235,7 +1230,7 @@ export default function Home() {
         <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          
+
           {/* Header */}
           <div className="text-center max-w-2xl mx-auto mb-16">
             <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
@@ -1263,7 +1258,7 @@ export default function Home() {
                   <span className="text-4xl font-black text-slate-900">$0</span>
                   <span className="text-slate-400 text-xs font-bold">/ forever</span>
                 </div>
-                
+
                 <hr className="border-slate-100 my-6" />
 
                 <ul className="space-y-4">
@@ -1323,7 +1318,7 @@ export default function Home() {
                   <span className="text-4xl font-black text-white">$9</span>
                   <span className="text-slate-400 text-xs font-bold">/ month</span>
                 </div>
-                
+
                 <hr className="border-slate-800 my-6" />
 
                 <ul className="space-y-4">
@@ -1368,7 +1363,7 @@ export default function Home() {
                   <span className="text-4xl font-black text-slate-900">$29</span>
                   <span className="text-slate-400 text-xs font-bold">/ month</span>
                 </div>
-                
+
                 <hr className="border-slate-100 my-6" />
 
                 <ul className="space-y-4">
@@ -1413,7 +1408,7 @@ export default function Home() {
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 max-w-6xl mx-auto items-start">
-            
+
             {/* Left side: Sticky info panel */}
             <div className="lg:col-span-5 lg:sticky lg:top-28 flex flex-col gap-6">
               <div>
@@ -1453,11 +1448,10 @@ export default function Home() {
                 return (
                   <div
                     key={index}
-                    className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
-                      isOpen
+                    className={`rounded-2xl border transition-all duration-300 overflow-hidden ${isOpen
                         ? "bg-slate-50 border-slate-300 shadow-md"
                         : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm"
-                    }`}
+                      }`}
                   >
                     <button
                       onClick={() => setActiveFaq(isOpen ? null : index)}
@@ -1465,16 +1459,14 @@ export default function Home() {
                     >
                       <span className="font-bold text-slate-800 text-sm sm:text-base leading-snug">{faq.q}</span>
                       <ChevronDown
-                        className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300 ${
-                          isOpen ? "transform rotate-180 text-emerald-500" : ""
-                        }`}
+                        className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300 ${isOpen ? "transform rotate-180 text-emerald-500" : ""
+                          }`}
                       />
                     </button>
-                    
+
                     <div
-                      className={`transition-all duration-300 ease-in-out ${
-                        isOpen ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
-                      }`}
+                      className={`transition-all duration-300 ease-in-out ${isOpen ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
+                        }`}
                     >
                       <div className="px-6 pb-6 pt-1 text-slate-500 text-xs sm:text-sm font-semibold leading-relaxed border-t border-slate-200/50">
                         {faq.a}
@@ -1803,7 +1795,7 @@ export default function Home() {
               <p className="text-slate-400 text-sm max-w-sm leading-relaxed font-medium">
                 Empowering local businesses and creators to launch professional, lightning-fast websites directly through a simple WhatsApp conversation.
               </p>
-              
+
               {/* WhatsApp Support Button */}
               <div>
                 <a
