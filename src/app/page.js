@@ -254,7 +254,7 @@ export default function Home() {
             {/* Right CTAs */}
             <div className="hidden md:flex items-center gap-4">
               <Link
-                href="/dashboard"
+                href="/admin"
                 className="text-slate-700 hover:text-slate-900 font-bold text-[15px] px-4 py-2 hover:bg-slate-50 rounded-lg transition-colors"
               >
                 Login
@@ -328,7 +328,7 @@ export default function Home() {
             </a>
             <div className="flex flex-col gap-3 pt-4">
               <Link
-                href="/dashboard"
+                href="/admin"
                 onClick={() => setMobileMenuOpen(false)}
                 className="text-slate-700 text-center font-bold py-2 border border-slate-200 rounded-full hover:bg-slate-50"
               >
@@ -870,6 +870,76 @@ export default function Home() {
           {/* View All Templates button */}
 
 
+        </div>
+      </section>
+
+      {/* 4.5. Premium Web Editor (Admin Panel) Section */}
+      <section className="py-24 bg-white border-t border-slate-100 relative overflow-hidden">
+        {/* Glow decoration */}
+        <div className="absolute top-1/3 right-0 w-[40rem] h-[40rem] bg-emerald-100/30 rounded-full blur-3xl opacity-60 pointer-events-none translate-x-1/2"></div>
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-teal-50 rounded-full blur-3xl opacity-50 pointer-events-none -translate-x-1/2"></div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            {/* Visual mock Column */}
+            <div className="lg:col-span-7 relative w-full aspect-square sm:aspect-[4/3] rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 bg-slate-50 hover:scale-[1.01] transition-transform duration-500">
+              <Image
+                src="/admin_mockup_preview.png"
+                alt="WhatsSite Premium Admin Web Editor Customizer Panel Mockup"
+                fill
+                sizes="(max-w-768px) 100vw, 750px"
+                className="object-cover"
+                priority
+              />
+            </div>
+
+            {/* Explanation Content Column */}
+            <div className="lg:col-span-5 flex flex-col justify-center gap-6">
+              <div>
+                <span className="text-[12px] font-black text-brand-green uppercase tracking-widest block mb-3.5">
+                  Visual Customizer
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight leading-tight">
+                  Premium Admin Panel for Complete Control
+                </h2>
+                <p className="text-slate-500 text-sm sm:text-base font-semibold leading-relaxed">
+                  Login using your WhatsApp phone number to access our premium slate/emerald style admin dashboard. Fully customize your website details, layout order, logo, images, and website slug instantly.
+                </p>
+              </div>
+
+              {/* Bullet Features */}
+              <div className="space-y-4">
+                {[
+                  { title: "Drag & Drop Section Reordering", desc: "Easily shift the order of your Hero, About, Services, Gallery, Reviews, or Contact sections." },
+                  { title: "Dynamic URL Address Slug Editor", desc: "Change your website's web slug address instantly in one click with built-in uniqueness check." },
+                  { title: "Theme Layout Preset Picker", desc: "Select visual presets tailored perfectly for Clinics, Gyms, Restaurants, Salons, or Real Estate." },
+                  { title: "Unlimited Cloud Image Uploads", desc: "Upload logos, header banners, and showcase your business gallery items directly via Cloudinary." }
+                ].map((item, idx) => (
+                  <div key={idx} className="flex gap-3">
+                    <span className="w-5 h-5 rounded-full bg-emerald-50 text-brand-green flex items-center justify-center shrink-0 mt-0.5 shadow-sm text-xs font-bold">
+                      ✓
+                    </span>
+                    <div>
+                      <h4 className="text-xs sm:text-sm font-bold text-slate-900">{item.title}</h4>
+                      <p className="text-[11px] sm:text-xs text-slate-400 font-semibold mt-0.5 leading-relaxed">{item.desc}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {/* Call to action */}
+              <div className="pt-2">
+                <Link
+                  href="/admin"
+                  className="inline-flex items-center gap-2 bg-brand-green hover:bg-brand-green-hover text-white px-7 py-3.5 rounded-full font-bold text-sm transition-all duration-300 shadow-lg shadow-brand-green/20 hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Access Admin Panel <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
+            </div>
+
+          </div>
         </div>
       </section>
 
