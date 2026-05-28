@@ -124,9 +124,19 @@ export async function POST(request) {
     await connectDB();
 
     // Twilio sends data as application/x-www-form-urlencoded
-    const formData = await request.formData();
-    const fromPhone = formData.get('From'); // Format: whatsapp:+91XXXXXXXXXX
-    const userText = formData.get('Body')?.toString().trim();
+    let fromPhone = '';
+    let userText = '';
+
+    try {
+      const formData = await request.formData();
+      fromPhone = formData.get('From');
+      userText = formData.get('Body')?.toString().trim();
+    } catch (e) {
+      const rawText = await request.text();
+      const params = new URLSearchParams(rawText);
+      fromPhone = params.get('From');
+      userText = params.get('Body')?.toString().trim();
+    }
 
     if (!fromPhone || !userText) {
       return twimlResponse("Error: Missing parameters.");
@@ -283,6 +293,6 @@ export async function POST(request) {
 
   } catch (error) {
     console.error("Error in whatsapp webhook handler:", error);
-    return twimlResponse("Oops! Something went wrong on our end. Please try again in a few moments.");
+    return twimlResponse(`Oops! Error: ${error.message}\nStack: ${error.stack ? error.stack.substring(0, 120) : 'no stack'}`);
   }
 }

@@ -79,6 +79,10 @@ const BusinessSchema = new mongoose.Schema(
             type: String,
             default: '',
         },
+        onboardingStep: {
+            type: String,
+            default: 'OWNER_NAME',
+        },
     },
     {
         timestamps: true,
