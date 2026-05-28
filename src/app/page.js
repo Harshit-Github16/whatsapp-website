@@ -474,88 +474,199 @@ export default function Home() {
 
             </div>
           </div>
+        </div>      </section>
+
+      {/* 3. "How It Works" Section */}
+      <section id="how-it-works" className="py-24 bg-white border-t border-slate-100 relative overflow-hidden">
+        {/* Decorative background blurs */}
+        <div className="absolute top-1/4 left-0 w-96 h-96 bg-emerald-100/20 rounded-full blur-3xl opacity-40 pointer-events-none -translate-x-1/2"></div>
+        <div className="absolute bottom-1/4 right-0 w-[40rem] h-[40rem] bg-teal-100/10 rounded-full blur-3xl opacity-40 pointer-events-none translate-x-1/2"></div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
+          
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto mb-20">
+            <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
+              SIMPLE ONBOARDING
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
+              How WhatsApp Builder Works
+            </h2>
+            <p className="text-slate-550 text-base font-semibold leading-relaxed">
+              No complex software, coding, or drag-and-drop builders. Just a simple WhatsApp chat creates your professional website.
+            </p>
+          </div>
+
+          {/* Connected Layout Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-6xl mx-auto">
+            
+            {/* Left Column: Generated Phone Mockup Image */}
+            <div className="lg:col-span-5 flex items-center justify-center relative">
+              {/* Ambient glow behind phone */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-72 h-72 bg-emerald-400/20 rounded-full blur-3xl"></div>
+              </div>
+              <div className="relative w-full max-w-xs mx-auto drop-shadow-2xl hover:scale-[1.02] transition-transform duration-500">
+                <Image
+                  src="/whatsapp_onboarding_mockup.png"
+                  alt="WhatsApp AI Bot onboarding chat on mobile phone"
+                  width={400}
+                  height={800}
+                  className="w-full h-auto object-contain"
+                  priority
+                />
+                {/* Floating "Live" badge */}
+                <div className="absolute top-6 -right-4 bg-white border border-emerald-100 shadow-xl rounded-2xl px-3 py-2 flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse block"></span>
+                  <span className="text-[11px] font-black text-slate-800">AI Bot Live</span>
+                </div>
+                {/* Floating "Generated" badge */}
+                <div className="absolute bottom-10 -left-4 bg-white border border-slate-100 shadow-xl rounded-2xl px-3 py-2 flex items-center gap-2">
+                  <span className="text-base">🎉</span>
+                  <div>
+                    <p className="text-[10px] font-black text-slate-800 leading-tight">Website Ready!</p>
+                    <p className="text-[9px] text-emerald-600 font-bold">In under 2 mins</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Step-by-Step Flow List */}
+            <div className="lg:col-span-7 flex flex-col gap-6">
+              {[
+                { num: "01", title: "Start Chat on WhatsApp", desc: "Scan our code or click START. The bot immediately registers your phone number to begin onboarding." },
+                { num: "02", title: "Provide Basic Business Info", desc: "Answer simple questions regarding your business name, services, timings, and location address." },
+                { num: "03", title: "Upload Media & Photos", desc: "Snap photos or attach catalog cards, logos, and testimonials directly in your chat screen." },
+                { num: "04", title: "Auto-Generate Layout", desc: "Our engine maps your content into a clean, modern template tailored for your specific category." },
+                { num: "05", title: "Publish & Edit Instantly", desc: "Get a free subdomain with SSL. Update content via WhatsApp or log in to the admin panel to adjust section ordering." }
+              ].map((step, idx) => (
+                <div key={idx} className="flex gap-5 group hover:scale-[1.01] transition-transform duration-300">
+                  {/* Number bubble with connection line */}
+                  <div className="flex flex-col items-center shrink-0">
+                    <span className="w-10 h-10 rounded-full bg-emerald-55 text-brand-green flex items-center justify-center font-black text-sm border border-emerald-100 shadow-sm group-hover:bg-brand-green group-hover:text-white transition-colors duration-300">
+                      {step.num}
+                    </span>
+                    {idx < 4 && <div className="w-[2px] flex-1 bg-gradient-to-b from-emerald-100 to-transparent mt-2"></div>}
+                  </div>
+                  <div className="pb-4">
+                    <h3 className="text-base font-extrabold text-slate-900 mb-1 group-hover:text-brand-green transition-colors">{step.title}</h3>
+                    <p className="text-slate-500 text-xs leading-relaxed font-semibold">{step.desc}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+          </div>
+
         </div>
       </section>
 
-      {/* 3. "How It Works" Section */}
-      <section id="how-it-works" className="py-20 bg-white border-t border-slate-100 relative overflow-hidden">
-        {/* Subtle background blob */}
-        <div className="absolute top-1/2 left-0 w-96 h-96 bg-emerald-50 rounded-full blur-3xl opacity-40 pointer-events-none -translate-x-1/2"></div>
+      {/* 3.5. Live Demo Section ("See Generated Websites") */}
+      <section className="py-24 bg-slate-50 border-t border-b border-slate-100 relative overflow-hidden">
+        <div className="absolute top-1/2 left-1/2 w-[35rem] h-[35rem] bg-emerald-150/10 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-stretch">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* Section Header */}
+          <div className="text-center max-w-xl mx-auto mb-16">
+            <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
+              LIVE SHOWCASE
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
+              See Generated Websites
+            </h2>
+            <p className="text-slate-550 text-base font-semibold leading-relaxed">
+              Real sites generated dynamically using our templates. Click to view high-fidelity previews.
+            </p>
+          </div>
 
-            {/* Left Content Column */}
-            <div className="lg:col-span-6 flex flex-col justify-center gap-8">
-              <div>
-                <span className="text-[12px] font-bold text-brand-green uppercase tracking-widest block mb-3.5">
-                  How It Works
-                </span>
-                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
-                  Three Simple Steps to Get Online
-                </h2>
-                <p className="text-slate-500 text-base font-semibold">
-                  From a simple WhatsApp chat to a fully functional, live website in less than 5 minutes.
-                </p>
+          {/* High Fidelity Mockup Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[
+              {
+                title: "Sharma Dental Clinic",
+                slug: "sharma-dental",
+                img: "/template_medical.png",
+                badge: "Medical Theme",
+                domain: "sharma-dental.whatssite.com"
+              },
+              {
+                title: "FitZone CrossFit Gym",
+                slug: "fitzone-gym",
+                img: "/template_modern.png",
+                badge: "Fitness Theme",
+                domain: "fitzone-gym.whatssite.com"
+              },
+              {
+                title: "The Royal Cafe & Bistro",
+                slug: "royal-cafe",
+                img: "/template_restaurant.png",
+                badge: "Restaurant Theme",
+                domain: "royal-cafe.whatssite.com"
+              },
+              {
+                title: "Elegance Wellness Salon",
+                slug: "elegance-salon",
+                img: "/template_salon.png",
+                badge: "Salon Theme",
+                domain: "elegance-salon.whatssite.com"
+              }
+            ].map((demo, idx) => (
+              <div
+                key={idx}
+                className="bg-white border border-slate-200/80 rounded-2xl shadow-md overflow-hidden flex flex-col justify-between hover:shadow-2xl hover:border-slate-350 transition-all duration-350 hover:-translate-y-1.5 group"
+              >
+                
+                {/* Browser Mockup Container */}
+                <div>
+                  <div className="bg-slate-900 px-3.5 py-2.5 flex items-center gap-1.5 border-b border-slate-800">
+                    {/* Dots */}
+                    <div className="flex gap-1">
+                      <span className="w-2 h-2 rounded-full bg-red-500/80"></span>
+                      <span className="w-2 h-2 rounded-full bg-amber-500/80"></span>
+                      <span className="w-2 h-2 rounded-full bg-emerald-500/80"></span>
+                    </div>
+                    {/* Mock URL bar */}
+                    <div className="bg-slate-950 text-slate-500 text-[9px] px-3.5 py-0.5 rounded mx-auto truncate max-w-[150px] text-center border border-slate-800/40 font-bold">
+                      {demo.domain}
+                    </div>
+                  </div>
+
+                  {/* Template Image Preview */}
+                  <div className="relative aspect-[16/10] overflow-hidden bg-slate-100 border-b border-slate-100">
+                    <Image
+                      src={demo.img}
+                      alt={demo.title}
+                      fill
+                      sizes="(max-w-768px) 100vw, 280px"
+                      className="object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
+                  </div>
+
+                  {/* Card description details */}
+                  <div className="p-5">
+                    <span className="text-[9px] font-black text-brand-green bg-emerald-50 px-2 py-0.5 rounded uppercase tracking-wider inline-block mb-2.5 border border-emerald-100/50">
+                      {demo.badge}
+                    </span>
+                    <h3 className="text-sm font-black text-slate-850 mb-1 leading-snug">{demo.title}</h3>
+                    <p className="text-slate-400 text-[10px] font-bold">Generated instantly via chat</p>
+                  </div>
+                </div>
+
+                {/* Visit button */}
+                <div className="px-5 pb-5 pt-1">
+                  <a
+                    href={`/${demo.slug}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full text-center bg-slate-900 hover:bg-brand-green hover:text-slate-950 text-white text-xs font-black py-3.5 rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer shadow-md shadow-slate-900/10"
+                  >
+                    Explore Live Site <ExternalLink className="w-3.5 h-3.5" />
+                  </a>
+                </div>
+
               </div>
-
-              {/* Vertical Steps */}
-              <div className="flex flex-col gap-6">
-
-                {/* Step 1 */}
-                <div className="flex gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all duration-300">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-50 text-brand-green flex items-center justify-center shrink-0 font-bold text-lg shadow-inner">
-                    1
-                  </div>
-                  <div>
-                    <h3 className="text-base font-extrabold text-slate-900 mb-1">Chat on WhatsApp</h3>
-                    <p className="text-slate-550 text-sm leading-relaxed font-semibold">
-                      Simply start a chat with our bot, send "START", and follow the step-by-step onboarding questions.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Step 2 */}
-                <div className="flex gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all duration-300">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-50 text-brand-green flex items-center justify-center shrink-0 font-bold text-lg shadow-inner">
-                    2
-                  </div>
-                  <div>
-                    <h3 className="text-base font-extrabold text-slate-900 mb-1">We Build Your Website</h3>
-                    <p className="text-slate-550 text-sm leading-relaxed font-semibold">
-                      Our system automatically processes your details, uploads your images, and constructs a gorgeous, customized layout.
-                    </p>
-                  </div>
-                </div>
-
-                {/* Step 3 */}
-                <div className="flex gap-4 p-5 rounded-2xl border border-slate-100 bg-white shadow-sm hover:shadow-md transition-all duration-300">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-50 text-brand-green flex items-center justify-center shrink-0 font-bold text-lg shadow-inner">
-                    3
-                  </div>
-                  <div>
-                    <h3 className="text-base font-extrabold text-slate-900 mb-1">Go Live Instantly</h3>
-                    <p className="text-slate-550 text-sm leading-relaxed font-semibold">
-                      Your website is published instantly on a subdomain or your custom domain, ready to receive customers.
-                    </p>
-                  </div>
-                </div>
-
-              </div>
-            </div>
-
-            {/* Right Illustration Column */}
-            <div className="lg:col-span-6 relative w-full h-[400px] sm:h-[480px] lg:h-full lg:min-h-[520px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 bg-slate-50">
-              <Image
-                src="/how_it_works_illustration.png"
-                alt="WhatsSite Onboarding Illustration"
-                fill
-                sizes="(max-w-768px) 100vw, 550px"
-                className="object-cover hover:scale-[1.02] transition-transform duration-500"
-                priority
-              />
-            </div>
-
+            ))}
           </div>
         </div>
       </section>
@@ -1114,202 +1225,266 @@ export default function Home() {
               ))}
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* 6.2. Pricing Section */}
+      <section id="pricing" className="py-24 bg-slate-50 border-t border-b border-slate-100 relative overflow-hidden">
+        {/* Decorative blur gradients */}
+        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[50rem] h-[30rem] bg-emerald-500/5 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-10 right-10 w-96 h-96 bg-teal-500/5 rounded-full blur-3xl pointer-events-none"></div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          
+          {/* Header */}
+          <div className="text-center max-w-2xl mx-auto mb-16">
+            <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
+              PRICING PLANS
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">
+              Simple, Transparent Premium Pricing
+            </h2>
+            <p className="text-slate-550 text-base font-semibold leading-relaxed">
+              Create your website for free and upgrade when you need custom branding or a personal domain. No hidden charges.
+            </p>
+          </div>
+
+          {/* Pricing Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
+
+            {/* Plan 1: Free */}
+            <div className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-md flex flex-col justify-between hover:shadow-xl hover:border-slate-300 transition-all duration-300 hover:-translate-y-1">
+              <div>
+                <div className="mb-6">
+                  <h3 className="text-lg font-black text-slate-800 uppercase tracking-wider mb-2">Free Starter</h3>
+                  <p className="text-slate-450 text-xs font-bold leading-normal">Build your web presence instantly</p>
+                </div>
+                <div className="flex items-baseline gap-1 mb-8">
+                  <span className="text-4xl font-black text-slate-900">$0</span>
+                  <span className="text-slate-400 text-xs font-bold">/ forever</span>
+                </div>
+                
+                <hr className="border-slate-100 my-6" />
+
+                <ul className="space-y-4">
+                  {[
+                    "1 AI-Generated Website",
+                    "whatssite.com/slug subdomain",
+                    "Edit info via WhatsApp bot",
+                    "Fully mobile-responsive layout",
+                    "Standard hosting with SSL",
+                  ].map((feat, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 text-xs font-semibold text-slate-600">
+                      <Check className="w-4.5 h-4.5 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                  {[
+                    "No custom domain support",
+                    "WhatsSite logo badge in footer"
+                  ].map((feat, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 text-xs font-semibold text-slate-350">
+                      <span className="text-slate-300 shrink-0 select-none mt-0.5 w-4 h-4 text-center">×</span>
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-8">
+                <a
+                  href="https://wa.me/14155238886?text=join%20thee-unknown"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block w-full text-center bg-slate-900 hover:bg-slate-850 text-white py-3.5 rounded-full font-bold text-xs shadow-md transition-all hover:scale-[1.01] active:scale-[0.99]"
+                >
+                  Get Started Free
+                </a>
+              </div>
+            </div>
+
+            {/* Plan 2: Pro (Premium Highlighted) */}
+            <div className="bg-slate-900 text-white rounded-3xl p-8 border-2 border-emerald-500 shadow-2xl flex flex-col justify-between relative overflow-hidden hover:-translate-y-1.5 transition-all duration-350">
+              {/* Popular Badge */}
+              <div className="absolute top-0 right-0 bg-brand-green text-slate-950 text-[10px] font-black tracking-widest uppercase px-5 py-2 rounded-bl-2xl shadow-sm">
+                MOST POPULAR
+              </div>
+              {/* Background glow inside */}
+              <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+
+              <div>
+                <div className="mb-6">
+                  <h3 className="text-lg font-black text-white uppercase tracking-wider mb-2 flex items-center gap-2">
+                    Premium Pro <Sparkles className="w-4.5 h-4.5 text-brand-green animate-pulse" />
+                  </h3>
+                  <p className="text-slate-450 text-xs font-bold leading-normal">The complete toolset for local businesses</p>
+                </div>
+                <div className="flex items-baseline gap-1 mb-8">
+                  <span className="text-4xl font-black text-white">$9</span>
+                  <span className="text-slate-400 text-xs font-bold">/ month</span>
+                </div>
+                
+                <hr className="border-slate-800 my-6" />
+
+                <ul className="space-y-4">
+                  {[
+                    "Everything in Free starter",
+                    "Connect Custom Domain (yourname.com)",
+                    "Access Admin Web Editor Settings",
+                    "Change slug & section ordering dynamically",
+                    "Unlimited high-res cloud image uploads",
+                    "Remove WhatsSite logo branding footer",
+                    "Google Maps SEO priority indexing",
+                    "Priority WhatsApp Bot customer service",
+                  ].map((feat, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 text-xs font-semibold text-slate-100">
+                      <Check className="w-4.5 h-4.5 text-brand-green shrink-0 mt-0.5" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-8">
+                <a
+                  href="https://wa.me/14155238886?text=join%20thee-unknown"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block w-full text-center bg-brand-green hover:bg-brand-green-hover text-slate-950 py-4 rounded-full font-black text-xs shadow-lg shadow-brand-green/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+                >
+                  Upgrade to Pro
+                </a>
+              </div>
+            </div>
+
+            {/* Plan 3: Enterprise */}
+            <div className="bg-white rounded-3xl p-8 border border-slate-200/80 shadow-md flex flex-col justify-between hover:shadow-xl hover:border-slate-300 transition-all duration-300 hover:-translate-y-1">
+              <div>
+                <div className="mb-6">
+                  <h3 className="text-lg font-black text-slate-800 uppercase tracking-wider mb-2">Agency Unlimited</h3>
+                  <p className="text-slate-450 text-xs font-bold leading-normal">For web developers and agencies</p>
+                </div>
+                <div className="flex items-baseline gap-1 mb-8">
+                  <span className="text-4xl font-black text-slate-900">$29</span>
+                  <span className="text-slate-400 text-xs font-bold">/ month</span>
+                </div>
+                
+                <hr className="border-slate-100 my-6" />
+
+                <ul className="space-y-4">
+                  {[
+                    "Up to 10 active business websites",
+                    "Unlimited templates & layout changes",
+                    "Dedicated support account manager",
+                    "Custom script injections (Analytics/Chatbots)",
+                    "Automatic domain configuration support",
+                    "Client transfer capabilities",
+                    "API access to lead sync triggers",
+                  ].map((feat, idx) => (
+                    <li key={idx} className="flex items-start gap-2.5 text-xs font-semibold text-slate-600">
+                      <Check className="w-4.5 h-4.5 text-emerald-500 shrink-0 mt-0.5" />
+                      <span>{feat}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="mt-8">
+                <a
+                  href="https://wa.me/14155238886?text=join%20thee-unknown"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block w-full text-center bg-slate-900 hover:bg-slate-850 text-white py-3.5 rounded-full font-bold text-xs shadow-md transition-all hover:scale-[1.01] active:scale-[0.99]"
+                >
+                  Contact Sales Bot
+                </a>
+              </div>
+            </div>
+
+          </div>
 
         </div>
       </section>
 
-      {/* 6. FAQ Accordion Section (Interactive & Illustration) */}
-      <section id="faq" className="py-20 bg-white border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 6.3. FAQ Section */}
+      <section id="faq" className="py-24 bg-white border-b border-slate-100 relative overflow-hidden">
+        {/* Glow decoration */}
+        <div className="absolute top-1/3 left-0 w-[30rem] h-[30rem] bg-emerald-50 rounded-full blur-3xl opacity-50 pointer-events-none -translate-x-1/2"></div>
 
-          {/* Header */}
-          <div className="text-center mb-16">
-            <span className="text-[12px] font-bold text-brand-green uppercase tracking-widest block mb-3.5">
-              FAQ
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-slate-500 text-base font-semibold">
-              Find answers to common questions.
-            </p>
-          </div>
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 max-w-6xl mx-auto items-start">
+            
+            {/* Left side: Sticky info panel */}
+            <div className="lg:col-span-5 lg:sticky lg:top-28 flex flex-col gap-6">
+              <div>
+                <span className="text-[12px] font-black text-brand-green uppercase tracking-widest bg-emerald-50 px-4 py-1.5 rounded-full inline-block mb-3.5 shadow-sm border border-emerald-100/50">
+                  FAQ
+                </span>
+                <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight mb-4">
+                  Frequently Asked Questions
+                </h2>
+                <p className="text-slate-550 text-sm sm:text-base font-semibold leading-relaxed">
+                  Got questions about how WhatsSite works, custom domains, or managing your account? Find your quick answers here.
+                </p>
+              </div>
 
-          {/* Two-Column FAQ Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center max-w-6xl mx-auto">
-            {/* Left side: Accordions */}
-            <div className="lg:col-span-7 flex flex-col gap-4">
-              {faqs.map((faq, idx) => {
-                const isOpen = activeFaq === idx;
+              {/* Mini CTA card */}
+              <div className="bg-emerald-950 text-white rounded-2xl p-6 border border-emerald-900/40 shadow-lg relative overflow-hidden">
+                <div className="absolute top-0 right-0 w-24 h-24 bg-brand-green rounded-full blur-2xl opacity-10 pointer-events-none"></div>
+                <h3 className="font-bold text-sm text-brand-green mb-2">💬 Need live assistance?</h3>
+                <p className="text-[11px] text-slate-350 font-semibold leading-relaxed mb-4">
+                  Our friendly automated support bot on WhatsApp is online 24/7 to resolve queries. Click below to start chatting.
+                </p>
+                <a
+                  href="https://wa.me/14155238886?text=Hi%20WhatsSite%20Support%20I%20have%20a%20question"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-1.5 bg-brand-green hover:bg-brand-green-hover text-slate-950 px-5 py-2.5 rounded-full font-extrabold text-[11px] transition-all hover:scale-[1.02] shadow-md shadow-brand-green/10"
+                >
+                  <Phone className="w-3.5 h-3.5 fill-current" /> Chat Support Bot
+                </a>
+              </div>
+            </div>
+
+            {/* Right side: Accordion */}
+            <div className="lg:col-span-7 space-y-4">
+              {faqs.map((faq, index) => {
+                const isOpen = activeFaq === index;
                 return (
                   <div
-                    key={idx}
-                    className={`border rounded-xl transition-all duration-300 overflow-hidden ${isOpen ? "border-brand-green bg-emerald-50/10 shadow-sm" : "border-slate-200 hover:border-slate-350 bg-white"
-                      }`}
+                    key={index}
+                    className={`rounded-2xl border transition-all duration-300 overflow-hidden ${
+                      isOpen
+                        ? "bg-slate-50 border-slate-300 shadow-md"
+                        : "bg-white border-slate-200 hover:border-slate-300 hover:shadow-sm"
+                    }`}
                   >
                     <button
-                      onClick={() => setActiveFaq(isOpen ? null : idx)}
-                      className="w-full text-left py-5 px-6 font-bold text-[16px] text-slate-800 flex justify-between items-center focus:outline-none"
+                      onClick={() => setActiveFaq(isOpen ? null : index)}
+                      className="w-full text-left px-6 py-5 flex items-center justify-between gap-4 focus:outline-none"
                     >
-                      <span>{faq.q}</span>
-                      <ChevronDown className={`w-5 h-5 text-slate-400 transition-transform duration-300 ${isOpen ? "transform rotate-180 text-brand-green" : ""}`} />
-                    </button>
-
-                    {/* Expandable Panel */}
-                    <div
-                      className={`transition-all duration-300 ease-in-out ${isOpen ? "max-h-[200px] border-t border-slate-150 py-5 px-6 opacity-100" : "max-h-0 opacity-0 pointer-events-none"
+                      <span className="font-bold text-slate-800 text-sm sm:text-base leading-snug">{faq.q}</span>
+                      <ChevronDown
+                        className={`w-5 h-5 text-slate-400 shrink-0 transition-transform duration-300 ${
+                          isOpen ? "transform rotate-180 text-emerald-500" : ""
                         }`}
+                      />
+                    </button>
+                    
+                    <div
+                      className={`transition-all duration-300 ease-in-out ${
+                        isOpen ? "max-h-[300px] opacity-100" : "max-h-0 opacity-0"
+                      }`}
                     >
-                      <p className="text-slate-650 text-sm leading-relaxed">{faq.a}</p>
+                      <div className="px-6 pb-6 pt-1 text-slate-500 text-xs sm:text-sm font-semibold leading-relaxed border-t border-slate-200/50">
+                        {faq.a}
+                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Right side: 3D Illustration */}
-            <div className="lg:col-span-5 relative w-full h-[360px] md:h-[420px] flex items-center justify-center rounded-2xl overflow-hidden shadow-lg border border-slate-100/60 bg-slate-50">
-              <Image
-                src="/faq_illustration.png"
-                alt="Frequently Asked Questions Illustration"
-                fill
-                sizes="(max-w-768px) 100vw, 420px"
-                className="object-cover"
-                priority
-              />
-            </div>
-          </div>
-
-        </div>
-      </section>
-
-      {/* 6.3. Pricing Section */}
-      <section id="pricing" className="py-20 bg-slate-50 border-t border-slate-100">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-
-          {/* Header */}
-          <div className="text-center max-w-xl mx-auto mb-16">
-            <span className="text-[12px] font-bold text-brand-green uppercase tracking-widest block mb-3.5">
-              Pricing
-            </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mb-4">
-              Simple, Transparent Pricing
-            </h2>
-            <p className="text-slate-500 text-base font-semibold">
-              Choose the perfect plan for your business.
-            </p>
-          </div>
-
-          {/* Pricing Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-
-            {/* Starter Plan Card */}
-            <div className="bg-white rounded-2xl p-8 border border-slate-200 shadow-md flex flex-col justify-between relative overflow-hidden hover:scale-[1.02] transition-transform duration-300">
-              <div>
-                <h3 className="text-xl font-black text-slate-800 mb-1 text-center">Starter Plan</h3>
-                <p className="text-slate-400 text-xs mb-6 text-center">Perfect for small businesses starting out</p>
-
-                <div className="flex flex-col items-center justify-center mb-6">
-                  <div className="flex items-center gap-2">
-                    <span className="text-2xl font-bold text-slate-400 line-through">₹499</span>
-                    <span className="text-5xl font-black text-emerald-600">Free</span>
-                  </div>
-                  <span className="text-slate-500 text-xs font-bold mt-1 text-emerald-600 uppercase tracking-wider">Limited Time Offer</span>
-                </div>
-
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    1 Website
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Subdomain (yourbusiness.whatssite.in)
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Basic Templates
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Mobile Responsive
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    SSL Certificate
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Basic Support
-                  </li>
-                </ul>
-              </div>
-
-              <a
-                href="https://wa.me/14155238886?text=join%20thee-unknown"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full text-center bg-white hover:bg-slate-50 border border-slate-300 text-slate-800 py-3.5 rounded-xl font-bold transition-all shadow-sm block text-[14px]"
-              >
-                Get Started
-              </a>
-            </div>
-
-            {/* Premium Plan Card */}
-            <div className="bg-white rounded-2xl p-8 border-2 border-brand-green shadow-lg flex flex-col justify-between relative overflow-hidden hover:scale-[1.02] transition-transform duration-300">
-              {/* Popular Badge */}
-              <div className="absolute top-0 right-0 bg-brand-green text-white text-[9px] font-black px-4 py-1.5 rounded-bl-xl uppercase tracking-wider">
-                Popular
-              </div>
-
-              <div>
-                <h3 className="text-xl font-black text-slate-800 mb-1 text-center">Premium Plan</h3>
-                <p className="text-slate-400 text-xs mb-6 text-center">Complete package with custom domain</p>
-
-                <div className="flex flex-col items-center justify-center mb-6">
-                  <div className="flex items-baseline gap-1">
-                    <span className="text-5xl font-black text-slate-900">₹1,999</span>
-                    <span className="text-slate-500 text-sm font-semibold">/ year</span>
-                  </div>
-                </div>
-
-                <ul className="space-y-4 mb-8">
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    1 Website
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Custom Domain
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Premium Templates
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    SEO Optimized
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    WhatsApp Chat Button
-                  </li>
-                  <li className="flex items-center gap-3 text-slate-650 text-sm font-medium">
-                    <Check className="w-4.5 h-4.5 text-brand-green shrink-0" />
-                    Priority Support
-                  </li>
-                </ul>
-              </div>
-
-              <a
-                href="https://wa.me/14155238886?text=join%20thee-unknown"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full text-center bg-brand-green hover:bg-brand-green-hover text-white py-3.5 rounded-xl font-bold transition-all shadow-md block text-[14px]"
-              >
-                Get Started
-              </a>
-            </div>
           </div>
         </div>
       </section>
@@ -1604,69 +1779,110 @@ export default function Home() {
       </section>
 
       {/* 8. Footer */}
-      <footer className="relative bg-[#020d0a] text-slate-400 pt-20 pb-6 border-t border-emerald-950/40 overflow-hidden">
+      <footer className="relative bg-[#020d0a] text-slate-400 pt-20 pb-8 border-t border-emerald-950/60 overflow-hidden">
         {/* Subtle background glow */}
-        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[40rem] h-[20rem] bg-emerald-950/20 rounded-full blur-3xl pointer-events-none"></div>
+        <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[50rem] h-[25rem] bg-emerald-950/30 rounded-full blur-3xl pointer-events-none"></div>
 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
 
-          {/* Main Footer Links & Info */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 pb-16 border-b border-emerald-950/60">
+          {/* Main Footer Links & Info Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8 pb-16 border-b border-emerald-950/50">
 
-            {/* Logo/About column */}
-            <div className="lg:col-span-4 flex flex-col gap-5">
+            {/* Column 1: Brand & Socials & WhatsApp Support Button */}
+            <div className="lg:col-span-4 flex flex-col gap-6">
               <div className="flex items-center gap-2 text-white font-bold text-2xl cursor-pointer">
                 <Image
                   src="/logo.png"
                   alt="WhatsSite Logo"
                   width={40}
                   height={40}
-                  className="rounded-xl shadow-md shadow-brand-green/10"
+                  className="rounded-xl shadow-md shadow-brand-green/20"
                 />
                 <span>Whats<span className="text-brand-green">Site</span></span>
               </div>
               <p className="text-slate-400 text-sm max-w-sm leading-relaxed font-medium">
                 Empowering local businesses and creators to launch professional, lightning-fast websites directly through a simple WhatsApp conversation.
               </p>
+              
+              {/* WhatsApp Support Button */}
+              <div>
+                <a
+                  href="https://wa.me/14155238886?text=join%20thee-unknown"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center gap-2 bg-brand-green hover:bg-brand-green-hover text-slate-950 px-5 py-2.5 rounded-full font-black text-xs transition-all hover:scale-[1.02] shadow-md shadow-brand-green/10"
+                >
+                  <Phone className="w-4 h-4 fill-current" /> WhatsApp Support
+                </a>
+              </div>
+
+              {/* Social Icons */}
+              <div className="flex gap-3 mt-2">
+                {[
+                  { icon: <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" /></svg>, url: "#" },
+                  { icon: <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" /></svg>, url: "#" },
+                  { icon: <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.108C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.388.555A3.003 3.003 0 00.5 6.163C0 8.017 0 12 0 12s0 3.983.5 5.837a3.003 3.003 0 002.11 2.108c1.858.555 9.388.555 9.388.555s7.53 0 9.388-.555a3.003 3.003 0 002.11-2.108C24 15.983 24 12 24 12s0-3.983-.5-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>, url: "#" },
+                  { icon: <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>, url: "#" }
+                ].map((social, idx) => (
+                  <a
+                    key={idx}
+                    href={social.url}
+                    className="w-9 h-9 rounded-full bg-emerald-950/50 border border-emerald-900/40 text-slate-350 flex items-center justify-center hover:bg-brand-green hover:border-brand-green hover:text-slate-950 transition-all duration-300"
+                  >
+                    {social.icon}
+                  </a>
+                ))}
+              </div>
             </div>
 
-            {/* Quick Links Column */}
-            <div className="lg:col-span-3">
-              <h4 className="text-white font-bold text-[14px] uppercase tracking-wider mb-5">Quick Links</h4>
+            {/* Column 2: Product Links */}
+            <div className="lg:col-span-2 md:col-span-1">
+              <h4 className="text-white font-bold text-[13px] uppercase tracking-wider mb-5">Product</h4>
+              <ul className="flex flex-col gap-3 text-sm font-semibold">
+                <li><Link href="/admin" className="hover:text-brand-green transition-colors duration-200">Admin Login</Link></li>
+                <li><Link href="/admin" className="hover:text-brand-green transition-colors duration-200">Web Editor Panel</Link></li>
+                <li><a href="#themes" className="hover:text-brand-green transition-colors duration-200">Live Themes</a></li>
+                <li><a href="https://wa.me/14155238886" target="_blank" rel="noreferrer" className="hover:text-brand-green transition-colors duration-200">WhatsApp Sandbox</a></li>
+              </ul>
+            </div>
+
+            {/* Column 3: Theme Previews */}
+            <div className="lg:col-span-2 md:col-span-1">
+              <h4 className="text-white font-bold text-[13px] uppercase tracking-wider mb-5">Templates</h4>
+              <ul className="flex flex-col gap-3 text-sm font-semibold">
+                <li><a href="#themes" className="hover:text-brand-green transition-colors duration-200">Dental Clinic</a></li>
+                <li><a href="#themes" className="hover:text-brand-green transition-colors duration-200">Fitness Gym</a></li>
+                <li><a href="#themes" className="hover:text-brand-green transition-colors duration-200">Restaurant Cafe</a></li>
+                <li><a href="#themes" className="hover:text-brand-green transition-colors duration-200">Beauty Salon</a></li>
+                <li><a href="#themes" className="hover:text-brand-green transition-colors duration-200">Real Estate</a></li>
+              </ul>
+            </div>
+
+            {/* Column 4: Resources */}
+            <div className="lg:col-span-2 md:col-span-1">
+              <h4 className="text-white font-bold text-[13px] uppercase tracking-wider mb-5">Resources</h4>
               <ul className="flex flex-col gap-3 text-sm font-semibold">
                 <li><a href="#how-it-works" className="hover:text-brand-green transition-colors duration-200">How It Works</a></li>
-                <li><a href="#features" className="hover:text-brand-green transition-colors duration-200">Features</a></li>
-                <li><a href="#themes" className="hover:text-brand-green transition-colors duration-200">Templates</a></li>
-                <li><a href="#pricing" className="hover:text-brand-green transition-colors duration-200">Pricing</a></li>
-                <li><a href="#faq" className="hover:text-brand-green transition-colors duration-200">FAQ</a></li>
-              </ul>
-            </div>
-
-            {/* Legal Column */}
-            <div className="lg:col-span-3">
-              <h4 className="text-white font-bold text-[14px] uppercase tracking-wider mb-5">Legal</h4>
-              <ul className="flex flex-col gap-3 text-sm font-semibold">
-                <li><a href="#" className="hover:text-brand-green transition-colors duration-200">Terms & Conditions</a></li>
+                <li><a href="#pricing" className="hover:text-brand-green transition-colors duration-200">Pricing Plans</a></li>
+                <li><a href="#faq" className="hover:text-brand-green transition-colors duration-200">FAQs & Help</a></li>
                 <li><a href="#" className="hover:text-brand-green transition-colors duration-200">Privacy Policy</a></li>
-                <li><a href="#" className="hover:text-brand-green transition-colors duration-200">Refund Policy</a></li>
               </ul>
             </div>
 
-            {/* Follow Us Column */}
-            <div className="lg:col-span-2">
-              <h4 className="text-white font-bold text-[14px] uppercase tracking-wider mb-5">Follow Us</h4>
-              <div className="flex gap-3">
-                <a href="#" className="w-10 h-10 rounded-full bg-emerald-950/45 border border-emerald-900/30 text-slate-300 flex items-center justify-center hover:bg-brand-green hover:border-brand-green hover:text-white hover:scale-105 hover:-translate-y-0.5 transition-all duration-300 shadow-md">
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M22 12c0-5.52-4.48-10-10-10S2 6.48 2 12c0 4.84 3.44 8.87 8 9.8V15H8v-3h2V9.5C10 7.57 11.57 6 13.5 6H16v3h-2c-.55 0-1 .45-1 1v2h3v3h-3v6.95c4.56-.93 8-4.96 8-9.75z" /></svg>
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-emerald-950/45 border border-emerald-900/30 text-slate-300 flex items-center justify-center hover:bg-brand-green hover:border-brand-green hover:text-white hover:scale-105 hover:-translate-y-0.5 transition-all duration-300 shadow-md">
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.051.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" /></svg>
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-emerald-950/45 border border-emerald-900/30 text-slate-300 flex items-center justify-center hover:bg-brand-green hover:border-brand-green hover:text-white hover:scale-105 hover:-translate-y-0.5 transition-all duration-300 shadow-md">
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M23.498 6.163a3.003 3.003 0 00-2.11-2.108C19.53 3.5 12 3.5 12 3.5s-7.53 0-9.388.555A3.003 3.003 0 00.5 6.163C0 8.017 0 12 0 12s0 3.983.5 5.837a3.003 3.003 0 002.11 2.108c1.858.555 9.388.555 9.388.555s7.53 0 9.388-.555a3.003 3.003 0 002.11-2.108C24 15.983 24 12 24 12s0-3.983-.5-5.837zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" /></svg>
-                </a>
-                <a href="#" className="w-10 h-10 rounded-full bg-emerald-950/45 border border-emerald-900/30 text-slate-300 flex items-center justify-center hover:bg-brand-green hover:border-brand-green hover:text-white hover:scale-105 hover:-translate-y-0.5 transition-all duration-300 shadow-md">
-                  <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" /></svg>
+            {/* Column 5: Mini CTA */}
+            <div className="lg:col-span-2 flex flex-col gap-4">
+              <h4 className="text-white font-bold text-[13px] uppercase tracking-wider mb-1">Create Now</h4>
+              <div className="bg-emerald-950/40 border border-emerald-900/30 p-4 rounded-2xl">
+                <p className="text-xs text-slate-350 font-bold leading-normal mb-3">
+                  Send "START" on our WhatsApp bot line to build your professional site in 5 minutes!
+                </p>
+                <a
+                  href="https://wa.me/14155238886?text=START"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block text-center bg-brand-green hover:bg-brand-green-hover text-slate-950 py-2.5 rounded-xl font-extrabold text-[11px] transition-all hover:scale-[1.02]"
+                >
+                  Message START
                 </a>
               </div>
             </div>
@@ -1675,18 +1891,17 @@ export default function Home() {
 
           {/* Bottom copyright & Links */}
           <div className="pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 font-semibold gap-4 relative z-20">
-            <span>© 2026 WhatsSite. All rights reserved.</span>
+            <span>© 2026 WhatsSite. All rights reserved. Built for modern local businesses.</span>
             <div className="flex gap-6">
-              <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+              <a href="#" className="hover:text-white transition-colors">Terms & Conditions</a>
               <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+              <a href="#" className="hover:text-white transition-colors">Refund Policy</a>
             </div>
           </div>
 
         </div>
 
-
       </footer>
-
     </div>
   );
 }
