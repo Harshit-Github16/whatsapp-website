@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Business from '@/models/Business';
+import ImageKit from '@imagekit/nodejs';
 
 // Helper to slugify business name
 const slugify = (text) => {
@@ -11,6 +12,50 @@ const slugify = (text) => {
     .replace(/\s+/g, '-') // Replace spaces with -
     .replace(/[^\w\-]+/g, '') // Remove all non-word chars
     .replace(/\-\-+/g, '-'); // Replace multiple - with single -
+};
+
+// Initialize ImageKit
+const imagekit = new ImageKit({
+    publicKey: process.env.IMAGE_KIT_PUBLIC_KEY || '',
+    privateKey: process.env.IMAGE_KIT_PRIVATE_KEY || '',
+    urlEndpoint: process.env.IMAGE_KIT_URL_ENDPOINT || 'https://ik.imagekit.io/whatssite'
+});
+
+// Helper to download image from Twilio using credentials and upload to ImageKit
+const uploadTwilioMediaToImageKit = async (twilioMediaUrl, folder = 'whatssite') => {
+  if (!twilioMediaUrl) return '';
+  
+  try {
+    const accountSid = process.env.TWILIO_ACCOUNT_SID;
+    const authToken = process.env.TWILIO_AUTH_TOKEN;
+    
+    // Fetch image from Twilio with HTTP Basic Authentication
+    const response = await fetch(twilioMediaUrl, {
+      headers: {
+        'Authorization': 'Basic ' + Buffer.from(accountSid + ':' + authToken).toString('base64')
+      }
+    });
+    
+    if (!response.ok) {
+      console.error(`Failed to fetch media from Twilio: ${response.status} ${response.statusText}`);
+      return twilioMediaUrl; // Fallback to raw Twilio URL on fetch failure
+    }
+    
+    const arrayBuffer = await response.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    
+    // Upload raw buffer to ImageKit
+    const uploadResponse = await imagekit.files.upload({
+      file: buffer,
+      fileName: `wa_upload_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`,
+      folder: folder
+    });
+    
+    return uploadResponse.url;
+  } catch (error) {
+    console.error('Error uploading Twilio media to ImageKit:', error);
+    return twilioMediaUrl; // Fallback on exception
+  }
 };
 
 // Fallback dictionary for common categories
@@ -79,14 +124,19 @@ const generateAICopy = async (businessName, category) => {
         messages: [
           {
             role: "system",
-            content: `You are an expert copywriting assistant for local business websites.
-Your task is to generate high-converting, professional, and category-relevant copy for a business website.
-The generated text must sound natural, professional, and deeply customized to the business name and category. Do not use generic placeholders.
+            content: `You are a world-class copywriter and professional editor specializing in local business marketing and brand development.
+Your task is to write exceptionally detailed, highly appealing, and category-relevant copy that immediately builds trust and conveys premium value.
+
+The generated text must sound extremely natural, upscale, and deeply customized to the specific business category and name. Avoid all generic phrases.
+Specifically, your copy must adhere to:
+1. "about": Generate a detailed, high-fidelity brand story of 4-5 sentences. Include details about their commitment to excellence, state-of-the-art equipment or methodologies, customer-first service philosophy, and unique local expertise.
+2. "services": An array of exactly 6 key premium services/solutions/treatments. Instead of generic single-word nouns, write descriptive, professional service titles that sound premium (e.g., "Advanced Root Canal Therapy with Digital Imaging" instead of "Root Canal", "Customized High-Intensity Strength Coaching" instead of "Gym", "Artisanal Hand-Roasted Specialty Coffees" instead of "Coffee").
+3. "theme": Guess the best match styling theme from: "medical", "gym", "restaurant", "salon", "realestate".
 
 Respond ONLY with a JSON object containing keys:
-1. "about": A premium, highly appealing, 3-4 sentence description of the business, its history, expertise, and focus on customer satisfaction.
-2. "services": An array of 6 key services/features/treatments offered by this specific business category.
-3. "theme": Guess the best match styling theme from: "medical", "gym", "restaurant", "salon", "realestate".
+1. "about"
+2. "services"
+3. "theme"
 
 Do not write any other markdown, markdown code block backticks, or text outside the JSON object.`
           },
@@ -297,7 +347,8 @@ export async function POST(request) {
       case 'LOGO': {
         const lowerVal = userText.toLowerCase().replace(/\*/g, '').trim();
         if (mediaUrl) {
-          business.logoUrl = mediaUrl;
+          const imageKitUrl = await uploadTwilioMediaToImageKit(mediaUrl, 'whatssite/logo');
+          business.logoUrl = imageKitUrl;
           business.set('onboardingStep', 'HERO_IMAGE');
           await business.save();
           return twimlResponse(`Got it! Your logo has been saved. 📷\n\nNow, let's select a hero banner image for your website homepage. *Please upload a hero banner image*, or reply *skip*.`);
@@ -313,7 +364,8 @@ export async function POST(request) {
       case 'HERO_IMAGE': {
         const lowerVal = userText.toLowerCase().replace(/\*/g, '').trim();
         if (mediaUrl) {
-          business.heroImageUrl = mediaUrl;
+          const imageKitUrl = await uploadTwilioMediaToImageKit(mediaUrl, 'whatssite/hero');
+          business.heroImageUrl = imageKitUrl;
           business.set('onboardingStep', 'GALLERY');
           await business.save();
           return twimlResponse(`Awesome hero banner! Website visual updated. 📷\n\nNow, please upload 2-3 gallery images (portfolio, office photos, products) so customers can see your work. Send one image at a time, or reply *skip* / *done* when finished.`);
@@ -336,7 +388,8 @@ export async function POST(request) {
           if (!business.galleryUrls) {
             business.galleryUrls = [];
           }
-          business.galleryUrls.push(mediaUrl);
+          const imageKitUrl = await uploadTwilioMediaToImageKit(mediaUrl, 'whatssite/gallery');
+          business.galleryUrls.push(imageKitUrl);
           await business.save();
           return twimlResponse(`Added! You have ${business.galleryUrls.length} image(s) in your gallery. Send another image to add more, or reply *done* to proceed.`);
         } else {

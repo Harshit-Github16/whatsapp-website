@@ -407,15 +407,25 @@ export default function LiveWebsite() {
             {siteData.businessName || "My Business"}
           </span>
         </span>
-
-        {/* Desktop Navbar menu links */}
         <nav className="hidden md:flex items-center gap-6.5 text-xs font-extrabold tracking-wide uppercase text-slate-500">
-          <a href="#home" className={`hover:${style.accentText} transition-colors`}>Home</a>
-          <a href="#about" className={`hover:${style.accentText} transition-colors`}>About Us</a>
-          <a href="#services" className={`hover:${style.accentText} transition-colors`}>Services</a>
-          <a href="#gallery" className={`hover:${style.accentText} transition-colors`}>Gallery</a>
-          <a href="#testimonials" className={`hover:${style.accentText} transition-colors`}>Reviews</a>
-          <a href="#contact" className={`hover:${style.accentText} transition-colors`}>Contact Us</a>
+          {(siteData.sectionOrder || ['home', 'about', 'services', 'gallery', 'testimonials', 'contact']).map((sectionId) => {
+            let label = "";
+            if (sectionId === "home") label = "Home";
+            else if (sectionId === "about") label = "About Us";
+            else if (sectionId === "services") label = "Services";
+            else if (sectionId === "gallery") label = "Gallery";
+            else if (sectionId === "testimonials") label = "Reviews";
+            else if (sectionId === "contact") label = "Contact Us";
+            else {
+              const customSection = (siteData.customSections || []).find(cs => cs.id === sectionId);
+              label = customSection ? customSection.title : "Section";
+            }
+            return (
+              <a key={sectionId} href={`#${sectionId}`} className={`hover:${style.accentText} transition-colors`}>
+                {label}
+              </a>
+            );
+          })}
         </nav>
 
         <div className="flex items-center gap-3">
@@ -439,48 +449,29 @@ export default function LiveWebsite() {
       {/* Mobile Drawer Menu */}
       {mobileMenuOpen && (
         <div className="md:hidden fixed top-[102px] left-0 w-full bg-white border-b border-slate-200 z-30 shadow-lg flex flex-col p-5 gap-4.5 font-bold text-sm text-slate-600">
-          <a
-            href="#home"
-            onClick={() => setMobileMenuOpen(false)}
-            className={`hover:${style.accentText} pb-2 border-b border-slate-50`}
-          >
-            Home
-          </a>
-          <a
-            href="#about"
-            onClick={() => setMobileMenuOpen(false)}
-            className={`hover:${style.accentText} pb-2 border-b border-slate-50`}
-          >
-            About Us
-          </a>
-          <a
-            href="#services"
-            onClick={() => setMobileMenuOpen(false)}
-            className={`hover:${style.accentText} pb-2 border-b border-slate-50`}
-          >
-            Services
-          </a>
-          <a
-            href="#gallery"
-            onClick={() => setMobileMenuOpen(false)}
-            className={`hover:${style.accentText} pb-2 border-b border-slate-50`}
-          >
-            Gallery
-          </a>
-          <a
-            href="#testimonials"
-            onClick={() => setMobileMenuOpen(false)}
-            className={`hover:${style.accentText} pb-2 border-b border-slate-50`}
-          >
-            Reviews
-          </a>
-          <a
-            href="#contact"
-            onClick={() => setMobileMenuOpen(false)}
-            className={`hover:${style.accentText} pb-2`}
-          >
-            Contact Us
-          </a>
+          {(siteData.sectionOrder || ['home', 'about', 'services', 'gallery', 'testimonials', 'contact']).map((sectionId, idx, arr) => {
+            let label = "";
+            if (sectionId === "home") label = "Home";
+            else if (sectionId === "about") label = "About Us";
+            else if (sectionId === "services") label = "Services";
+            else if (sectionId === "gallery") label = "Gallery";
+            else if (sectionId === "testimonials") label = "Reviews";
+            else if (sectionId === "contact") label = "Contact Us";
+            else {
+              const customSection = (siteData.customSections || []).find(cs => cs.id === sectionId);
+              label = customSection ? customSection.title : "Section";
+            }
+            return (
+              <a
+                key={sectionId}
+                href={`#${sectionId}`}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`hover:${style.accentText} pb-2 ${idx !== arr.length - 1 ? 'border-b border-slate-50' : ''}`}
+              >
+                {label}
+              </a>
+            );
+          })}
           <a
             href={`tel:${siteData.phone}`}
             className={`w-full text-center flex items-center justify-center gap-2 ${style.accent} py-3.5 rounded-xl font-bold text-sm shadow`}
@@ -490,467 +481,538 @@ export default function LiveWebsite() {
         </div>
       )}
 
-      {/* 3. Hero Banner Section */}
-      <section id="home" className={`py-16 sm:py-24 px-6 sm:px-12 bg-gradient-to-b ${style.heroGradient} relative overflow-hidden shrink-0`}>
-        {/* Background glow graphics */}
-        <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/5 rounded-full filter blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full filter blur-3xl pointer-events-none"></div>
+      {/* Dynamic Sections Renderer */}
+      {(siteData.sectionOrder || ['home', 'about', 'services', 'gallery', 'testimonials', 'contact']).map((sectionId) => {
+        if (sectionId === 'home') {
+          return (
+            <section key="home" id="home" className={`py-16 sm:py-24 px-6 sm:px-12 bg-gradient-to-b ${style.heroGradient} relative overflow-hidden shrink-0`}>
+              {/* Background glow graphics */}
+              <div className="absolute top-0 right-0 w-80 h-80 bg-emerald-500/5 rounded-full filter blur-3xl pointer-events-none"></div>
+              <div className="absolute bottom-0 left-0 w-96 h-96 bg-blue-500/5 rounded-full filter blur-3xl pointer-events-none"></div>
 
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
+              <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center relative z-10">
 
-          {/* Left Text */}
-          <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
-            <span className={`inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-widest ${style.badge} px-3.5 py-1.5 rounded-full mb-5 shadow-sm`}>
-              <Sparkles className="w-3 h-3 text-current animate-pulse" />
-              {siteData.category || "Local Business"}
-            </span>
-            <h1 className={`text-3xl sm:text-4.5xl lg:text-[52px] lg:leading-[1.12] font-extrabold ${style.headingColor} tracking-tight mb-5`}>
-              {siteData.businessName ? `Welcome to ${siteData.businessName}` : "Your Premium Professional Destination"}
-            </h1>
-            <p className={`${siteData.theme === "gym" ? "text-slate-400" : "text-slate-500"} text-sm sm:text-base max-w-xl leading-relaxed mb-8 font-medium`}>
-              {siteData.about ? siteData.about.substring(0, 160) + "..." : `Discover our premium ${siteData.category.toLowerCase()} services. We offer certified skills, quality guarantees, and customize everything to matches your preferences.`}
-            </p>
+                {/* Left Text */}
+                <div className="lg:col-span-7 flex flex-col items-center lg:items-start text-center lg:text-left">
+                  <span className={`inline-flex items-center gap-1 text-[10px] font-extrabold uppercase tracking-widest ${style.badge} px-3.5 py-1.5 rounded-full mb-5 shadow-sm`}>
+                    <Sparkles className="w-3 h-3 text-current animate-pulse" />
+                    {siteData.category || "Local Business"}
+                  </span>
+                  <h1 className={`text-3xl sm:text-4.5xl lg:text-[52px] lg:leading-[1.12] font-extrabold ${style.headingColor} tracking-tight mb-5`}>
+                    {siteData.businessName ? `Welcome to ${siteData.businessName}` : "Your Premium Professional Destination"}
+                  </h1>
+                  <p className={`${siteData.theme === "gym" ? "text-slate-400" : "text-slate-550"} text-sm sm:text-base max-w-xl leading-relaxed mb-8 font-medium`}>
+                    {siteData.about ? siteData.about.substring(0, 160) + "..." : `Discover our premium ${siteData.category.toLowerCase()} services. We offer certified skills, quality guarantees, and customize everything to matches your preferences.`}
+                  </p>
 
-            <div className="flex flex-col sm:flex-row gap-4.5 w-full sm:w-auto">
-              <a
-                href="#contact"
-                className={`${style.accent} px-8 py-4 rounded-xl font-bold text-xs tracking-wider uppercase text-center shadow-lg transition-all hover:scale-102 active:scale-98`}
-              >
-                {style.btnText}
-              </a>
-              <a
-                href="#services"
-                className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 px-8 py-4 rounded-xl font-bold text-xs tracking-wider uppercase text-center transition-colors shadow-sm"
-              >
-                Explore Services
-              </a>
-            </div>
-          </div>
-
-          {/* Right Visual Image */}
-          <div className="lg:col-span-5 flex justify-center w-full">
-            <div className={`relative w-full max-w-[460px] aspect-[4/3] rounded-3xl overflow-hidden ${siteData.theme === "gym" ? "border-slate-800" : "border-slate-100"} border-2 flex items-center justify-center shadow-2xl transition-transform hover:rotate-1 duration-500`}>
-              {siteData.heroImageUrl ? (
-                <img src={siteData.heroImageUrl} alt="Hero Banner" className="w-full h-full object-cover" />
-              ) : siteData.theme === "medical" ? (
-                <Image
-                  src="/dentist.png"
-                  alt="Business Banner"
-                  fill
-                  sizes="460px"
-                  style={{ objectFit: "cover" }}
-                  priority
-                />
-              ) : (
-                <div className="flex flex-col items-center justify-center text-center p-8 h-full w-full bg-gradient-to-tr from-slate-900 to-slate-950 text-white relative">
-                  <span className="text-[80px] mb-4 filter drop-shadow-md">{style.bannerText}</span>
-                  <span className="text-xl font-black tracking-wide uppercase text-white">{siteData.businessName}</span>
-                  <span className="text-xs text-brand-green font-bold uppercase tracking-widest mt-2">{siteData.category}</span>
-                  <div className="absolute bottom-4 text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
-                    WhatsSite High-Fidelity Mockup
+                  <div className="flex flex-col sm:flex-row gap-4.5 w-full sm:w-auto">
+                    <a
+                      href="#contact"
+                      className={`${style.accent} px-8 py-4 rounded-xl font-bold text-xs tracking-wider uppercase text-center shadow-lg transition-all hover:scale-102 active:scale-98`}
+                    >
+                      {style.btnText}
+                    </a>
+                    <a
+                      href="#services"
+                      className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-800 px-8 py-4 rounded-xl font-bold text-xs tracking-wider uppercase text-center transition-colors shadow-sm"
+                    >
+                      Explore Services
+                    </a>
                   </div>
                 </div>
-              )}
-            </div>
-          </div>
 
-        </div>
-      </section>
-
-      {/* 4. About Us Section (Dynamic custom message) */}
-      <section id="about" className={`py-20 px-6 sm:px-12 border-t ${style.dividerColor} ${style.lightBg} shrink-0`}>
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
-
-          <div className="lg:col-span-7">
-            <div className="flex items-center gap-1.5 mb-3">
-              <span className={`w-6 h-0.5 ${style.accent.split(" ")[0]}`}></span>
-              <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText}`}>About Us</span>
-            </div>
-            <h2 className={`text-2xl sm:text-3.5xl font-extrabold ${style.headingColor} tracking-tight mb-5`}>
-              Our Story & Commitment
-            </h2>
-            <p className={`${siteData.theme === "gym" ? "text-slate-400" : "text-slate-550"} text-sm sm:text-base leading-relaxed mb-6 font-medium whitespace-pre-line`}>
-              {siteData.about || "We are dedicated to offering exceptional value to our customers. Backed by expert experience and tools, our goal is to deliver top-notch services suited perfectly to your style and targets."}
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="flex items-center gap-2.5 text-sm font-semibold">
-                <span className={`w-5 h-5 rounded-full ${style.badge} flex items-center justify-center shrink-0`}>
-                  <Check className="w-3 h-3 text-current" />
-                </span>
-                <span className={style.headingColor}>Certified Professionals</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-sm font-semibold">
-                <span className={`w-5 h-5 rounded-full ${style.badge} flex items-center justify-center shrink-0`}>
-                  <Check className="w-3 h-3 text-current" />
-                </span>
-                <span className={style.headingColor}>Premium Quality Standard</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-sm font-semibold">
-                <span className={`w-5 h-5 rounded-full ${style.badge} flex items-center justify-center shrink-0`}>
-                  <Check className="w-3 h-3 text-current" />
-                </span>
-                <span className={style.headingColor}>100% Satisfaction Guarantee</span>
-              </div>
-              <div className="flex items-center gap-2.5 text-sm font-semibold">
-                <span className={`w-5 h-5 rounded-full ${style.badge} flex items-center justify-center shrink-0`}>
-                  <Check className="w-3 h-3 text-current" />
-                </span>
-                <span className={style.headingColor}>Active Online Support</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/60 shadow-lg flex flex-col justify-between h-full relative overflow-hidden">
-            {siteData.theme === "gym" && <div className="absolute inset-0 bg-slate-900 z-0"></div>}
-
-            <div className="relative z-10">
-              <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-600 mb-5">
-                <ShieldCheck className="w-6 h-6" />
-              </div>
-              <h3 className={`text-md font-extrabold ${style.headingColor} mb-2`}>
-                Why Choose Us?
-              </h3>
-              <p className={`text-xs ${siteData.theme === "gym" ? "text-slate-400" : "text-slate-500"} leading-relaxed mb-6 font-medium`}>
-                We prioritize user expectations and make sure that every interaction is backed by verified business safety and premium client delivery models.
-              </p>
-            </div>
-
-            <div className={`grid grid-cols-3 gap-2 border-t pt-5 relative z-10 ${siteData.theme === "gym" ? "border-slate-800" : "border-slate-100"}`}>
-              <div className="text-center">
-                <span className={`block text-xl font-black ${style.accentText}`}>99%</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Success</span>
-              </div>
-              <div className="text-center border-x border-slate-100 dark:border-slate-800">
-                <span className={`block text-xl font-black ${style.accentText}`}>100+</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Clients</span>
-              </div>
-              <div className="text-center">
-                <span className={`block text-xl font-black ${style.accentText}`}>5 Star</span>
-                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Reviews</span>
-              </div>
-            </div>
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* 5. Services Grid Section */}
-      <section id="services" className="py-20 px-6 sm:px-12 bg-white">
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-xl mx-auto mb-16">
-            <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText} bg-slate-100 px-3.5 py-1.5 rounded-full`}>
-              Our Services
-            </span>
-            <h2 className="text-2xl sm:text-3.5xl font-extrabold text-slate-900 mb-3 tracking-tight mt-4">
-              What We Do Best
-            </h2>
-            <p className="text-slate-400 text-xs sm:text-sm font-semibold">
-              Explore premium solutions custom-designed for your operational requirements.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {(siteData.services.length > 0 ? siteData.services : style.servicesDefault).map((service, idx) => (
-              <div
-                key={idx}
-                className={`bg-white border rounded-2xl p-6 text-center flex flex-col items-center justify-center hover:-translate-y-1 hover:shadow-md transition-all duration-300 ${style.cardBorder}`}
-              >
-                <div className={`w-11 h-11 rounded-full ${style.lightBg} flex items-center justify-center mb-4`}>
-                  <span className={`w-3.5 h-3.5 rounded-full ${style.accent.split(" ")[0]} shadow-inner`}></span>
-                </div>
-                <h3 className="text-sm sm:text-[14.5px] font-extrabold text-slate-850 leading-snug line-clamp-2">
-                  {service}
-                </h3>
-                <p className="text-[10.5px] text-slate-400 font-semibold mt-2.5">
-                  Premium Quality Standard
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* 6. Gallery Section (Base64 or Fallback placeholders) */}
-      <section id="gallery" className={`py-20 px-6 sm:px-12 border-t ${style.dividerColor} ${siteData.theme === "gym" ? "bg-slate-950" : "bg-slate-50/50"} shrink-0`}>
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-xl mx-auto mb-16">
-            <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText} bg-slate-100 px-3.5 py-1.5 rounded-full`}>
-              Visual Showcase
-            </span>
-            <h2 className={`text-2xl sm:text-3.5xl font-extrabold ${style.headingColor} mb-3 tracking-tight mt-4`}>
-              Business Gallery
-            </h2>
-            <p className="text-slate-400 text-xs sm:text-sm font-semibold">
-              Take a closer look at our premises, equipment, and recent works.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
-            {siteData.galleryUrls.length > 0 ? (
-              siteData.galleryUrls.map((url, idx) => (
-                <div
-                  key={idx}
-                  className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200 border border-slate-100 shadow-md group cursor-pointer"
-                >
-                  <img
-                    src={url}
-                    alt={`Gallery ${idx}`}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
-                  />
-                  <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="bg-white/95 text-slate-800 p-2.5 rounded-full shadow font-extrabold text-xs">
-                      View Zoomed
-                    </span>
+                {/* Right Visual Image */}
+                <div className="lg:col-span-5 flex justify-center w-full">
+                  <div className={`relative w-full max-w-[460px] aspect-[4/3] rounded-3xl overflow-hidden ${siteData.theme === "gym" ? "border-slate-800" : "border-slate-100"} border-2 flex items-center justify-center shadow-2xl transition-transform hover:rotate-1 duration-500`}>
+                    {siteData.heroImageUrl ? (
+                      <img src={siteData.heroImageUrl} alt="Hero Banner" className="w-full h-full object-cover" />
+                    ) : siteData.theme === "medical" ? (
+                      <Image
+                        src="/dentist.png"
+                        alt="Business Banner"
+                        fill
+                        sizes="460px"
+                        style={{ objectFit: "cover" }}
+                        priority
+                      />
+                    ) : (
+                      <div className="flex flex-col items-center justify-center text-center p-8 h-full w-full bg-gradient-to-tr from-slate-900 to-slate-950 text-white relative">
+                        <span className="text-[80px] mb-4 filter drop-shadow-md">{style.bannerText}</span>
+                        <span className="text-xl font-black tracking-wide uppercase text-white">{siteData.businessName}</span>
+                        <span className="text-xs text-brand-green font-bold uppercase tracking-widest mt-2">{siteData.category}</span>
+                        <div className="absolute bottom-4 text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
+                          WhatsSite High-Fidelity Mockup
+                        </div>
+                      </div>
+                    )}
                   </div>
                 </div>
-              ))
-            ) : (
-              // Default stylized gallery preview cards based on theme
-              getFallbackGalleryItems().map((item, idx) => (
-                <div
-                  key={idx}
-                  className={`relative aspect-[4/3] rounded-2xl p-5 border ${style.cardBg} ${style.cardBorder} flex flex-col justify-between shadow-sm group hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-pointer`}
-                >
-                  <div className="flex justify-between items-start">
-                    <span className="text-[34px] filter drop-shadow">{item.icon}</span>
-                    <span className={`text-[9px] font-extrabold uppercase tracking-wider ${style.accentText}`}>Mockup {idx + 1}</span>
+
+              </div>
+            </section>
+          );
+        }
+
+        if (sectionId === 'about') {
+          return (
+            <section key="about" id="about" className={`py-20 px-6 sm:px-12 border-t ${style.dividerColor} ${style.lightBg} shrink-0`}>
+              <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+
+                <div className="lg:col-span-7">
+                  <div className="flex items-center gap-1.5 mb-3">
+                    <span className={`w-6 h-0.5 ${style.accent.split(" ")[0]}`}></span>
+                    <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText}`}>About Us</span>
                   </div>
-                  <div>
-                    <h4 className={`text-[13px] font-extrabold ${style.headingColor} mb-1 group-hover:${style.accentText} transition-colors`}>
-                      {item.title}
-                    </h4>
-                    <p className={`text-[10px] ${siteData.theme === "gym" ? "text-slate-400" : "text-slate-500"} leading-relaxed font-semibold`}>
-                      {item.desc}
+                  <h2 className={`text-2xl sm:text-3.5xl font-extrabold ${style.headingColor} tracking-tight mb-5`}>
+                    Our Story & Commitment
+                  </h2>
+                  <p className={`${siteData.theme === "gym" ? "text-slate-400" : "text-slate-550"} text-sm sm:text-base leading-relaxed mb-6 font-medium whitespace-pre-line`}>
+                    {siteData.about || "We are dedicated to offering exceptional value to our customers. Backed by expert experience and tools, our goal is to deliver top-notch services suited perfectly to your style and targets."}
+                  </p>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2.5 text-sm font-semibold">
+                      <span className={`w-5 h-5 rounded-full ${style.badge} flex items-center justify-center shrink-0`}>
+                        <Check className="w-3 h-3 text-current" />
+                      </span>
+                      <span className={style.headingColor}>Certified Professionals</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 text-sm font-semibold">
+                      <span className={`w-5 h-5 rounded-full ${style.badge} flex items-center justify-center shrink-0`}>
+                        <Check className="w-3 h-3 text-current" />
+                      </span>
+                      <span className={style.headingColor}>Premium Quality Standard</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 text-sm font-semibold">
+                      <span className={`w-5 h-5 rounded-full ${style.badge} flex items-center justify-center shrink-0`}>
+                        <Check className="w-3 h-3 text-current" />
+                      </span>
+                      <span className={style.headingColor}>100% Satisfaction Guarantee</span>
+                    </div>
+                    <div className="flex items-center gap-2.5 text-sm font-semibold">
+                      <span className={`w-5 h-5 rounded-full ${style.badge} flex items-center justify-center shrink-0`}>
+                        <Check className="w-3 h-3 text-current" />
+                      </span>
+                      <span className={style.headingColor}>Active Online Support</span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="lg:col-span-5 bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/60 shadow-lg flex flex-col justify-between h-full relative overflow-hidden">
+                  {siteData.theme === "gym" && <div className="absolute inset-0 bg-slate-900 z-0"></div>}
+
+                  <div className="relative z-10">
+                    <div className="w-12 h-12 bg-emerald-500/10 rounded-full flex items-center justify-center text-emerald-600 mb-5">
+                      <ShieldCheck className="w-6 h-6" />
+                    </div>
+                    <h3 className={`text-md font-extrabold ${style.headingColor} mb-2`}>
+                      Why Choose Us?
+                    </h3>
+                    <p className={`text-xs ${siteData.theme === "gym" ? "text-slate-400" : "text-slate-500"} leading-relaxed mb-6 font-medium`}>
+                      We prioritize user expectations and make sure that every interaction is backed by verified business safety and premium client delivery models.
                     </p>
                   </div>
-                </div>
-              ))
-            )}
-          </div>
-        </div>
-      </section>
 
-      {/* 7. Reviews / Testimonials Section */}
-      <section id="testimonials" className={`py-20 px-6 sm:px-12 bg-white border-t ${style.dividerColor} shrink-0`}>
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center max-w-xl mx-auto mb-16">
-            <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText} bg-slate-100 px-3.5 py-1.5 rounded-full`}>
-              Client Feedback
-            </span>
-            <h2 className="text-2xl sm:text-3.5xl font-extrabold text-slate-900 mb-3 tracking-tight mt-4">
-              What Customers Say
-            </h2>
-            <p className="text-slate-400 text-xs sm:text-sm font-semibold">
-              Read authentic evaluations left by regular visitors and verified clients.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6.5 max-w-6xl mx-auto">
-            {getTestimonials().map((t, idx) => (
-              <div
-                key={idx}
-                className="bg-slate-50/70 border border-slate-100 rounded-2xl p-6.5 flex flex-col justify-between hover:shadow-md hover:border-slate-200 transition-all duration-300"
-              >
-                <div>
-                  <div className="flex gap-1 mb-4 text-amber-400">
-                    {[1, 2, 3, 4, 5].map((s) => (
-                      <Star key={s} className="w-4 h-4 fill-current" />
-                    ))}
+                  <div className={`grid grid-cols-3 gap-2 border-t pt-5 relative z-10 ${siteData.theme === "gym" ? "border-slate-800" : "border-slate-100"}`}>
+                    <div className="text-center">
+                      <span className={`block text-xl font-black ${style.accentText}`}>99%</span>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Success</span>
+                    </div>
+                    <div className="text-center border-x border-slate-100 dark:border-slate-800">
+                      <span className={`block text-xl font-black ${style.accentText}`}>100+</span>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Clients</span>
+                    </div>
+                    <div className="text-center">
+                      <span className={`block text-xl font-black ${style.accentText}`}>5 Star</span>
+                      <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider">Reviews</span>
+                    </div>
                   </div>
-                  <p className="text-xs sm:text-[13px] text-slate-600 italic leading-relaxed font-semibold mb-5">
-                    "{t.text}"
+
+                </div>
+
+              </div>
+            </section>
+          );
+        }
+
+        if (sectionId === 'services') {
+          return (
+            <section key="services" id="services" className="py-20 px-6 sm:px-12 bg-white">
+              <div className="max-w-7xl mx-auto">
+                <div className="text-center max-w-xl mx-auto mb-16">
+                  <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText} bg-slate-100 px-3.5 py-1.5 rounded-full`}>
+                    Our Services
+                  </span>
+                  <h2 className="text-2xl sm:text-3.5xl font-extrabold text-slate-900 mb-3 tracking-tight mt-4">
+                    What We Do Best
+                  </h2>
+                  <p className="text-slate-400 text-xs sm:text-sm font-semibold">
+                    Explore premium solutions custom-designed for your operational requirements.
                   </p>
                 </div>
-                <div className="flex items-center gap-3 border-t border-slate-200/50 pt-4.5">
-                  <span className={`w-8.5 h-8.5 rounded-full ${style.lightBg} ${style.accentText} flex items-center justify-center font-extrabold text-xs shrink-0 shadow-inner`}>
-                    {t.name[0]}
-                  </span>
-                  <div>
-                    <h4 className="text-xs font-black text-slate-800">{t.name}</h4>
-                    <span className="text-[10px] text-slate-400 font-bold">{t.role}</span>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
 
-      {/* 8. Contact & Mock Inquiry Form Section */}
-      <section id="contact" className={`py-20 px-6 sm:px-12 border-t ${style.dividerColor} ${siteData.theme === "gym" ? "bg-slate-900" : "bg-slate-50/50"} shrink-0`}>
-        <div className="max-w-7xl mx-auto">
-
-          <div className="text-center max-w-xl mx-auto mb-16">
-            <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText} bg-slate-100 px-3.5 py-1.5 rounded-full`}>
-              Get In Touch
-            </span>
-            <h2 className={`text-2xl sm:text-3.5xl font-extrabold ${style.headingColor} mb-3 tracking-tight mt-4`}>
-              Contact Us Today
-            </h2>
-            <p className="text-slate-400 text-xs sm:text-sm font-semibold">
-              Reach out directly to ask questions, check availability, or book slots.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 max-w-6xl mx-auto">
-
-            {/* Left Col - Address Cards */}
-            <div className="lg:col-span-5 flex flex-col gap-5">
-
-              <div className={`p-5 rounded-2xl border bg-white ${style.cardBorder} flex gap-4 shadow-sm`}>
-                <div className={`w-10 h-10 rounded-full ${style.lightBg} flex items-center justify-center shrink-0`}>
-                  <Phone className={`w-4 h-4 ${style.accentText}`} />
-                </div>
-                <div>
-                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">Phone Number</h4>
-                  <a href={`tel:${siteData.phone}`} className="text-sm font-black text-slate-800 hover:underline">
-                    {siteData.phone || "+91 99999 88888"}
-                  </a>
-                </div>
-              </div>
-
-              <div className={`p-5 rounded-2xl border bg-white ${style.cardBorder} flex gap-4 shadow-sm`}>
-                <div className={`w-10 h-10 rounded-full ${style.lightBg} flex items-center justify-center shrink-0`}>
-                  <Mail className={`w-4 h-4 ${style.accentText}`} />
-                </div>
-                <div>
-                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">Email Support</h4>
-                  <a href={`mailto:${siteData.email}`} className="text-sm font-black text-slate-800 hover:underline">
-                    {siteData.email || "support@company.com"}
-                  </a>
-                </div>
-              </div>
-
-              <div className={`p-5 rounded-2xl border bg-white ${style.cardBorder} flex gap-4 shadow-sm`}>
-                <div className={`w-10 h-10 rounded-full ${style.lightBg} flex items-center justify-center shrink-0`}>
-                  <MapPin className={`w-4 h-4 ${style.accentText}`} />
-                </div>
-                <div>
-                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">Location Address</h4>
-                  <span className="text-xs font-semibold text-slate-700 leading-relaxed block">
-                    {siteData.address || "New Delhi, India"}
-                  </span>
-                </div>
-              </div>
-
-              <div className={`p-5 rounded-2xl border bg-white ${style.cardBorder} flex gap-4 shadow-sm`}>
-                <div className={`w-10 h-10 rounded-full ${style.lightBg} flex items-center justify-center shrink-0`}>
-                  <Clock className={`w-4 h-4 ${style.accentText}`} />
-                </div>
-                <div>
-                  <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">Business Hours</h4>
-                  <span className="text-xs font-bold text-slate-700 block">
-                    Monday - Saturday: 9:00 AM - 8:00 PM
-                  </span>
-                  <span className="text-[10px] text-red-500 font-bold block mt-0.5">
-                    Sunday: Closed
-                  </span>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Right Col - Interactive Mock Form & Map */}
-            <div className="lg:col-span-7 flex flex-col gap-6">
-
-              <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-md">
-                <h3 className="text-md sm:text-lg font-black text-slate-900 mb-1.5 flex items-center gap-1">
-                  Send Quick Inquiry
-                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
-                </h3>
-                <p className="text-xs text-slate-400 font-bold mb-6">
-                  Fill in your requirements and we will contact you directly via WhatsApp/Call.
-                </p>
-
-                {formSubmitted ? (
-                  <div className="bg-emerald-55 border border-emerald-200 text-emerald-800 p-5 rounded-2xl flex items-center gap-3 animate-fade-in shadow-inner">
-                    <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold shrink-0 shadow">
-                      ✓
-                    </div>
-                    <div>
-                      <h4 className="text-xs font-black">Inquiry Submitted!</h4>
-                      <p className="text-[10.5px] text-emerald-700 font-bold mt-0.5">
-                        Thank you for reaching out. We will get back to you shortly.
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                  {(siteData.services.length > 0 ? siteData.services : style.servicesDefault).map((service, idx) => (
+                    <div
+                      key={idx}
+                      className={`bg-white border rounded-2xl p-6 text-center flex flex-col items-center justify-center hover:-translate-y-1 hover:shadow-md transition-all duration-300 ${style.cardBorder}`}
+                    >
+                      <div className={`w-11 h-11 rounded-full ${style.lightBg} flex items-center justify-center mb-4`}>
+                        <span className={`w-3.5 h-3.5 rounded-full ${style.accent.split(" ")[0]} shadow-inner`}></span>
+                      </div>
+                      <h3 className="text-sm sm:text-[14.5px] font-extrabold text-slate-850 leading-snug line-clamp-2">
+                        {service}
+                      </h3>
+                      <p className="text-[10.5px] text-slate-400 font-semibold mt-2.5">
+                        Premium Quality Standard
                       </p>
                     </div>
-                  </div>
-                ) : (
-                  <form onSubmit={handleInquirySubmit} className="flex flex-col gap-4">
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Full Name</label>
-                        <input
-                          type="text"
-                          required
-                          value={formName}
-                          onChange={(e) => setFormName(e.target.value)}
-                          placeholder="e.g. Amit Sharma"
-                          className="bg-slate-50 border border-slate-200 rounded-xl px-4.5 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-slate-400"
-                        />
-                      </div>
-                      <div className="flex flex-col gap-1.5">
-                        <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Email Address</label>
-                        <input
-                          type="email"
-                          required
-                          value={formEmail}
-                          onChange={(e) => setFormEmail(e.target.value)}
-                          placeholder="e.g. amit@gmail.com"
-                          className="bg-slate-50 border border-slate-200 rounded-xl px-4.5 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-slate-400"
-                        />
-                      </div>
-                    </div>
-                    <div className="flex flex-col gap-1.5">
-                      <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Your Message / Requirement</label>
-                      <textarea
-                        required
-                        rows="3"
-                        value={formMessage}
-                        onChange={(e) => setFormMessage(e.target.value)}
-                        placeholder="Tell us what services or consultation booking slot you are looking for..."
-                        className="bg-slate-50 border border-slate-200 rounded-xl px-4.5 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-slate-400"
-                      ></textarea>
-                    </div>
-
-                    <button
-                      type="submit"
-                      className={`w-full flex items-center justify-center gap-2 ${style.accent} py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow transition-all hover:scale-101 cursor-pointer`}
-                    >
-                      Send Message <Send className="w-3.5 h-3.5" />
-                    </button>
-                  </form>
-                )}
-              </div>
-
-              {/* Styled Mock Map Frame */}
-              <div className="relative rounded-3xl h-[160px] overflow-hidden bg-slate-200 border border-slate-300/40 shadow flex items-center justify-center text-slate-400 group">
-                <div className="absolute inset-0 bg-slate-100 flex flex-col items-center justify-center gap-1.5 p-4 text-center z-10">
-                  <div className="w-9 h-9 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 mb-1">
-                    <MapPin className="w-5 h-5 fill-current text-red-500" />
-                  </div>
-                  <h4 className="text-xs font-black text-slate-800">Explore on Google Maps</h4>
-                  <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
-                    {siteData.address || "New Delhi, India"}
-                  </p>
-                  <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteData.address || "New Delhi, India")}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="absolute top-3 right-3 text-[10px] font-black bg-white hover:bg-slate-50 text-slate-800 px-3 py-1.5 rounded-lg border shadow-sm flex items-center gap-1 transition-all group-hover:scale-102"
-                  >
-                    Open Map <ExternalLink className="w-3 h-3" />
-                  </a>
+                  ))}
                 </div>
               </div>
+            </section>
+          );
+        }
 
-            </div>
+        if (sectionId === 'gallery') {
+          return (
+            <section key="gallery" id="gallery" className={`py-20 px-6 sm:px-12 border-t ${style.dividerColor} ${siteData.theme === "gym" ? "bg-slate-950" : "bg-slate-50/50"} shrink-0`}>
+              <div className="max-w-7xl mx-auto">
+                <div className="text-center max-w-xl mx-auto mb-16">
+                  <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText} bg-slate-105 px-3.5 py-1.5 rounded-full`}>
+                    Visual Showcase
+                  </span>
+                  <h2 className={`text-2xl sm:text-3.5xl font-extrabold ${style.headingColor} mb-3 tracking-tight mt-4`}>
+                    Business Gallery
+                  </h2>
+                  <p className="text-slate-400 text-xs sm:text-sm font-semibold">
+                    Take a closer look at our premises, equipment, and recent works.
+                  </p>
+                </div>
 
-          </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto">
+                  {siteData.galleryUrls.length > 0 ? (
+                    siteData.galleryUrls.map((url, idx) => (
+                      <div
+                        key={idx}
+                        className="relative aspect-[4/3] rounded-2xl overflow-hidden bg-slate-200 border border-slate-105 shadow-md group cursor-pointer"
+                      >
+                        <img
+                          src={url}
+                          alt={`Gallery ${idx}`}
+                          className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-108"
+                        />
+                        <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
+                          <span className="bg-white/95 text-slate-800 p-2.5 rounded-full shadow font-extrabold text-xs">
+                            View Zoomed
+                          </span>
+                        </div>
+                      </div>
+                    ))
+                  ) : (
+                    // Default stylized gallery preview cards based on theme
+                    getFallbackGalleryItems().map((item, idx) => (
+                      <div
+                        key={idx}
+                        className={`relative aspect-[4/3] rounded-2xl p-5 border ${style.cardBg} ${style.cardBorder} flex flex-col justify-between shadow-sm group hover:-translate-y-1 hover:shadow-md transition-all duration-300 cursor-pointer`}
+                      >
+                        <div className="flex justify-between items-start">
+                          <span className="text-[34px] filter drop-shadow">{item.icon}</span>
+                          <span className={`text-[9px] font-extrabold uppercase tracking-wider ${style.accentText}`}>Mockup {idx + 1}</span>
+                        </div>
+                        <div>
+                          <h4 className={`text-[13px] font-extrabold ${style.headingColor} mb-1 group-hover:${style.accentText} transition-colors`}>
+                            {item.title}
+                          </h4>
+                          <p className={`text-[10px] ${siteData.theme === "gym" ? "text-slate-400" : "text-slate-500"} leading-relaxed font-semibold`}>
+                            {item.desc}
+                          </p>
+                        </div>
+                      </div>
+                    ))
+                  )}
+                </div>
+              </div>
+            </section>
+          );
+        }
 
-        </div>
-      </section>
+        if (sectionId === 'testimonials') {
+          return (
+            <section key="testimonials" id="testimonials" className={`py-20 px-6 sm:px-12 bg-white border-t ${style.dividerColor} shrink-0`}>
+              <div className="max-w-7xl mx-auto">
+                <div className="text-center max-w-xl mx-auto mb-16">
+                  <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText} bg-slate-100 px-3.5 py-1.5 rounded-full`}>
+                    Client Feedback
+                  </span>
+                  <h2 className="text-2xl sm:text-3.5xl font-extrabold text-slate-900 mb-3 tracking-tight mt-4">
+                    What Customers Say
+                  </h2>
+                  <p className="text-slate-400 text-xs sm:text-sm font-semibold">
+                    Read authentic evaluations left by regular visitors and verified clients.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6.5 max-w-6xl mx-auto">
+                  {getTestimonials().map((t, idx) => (
+                    <div
+                      key={idx}
+                      className="bg-slate-50/70 border border-slate-100 rounded-2xl p-6.5 flex flex-col justify-between hover:shadow-md hover:border-slate-200 transition-all duration-300"
+                    >
+                      <div>
+                        <div className="flex gap-1 mb-4 text-amber-400">
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Star key={s} className="w-4 h-4 fill-current" />
+                          ))}
+                        </div>
+                        <p className="text-xs sm:text-[13px] text-slate-600 italic leading-relaxed font-semibold mb-5">
+                          "{t.text}"
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 border-t border-slate-200/50 pt-4.5">
+                        <span className={`w-8.5 h-8.5 rounded-full ${style.lightBg} ${style.accentText} flex items-center justify-center font-extrabold text-xs shrink-0 shadow-inner`}>
+                          {t.name[0]}
+                        </span>
+                        <div>
+                          <h4 className="text-xs font-black text-slate-800">{t.name}</h4>
+                          <span className="text-[10px] text-slate-400 font-bold">{t.role}</span>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          );
+        }
+
+        if (sectionId === 'contact') {
+          return (
+            <section key="contact" id="contact" className={`py-20 px-6 sm:px-12 border-t ${style.dividerColor} ${siteData.theme === "gym" ? "bg-slate-900" : "bg-slate-50/50"} shrink-0`}>
+              <div className="max-w-7xl mx-auto">
+
+                <div className="text-center max-w-xl mx-auto mb-16">
+                  <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText} bg-slate-100 px-3.5 py-1.5 rounded-full`}>
+                    Get In Touch
+                  </span>
+                  <h2 className={`text-2xl sm:text-3.5xl font-extrabold ${style.headingColor} mb-3 tracking-tight mt-4`}>
+                    Contact Us Today
+                  </h2>
+                  <p className="text-slate-400 text-xs sm:text-sm font-semibold">
+                    Reach out directly to ask questions, check availability, or book slots.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 max-w-6xl mx-auto">
+
+                  {/* Left Col - Address Cards */}
+                  <div className="lg:col-span-5 flex flex-col gap-5">
+
+                    <div className={`p-5 rounded-2xl border bg-white ${style.cardBorder} flex gap-4 shadow-sm`}>
+                      <div className={`w-10 h-10 rounded-full ${style.lightBg} flex items-center justify-center shrink-0`}>
+                        <Phone className={`w-4 h-4 ${style.accentText}`} />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">Phone Number</h4>
+                        <a href={`tel:${siteData.phone}`} className="text-sm font-black text-slate-800 hover:underline">
+                          {siteData.phone || "+91 99999 88888"}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className={`p-5 rounded-2xl border bg-white ${style.cardBorder} flex gap-4 shadow-sm`}>
+                      <div className={`w-10 h-10 rounded-full ${style.lightBg} flex items-center justify-center shrink-0`}>
+                        <Mail className={`w-4 h-4 ${style.accentText}`} />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">Email Support</h4>
+                        <a href={`mailto:${siteData.email}`} className="text-sm font-black text-slate-800 hover:underline">
+                          {siteData.email || "support@company.com"}
+                        </a>
+                      </div>
+                    </div>
+
+                    <div className={`p-5 rounded-2xl border bg-white ${style.cardBorder} flex gap-4 shadow-sm`}>
+                      <div className={`w-10 h-10 rounded-full ${style.lightBg} flex items-center justify-center shrink-0`}>
+                        <MapPin className={`w-4 h-4 ${style.accentText}`} />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">Location Address</h4>
+                        <span className="text-xs font-semibold text-slate-700 leading-relaxed block">
+                          {siteData.address || "New Delhi, India"}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className={`p-5 rounded-2xl border bg-white ${style.cardBorder} flex gap-4 shadow-sm`}>
+                      <div className={`w-10 h-10 rounded-full ${style.lightBg} flex items-center justify-center shrink-0`}>
+                        <Clock className={`w-4 h-4 ${style.accentText}`} />
+                      </div>
+                      <div>
+                        <h4 className="text-xs font-black text-slate-400 uppercase tracking-wider mb-0.5">Business Hours</h4>
+                        <span className="text-xs font-bold text-slate-700 block">
+                          Monday - Saturday: 9:00 AM - 8:00 PM
+                        </span>
+                        <span className="text-[10px] text-red-500 font-bold block mt-0.5">
+                          Sunday: Closed
+                        </span>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  {/* Right Col - Interactive Mock Form & Map */}
+                  <div className="lg:col-span-7 flex flex-col gap-6">
+
+                    <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-205 shadow-md">
+                      <h3 className="text-md sm:text-lg font-black text-slate-900 mb-1.5 flex items-center gap-1">
+                        Send Quick Inquiry
+                        <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full"></span>
+                      </h3>
+                      <p className="text-xs text-slate-400 font-bold mb-6">
+                        Fill in your requirements and we will contact you directly via WhatsApp/Call.
+                      </p>
+
+                      {formSubmitted ? (
+                        <div className="bg-emerald-55 border border-emerald-205 text-emerald-800 p-5 rounded-2xl flex items-center gap-3 animate-fade-in shadow-inner">
+                          <div className="w-8 h-8 rounded-full bg-emerald-500 flex items-center justify-center text-white font-bold shrink-0 shadow">
+                            ✓
+                          </div>
+                          <div>
+                            <h4 className="text-xs font-black">Inquiry Submitted!</h4>
+                            <p className="text-[10.5px] text-emerald-700 font-bold mt-0.5">
+                              Thank you for reaching out. We will get back to you shortly.
+                            </p>
+                          </div>
+                        </div>
+                      ) : (
+                        <form onSubmit={handleInquirySubmit} className="flex flex-col gap-4">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div className="flex flex-col gap-1.5">
+                              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Full Name</label>
+                              <input
+                                type="text"
+                                required
+                                value={formName}
+                                onChange={(e) => setFormName(e.target.value)}
+                                placeholder="e.g. Amit Sharma"
+                                className="bg-slate-50 border border-slate-200 rounded-xl px-4.5 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-slate-400"
+                              />
+                            </div>
+                            <div className="flex flex-col gap-1.5">
+                              <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Email Address</label>
+                              <input
+                                type="email"
+                                required
+                                value={formEmail}
+                                onChange={(e) => setFormEmail(e.target.value)}
+                                placeholder="e.g. amit@gmail.com"
+                                className="bg-slate-50 border border-slate-200 rounded-xl px-4.5 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-slate-400"
+                              />
+                            </div>
+                          </div>
+                          <div className="flex flex-col gap-1.5">
+                            <label className="text-[10px] font-black uppercase tracking-wider text-slate-400">Your Message / Requirement</label>
+                            <textarea
+                              required
+                              rows="3"
+                              value={formMessage}
+                              onChange={(e) => setFormMessage(e.target.value)}
+                              placeholder="Tell us what services or consultation booking slot you are looking for..."
+                              className="bg-slate-50 border border-slate-205 rounded-xl px-4.5 py-3 text-xs font-semibold focus:outline-none focus:ring-1 focus:ring-slate-400"
+                            ></textarea>
+                          </div>
+
+                          <button
+                            type="submit"
+                            className={`w-full flex items-center justify-center gap-2 ${style.accent} py-3.5 rounded-xl font-bold text-xs uppercase tracking-wider shadow transition-all hover:scale-101 cursor-pointer`}
+                          >
+                            Send Message <Send className="w-3.5 h-3.5" />
+                          </button>
+                        </form>
+                      )}
+                    </div>
+
+                    {/* Styled Mock Map Frame */}
+                    <div className="relative rounded-3xl h-[160px] overflow-hidden bg-slate-200 border border-slate-300/40 shadow flex items-center justify-center text-slate-400 group">
+                      <div className="absolute inset-0 bg-slate-100 flex flex-col items-center justify-center gap-1.5 p-4 text-center z-10">
+                        <div className="w-9 h-9 bg-red-500/10 rounded-full flex items-center justify-center text-red-500 mb-1">
+                          <MapPin className="w-5 h-5 fill-current text-red-500" />
+                        </div>
+                        <h4 className="text-xs font-black text-slate-800">Explore on Google Maps</h4>
+                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-wider">
+                          {siteData.address || "New Delhi, India"}
+                        </p>
+                        <a
+                          href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(siteData.address || "New Delhi, India")}`}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="absolute top-3 right-3 text-[10px] font-black bg-white hover:bg-slate-50 text-slate-800 px-3 py-1.5 rounded-lg border shadow-sm flex items-center gap-1 transition-all group-hover:scale-102"
+                        >
+                          Open Map <ExternalLink className="w-3 h-3" />
+                        </a>
+                      </div>
+                    </div>
+
+                  </div>
+
+                </div>
+
+              </div>
+            </section>
+          );
+        }
+
+        // Custom section rendering
+        const customSection = (siteData.customSections || []).find((cs) => cs.id === sectionId);
+        if (customSection) {
+          return (
+            <section
+              key={customSection.id}
+              id={customSection.id}
+              className={`py-20 px-6 sm:px-12 border-t ${style.dividerColor} ${siteData.theme === "gym" ? "bg-slate-950" : "bg-slate-50/50"} shrink-0`}
+            >
+              <div className="max-w-7xl mx-auto">
+                <div className="flex items-center gap-1.5 mb-3">
+                  <span className={`w-6 h-0.5 ${style.accent.split(" ")[0]}`}></span>
+                  <span className={`text-[10px] font-extrabold uppercase tracking-widest ${style.accentText}`}>
+                    {customSection.title}
+                  </span>
+                </div>
+                <h2 className={`text-2xl sm:text-3.5xl font-extrabold ${style.headingColor} tracking-tight mb-5`}>
+                  {customSection.title}
+                </h2>
+                {customSection.content && (
+                  <p className={`${siteData.theme === "gym" ? "text-slate-400" : "text-slate-550"} text-sm sm:text-base leading-relaxed mb-6 font-medium whitespace-pre-line`}>
+                    {customSection.content}
+                  </p>
+                )}
+                {customSection.items && customSection.items.length > 0 && (
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                    {customSection.items.map((item, itemIdx) => (
+                      <div
+                        key={itemIdx}
+                        className={`bg-white border rounded-2xl p-6 flex flex-col hover:-translate-y-1 hover:shadow-md transition-all duration-300 ${style.cardBorder}`}
+                      >
+                        <div className="flex items-start gap-3">
+                          <span className={`w-5 h-5 rounded-full ${style.badge} flex items-center justify-center shrink-0 mt-0.5`}>
+                            <Check className="w-3 h-3 text-current" />
+                          </span>
+                          <span className={`text-sm sm:text-[14.5px] font-extrabold ${style.headingColor} leading-snug`}>
+                            {item}
+                          </span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </section>
+          );
+        }
+
+        return null;
+      })}
 
       {/* 9. Footer */}
       <footer className={`${style.footerBg} ${style.footerText} py-14 px-6 sm:px-12 border-t border-white/5`}>

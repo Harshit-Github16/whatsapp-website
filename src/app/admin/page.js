@@ -379,6 +379,7 @@ export default function AdminDashboard() {
               { id: "general", label: "General", icon: Settings },
               { id: "theme", label: "Theme", icon: Palette },
               { id: "sections", label: "Sections", icon: Layers },
+              { id: "custom", label: "Custom", icon: Plus },
               { id: "content", label: "Content", icon: FileText },
               { id: "images", label: "Images", icon: ImageIcon }
             ].map(({ id, label, icon: Icon }) => (
@@ -546,7 +547,7 @@ export default function AdminDashboard() {
                     >
                       <div className="flex items-center gap-3">
                         <span className="w-6 h-6 rounded-lg bg-slate-50 border border-slate-205 flex items-center justify-center text-[10px] font-black text-slate-500">{idx + 1}</span>
-                        <span className="text-xs font-bold text-slate-900 capitalize">{sectionLabels[section] || section}</span>
+                        <span className="text-xs font-bold text-slate-900 capitalize">{sectionLabels[section] || (businessData.customSections || []).find(cs => cs.id === section)?.title || section}</span>
                       </div>
 
                       {/* Direction controls */}
@@ -569,6 +570,194 @@ export default function AdminDashboard() {
                     </div>
                   ))}
                 </div>
+              </div>
+            )}
+
+            {/* TAB: Custom Sections */}
+            {activeTab === "custom" && (
+              <div className="space-y-6 animate-fade-in">
+                <div className="border-b border-slate-200 pb-3">
+                  <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+                    <Plus className="w-4 h-4 text-brand-green" /> Custom Sections
+                  </h3>
+                  <p className="text-[10px] text-slate-500 font-semibold mt-1">
+                    Add, edit, or delete custom sections (like products or portfolios)
+                  </p>
+                </div>
+
+                {/* List of existing custom sections */}
+                <div className="space-y-4">
+                  <h4 className="text-[11px] font-black text-slate-500 uppercase tracking-widest">Your Custom Sections</h4>
+                  
+                  <div className="space-y-3">
+                    {(businessData.customSections || []).map((section, idx) => (
+                      <div key={section.id} className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-3">
+                        <div className="flex justify-between items-center border-b border-slate-100 pb-2">
+                          <span className="text-xs font-black text-slate-900">{section.title}</span>
+                          <button
+                            onClick={() => {
+                              // Delete custom section
+                              const updatedSections = (businessData.customSections || []).filter(s => s.id !== section.id);
+                              const updatedOrder = (businessData.sectionOrder || []).filter(id => id !== section.id);
+                              setBusinessData(prev => ({
+                                ...prev,
+                                customSections: updatedSections,
+                                sectionOrder: updatedOrder
+                              }));
+                            }}
+                            className="text-slate-400 hover:text-red-500 p-1 rounded transition-colors cursor-pointer"
+                          >
+                            <Trash className="w-4 h-4" />
+                          </button>
+                        </div>
+                        
+                        {/* Edit fields for the existing custom section */}
+                        <div className="space-y-2.5">
+                          <div className="space-y-1">
+                            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Section Title</label>
+                            <input
+                              type="text"
+                              value={section.title}
+                              onChange={(e) => {
+                                const updatedSections = [...(businessData.customSections || [])];
+                                updatedSections[idx].title = e.target.value;
+                                handleInputChange("customSections", updatedSections);
+                              }}
+                              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none"
+                            />
+                          </div>
+
+                          <div className="space-y-1">
+                            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Description / Content</label>
+                            <textarea
+                              rows="3"
+                              value={section.content || ""}
+                              onChange={(e) => {
+                                const updatedSections = [...(businessData.customSections || [])];
+                                updatedSections[idx].content = e.target.value;
+                                handleInputChange("customSections", updatedSections);
+                              }}
+                              className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none resize-none"
+                            ></textarea>
+                          </div>
+
+                          {/* Items / Product bullet points list editor */}
+                          <div className="space-y-1.5">
+                            <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Section Items / Products</label>
+                            <div className="flex gap-1.5">
+                              <input
+                                type="text"
+                                placeholder="Add list item (e.g. Dental Braces - $500)"
+                                id={`new-item-input-${section.id}`}
+                                className="flex-1 bg-slate-50 border border-slate-200 text-slate-900 text-xs font-semibold rounded-xl px-3 py-2 focus:outline-none"
+                                onKeyDown={(e) => {
+                                  if (e.key === 'Enter') {
+                                    e.preventDefault();
+                                    const val = e.target.value.trim();
+                                    if (!val) return;
+                                    const updatedSections = [...(businessData.customSections || [])];
+                                    updatedSections[idx].items = [...(updatedSections[idx].items || []), val];
+                                    handleInputChange("customSections", updatedSections);
+                                    e.target.value = "";
+                                  }
+                                }}
+                              />
+                              <button
+                                onClick={() => {
+                                  const input = document.getElementById(`new-item-input-${section.id}`);
+                                  const val = input.value.trim();
+                                  if (!val) return;
+                                  const updatedSections = [...(businessData.customSections || [])];
+                                  updatedSections[idx].items = [...(updatedSections[idx].items || []), val];
+                                  handleInputChange("customSections", updatedSections);
+                                  input.value = "";
+                                }}
+                                className="bg-slate-100 hover:bg-slate-200 text-slate-805 px-3 rounded-xl text-xs font-bold"
+                              >
+                                Add
+                              </button>
+                            </div>
+
+                            {/* List of items */}
+                            <div className="space-y-1.5 max-h-[120px] overflow-y-auto pt-1">
+                              {(section.items || []).map((item, itemIdx) => (
+                                <div key={itemIdx} className="bg-slate-50 border border-slate-150 rounded-lg px-3 py-1.5 flex items-center justify-between text-[11px] text-slate-800">
+                                  <span>{item}</span>
+                                  <button
+                                    onClick={() => {
+                                      const updatedSections = [...(businessData.customSections || [])];
+                                      updatedSections[idx].items = updatedSections[idx].items.filter((_, i) => i !== itemIdx);
+                                      handleInputChange("customSections", updatedSections);
+                                    }}
+                                    className="text-slate-400 hover:text-red-500 p-0.5"
+                                  >
+                                    <Trash className="w-3.5 h-3.5" />
+                                  </button>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    {(businessData.customSections || []).length === 0 && (
+                      <p className="text-center text-[10px] text-slate-400 py-6 font-semibold bg-white border border-slate-200 border-dashed rounded-2xl">
+                        No custom sections yet. Add one below!
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                {/* Add New Section Form */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm space-y-4">
+                  <h4 className="text-[11px] font-black text-slate-900 uppercase tracking-widest flex items-center gap-1.5">
+                    <Plus className="w-4 h-4 text-brand-green" /> Create New Section
+                  </h4>
+                  
+                  <div className="space-y-3">
+                    <div className="space-y-1.5">
+                      <label className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Section Name / Title</label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Our Products, Dynamic Team"
+                        id="new-section-title"
+                        className="w-full bg-slate-50 border border-slate-200 text-slate-900 text-xs font-semibold rounded-xl px-4 py-3 focus:outline-none"
+                      />
+                    </div>
+                    
+                    <button
+                      onClick={() => {
+                        const titleInput = document.getElementById("new-section-title");
+                        const title = titleInput.value.trim();
+                        if (!title) return;
+                        
+                        const newId = `custom_${Date.now()}`;
+                        const newSection = {
+                          id: newId,
+                          title: title,
+                          content: "",
+                          items: []
+                        };
+                        
+                        const updatedSections = [...(businessData.customSections || []), newSection];
+                        const updatedOrder = [...(businessData.sectionOrder || ["home", "about", "services", "gallery", "testimonials", "contact"]), newId];
+                        
+                        setBusinessData(prev => ({
+                          ...prev,
+                          customSections: updatedSections,
+                          sectionOrder: updatedOrder
+                        }));
+                        
+                        titleInput.value = "";
+                      }}
+                      className="w-full bg-brand-green hover:bg-brand-green-hover text-white py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all cursor-pointer"
+                    >
+                      Add Custom Section
+                    </button>
+                  </div>
+                </div>
+
               </div>
             )}
 

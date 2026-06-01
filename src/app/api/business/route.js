@@ -39,7 +39,7 @@ export async function GET(request) {
 export async function POST(request) {
     try {
         const data = await request.json();
-        const { slug, businessName, category, about, services, logoUrl, heroImageUrl, galleryUrls, phone, email, address, theme, ownerName, sectionOrder } = data;
+        const { slug, businessName, category, about, services, logoUrl, heroImageUrl, galleryUrls, phone, email, address, theme, ownerName, sectionOrder, customSections } = data;
 
         if (!slug || !businessName) {
             return NextResponse.json(
@@ -91,6 +91,9 @@ export async function POST(request) {
             if (sectionOrder) {
                 business.sectionOrder = sectionOrder;
             }
+            if (customSections) {
+                business.customSections = customSections;
+            }
 
             await business.save();
 
@@ -124,6 +127,7 @@ export async function POST(request) {
                 address: address || '',
                 theme: theme || 'medical',
                 sectionOrder: sectionOrder || ['home', 'about', 'services', 'gallery', 'testimonials', 'contact'],
+                customSections: customSections || [],
                 isPublished: false,
                 paymentStatus: 'pending',
             });

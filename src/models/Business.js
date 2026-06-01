@@ -87,6 +87,17 @@ const BusinessSchema = new mongoose.Schema(
             type: [String],
             default: ['home', 'about', 'services', 'gallery', 'testimonials', 'contact'],
         },
+        customSections: {
+            type: [
+                {
+                    id: { type: String, required: true },
+                    title: { type: String, required: true },
+                    content: { type: String, default: "" },
+                    items: { type: [String], default: [] }
+                }
+            ],
+            default: []
+        },
     },
     {
         timestamps: true,
