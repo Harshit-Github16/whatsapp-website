@@ -140,19 +140,22 @@ export async function POST(request) {
     // Twilio sends data as application/x-www-form-urlencoded
     let fromPhone = '';
     let userText = '';
+    let mediaUrl = '';
 
     try {
       const formData = await request.formData();
       fromPhone = formData.get('From');
-      userText = formData.get('Body')?.toString().trim();
+      userText = formData.get('Body')?.toString().trim() || '';
+      mediaUrl = formData.get('MediaUrl0')?.toString().trim() || '';
     } catch (e) {
       const rawText = await request.text();
       const params = new URLSearchParams(rawText);
       fromPhone = params.get('From');
-      userText = params.get('Body')?.toString().trim();
+      userText = params.get('Body')?.toString().trim() || '';
+      mediaUrl = params.get('MediaUrl0')?.toString().trim() || '';
     }
 
-    if (!fromPhone || !userText) {
+    if (!fromPhone || (!userText && !mediaUrl)) {
       return twimlResponse("Error: Missing parameters.");
     }
 
@@ -165,6 +168,34 @@ export async function POST(request) {
 
     // Search for existing business under onboarding
     let business = await Business.findOne({ phone });
+
+    // Check if user specifically requested to start over or reset
+    const isResetRequested = userText.toLowerCase() === 'start' || userText.toLowerCase() === 'reset';
+
+    if (isResetRequested && business) {
+      // Reset business to initial draft status
+      const tempSlug = `temp-${Date.now()}`;
+      business.slug = tempSlug;
+      business.businessName = 'Temporary Business';
+      business.ownerName = '';
+      business.category = 'Local Business';
+      business.about = '';
+      business.services = [];
+      business.logoUrl = '';
+      business.heroImageUrl = '';
+      business.galleryUrls = [];
+      business.email = '';
+      business.address = '';
+      business.theme = 'medical';
+      business.isPublished = false;
+      business.paymentStatus = 'pending';
+      business.paymentId = '';
+      business.orderId = '';
+      business.set('onboardingStep', 'OWNER_NAME');
+      await business.save();
+
+      return twimlResponse(`🔄 Let's start fresh! Let's create a premium website for your business in 5 minutes!\n\nTo get started, please tell us:\n*What is your name?*`);
+    }
 
     // 1. Initial State: No record found
     if (!business) {
@@ -234,9 +265,9 @@ export async function POST(request) {
       case 'AI_DECISION': {
         const choice = userText.replace(/\*/g, '').trim();
         if (choice === '1' || choice.toLowerCase() === 'yes') {
-          business.set('onboardingStep', 'EMAIL');
+          business.set('onboardingStep', 'LOGO');
           await business.save();
-          return twimlResponse(`Awesome! Let's proceed.\n\n*What is your business email address?* (Or reply *skip*)`);
+          return twimlResponse(`Awesome! Let's add images to make your website look stunning. 📷\n\n*Please upload your business logo*, or reply *skip* to use a default icon.`);
         } else if (choice === '2' || choice.toLowerCase() === 'no') {
           business.set('onboardingStep', 'MANUAL_ABOUT');
           await business.save();
@@ -257,10 +288,60 @@ export async function POST(request) {
       case 'MANUAL_SERVICES': {
         const servicesArray = userText.split(',').map(s => s.trim()).filter(Boolean);
         business.services = servicesArray;
-        business.set('onboardingStep', 'EMAIL');
+        business.set('onboardingStep', 'LOGO');
         await business.save();
 
-        return twimlResponse(`Great! *What is your business email address?* (Or reply *skip*)`);
+        return twimlResponse(`Great services list! Let's add images to make your website look stunning. 📷\n\n*Please upload your business logo*, or reply *skip* to use a default icon.`);
+      }
+
+      case 'LOGO': {
+        const lowerVal = userText.toLowerCase().replace(/\*/g, '').trim();
+        if (mediaUrl) {
+          business.logoUrl = mediaUrl;
+          business.set('onboardingStep', 'HERO_IMAGE');
+          await business.save();
+          return twimlResponse(`Got it! Your logo has been saved. 📷\n\nNow, let's select a hero banner image for your website homepage. *Please upload a hero banner image*, or reply *skip*.`);
+        } else if (lowerVal === 'skip') {
+          business.set('onboardingStep', 'HERO_IMAGE');
+          await business.save();
+          return twimlResponse(`Logo skipped.\n\nNow, let's select a hero banner image for your website homepage. *Please upload a hero banner image*, or reply *skip*.`);
+        } else {
+          return twimlResponse(`Please upload an image file for your logo, or reply *skip* to proceed.`);
+        }
+      }
+
+      case 'HERO_IMAGE': {
+        const lowerVal = userText.toLowerCase().replace(/\*/g, '').trim();
+        if (mediaUrl) {
+          business.heroImageUrl = mediaUrl;
+          business.set('onboardingStep', 'GALLERY');
+          await business.save();
+          return twimlResponse(`Awesome hero banner! Website visual updated. 📷\n\nNow, please upload 2-3 gallery images (portfolio, office photos, products) so customers can see your work. Send one image at a time, or reply *skip* / *done* when finished.`);
+        } else if (lowerVal === 'skip') {
+          business.set('onboardingStep', 'GALLERY');
+          await business.save();
+          return twimlResponse(`Hero banner image skipped.\n\nNow, please upload 2-3 gallery images (portfolio, office photos, products) so customers can see your work. Send one image at a time, or reply *skip* / *done* when finished.`);
+        } else {
+          return twimlResponse(`Please upload a hero banner image file, or reply *skip* to proceed.`);
+        }
+      }
+
+      case 'GALLERY': {
+        const lowerVal = userText.toLowerCase().replace(/\*/g, '').trim();
+        if (lowerVal === 'done' || lowerVal === 'skip') {
+          business.set('onboardingStep', 'EMAIL');
+          await business.save();
+          return twimlResponse(`Gallery finalized! Let's proceed.\n\n*What is your business email address?* (Or reply *skip*)`);
+        } else if (mediaUrl) {
+          if (!business.galleryUrls) {
+            business.galleryUrls = [];
+          }
+          business.galleryUrls.push(mediaUrl);
+          await business.save();
+          return twimlResponse(`Added! You have ${business.galleryUrls.length} image(s) in your gallery. Send another image to add more, or reply *done* to proceed.`);
+        } else {
+          return twimlResponse(`Please upload a gallery image file, or reply *done* if you have finished uploading.`);
+        }
       }
 
       case 'EMAIL': {
@@ -295,7 +376,8 @@ export async function POST(request) {
           await business.save();
 
           const websiteUrl = `${protocol}://${host}/${business.slug}`;
-          return twimlResponse(`🎉 *Congratulations!* Your professional website is now LIVE!\n\n🔗 *Link:* ${websiteUrl}\n\nYour customers can view it instantly! Type anything to get the options.`);
+          const adminUrl = `${protocol}://${host}/admin`;
+          return twimlResponse(`🎉 *Congratulations!* Your professional website is now LIVE!\n\n🔗 *Website Link:* ${websiteUrl}\n\n⚙️ *Edit Website:* You can log in and customize your website from the Web Editor Dashboard here:\n🔗 ${adminUrl}\n*Username:* ${business.phone}\n*Password:* ${business.phone} (same as your phone number)\n\nYour customers can view it instantly! Type anything to get the options.`);
         } else {
           return twimlResponse(`Please choose a valid theme:\n- *medical*\n- *gym*\n- *restaurant*\n- *salon*\n- *realestate*`);
         }
@@ -303,7 +385,8 @@ export async function POST(request) {
 
       case 'COMPLETED': {
         const websiteUrl = `${protocol}://${host}/${business.slug}`;
-        return twimlResponse(`Your website is live at: ${websiteUrl} 🚀\n\nYou can edit it anytime from the web dashboard. Have a wonderful day!`);
+        const adminUrl = `${protocol}://${host}/admin`;
+        return twimlResponse(`Your website is live at: ${websiteUrl} 🚀\n\nTo customize layout sections, themes, logo, or gallery images, log in to the Web Editor Dashboard:\n🔗 ${adminUrl}\n*Username:* ${business.phone}\n*Password:* ${business.phone} (same as your phone number)`);
       }
 
       default: {

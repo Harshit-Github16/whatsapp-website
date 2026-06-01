@@ -381,6 +381,10 @@ export default function Onboarding() {
     const lowerText = userText.toLowerCase();
 
     // Command Router
+    if (lowerText === "start" || lowerText === "reset" || lowerText === "restart") {
+      handleRestart();
+      return;
+    }
     if (lowerText === "edit name" || lowerText === "change name") {
       updateStep("NAME");
       botMsgs.push({ sender: "bot", text: "Sure, let's change your Business Name. What is the new name?", time });
@@ -599,6 +603,7 @@ export default function Onboarding() {
               ...prev,
               { sender: "bot", text: "🎉 Woohoo! Your professional website is now officially LIVE!", time: innerTime },
               { sender: "bot", text: `🔗 Your website: http://${siteDataRef.current.slug}.whatssite.in`, time: innerTime },
+              { sender: "bot", text: `⚙️ Web Editor Dashboard: ${window.location.origin}/admin\nUsername: ${siteDataRef.current.phone}\nPassword: ${siteDataRef.current.phone} (same as your phone number)`, time: innerTime },
               { sender: "bot", text: "You can edit any section anytime from this chat using the controls below.", time: innerTime }
             ]);
           }, 1500);
@@ -653,6 +658,7 @@ export default function Onboarding() {
       { sender: "user", text: `💳 Payment ₹199 successful! (ID: ${paymentId})`, time },
       { sender: "bot", text: "🎉 Woohoo! Payment confirmed! Your professional website is now officially LIVE!", time },
       { sender: "bot", text: `🔗 Your website: http://${siteDataRef.current.slug}.whatssite.in`, time },
+      { sender: "bot", text: `⚙️ Web Editor Dashboard: ${window.location.origin}/admin\nUsername: ${siteDataRef.current.phone}\nPassword: ${siteDataRef.current.phone} (same as your phone number)`, time },
       { sender: "bot", text: "You can edit any section anytime from this chat using the controls below.", time }
     ]);
   };
@@ -729,6 +735,45 @@ export default function Onboarding() {
         { sender: "bot", text: `Theme successfully updated to ${themeId}! Check the live website.`, time }
       ]);
     }
+  };
+
+  const handleRestart = () => {
+    localStorage.removeItem("whatssite_current_build");
+    localStorage.removeItem("whatssite_current_step");
+    localStorage.removeItem("whatssite_chat_messages");
+    setStep("PHONE");
+    stepRef.current = "PHONE";
+    
+    const clearedSiteData = {
+      businessName: "",
+      ownerName: "",
+      slug: "",
+      category: "",
+      about: "",
+      services: [],
+      logoUrl: "",
+      heroImageUrl: "",
+      galleryUrls: [],
+      phone: "",
+      email: "",
+      address: "",
+      theme: "medical",
+    };
+    setSiteData(clearedSiteData);
+    siteDataRef.current = clearedSiteData;
+    
+    setMessages([
+      {
+        sender: "bot",
+        text: "Hi there! 👋 Welcome to WhatsSite website builder. Let's create a premium website for your business in 5 minutes!",
+        time: formatTime()
+      },
+      {
+        sender: "bot",
+        text: "First, what is your WhatsApp/Phone Number?",
+        time: formatTime()
+      }
+    ]);
   };
 
   return (
@@ -816,51 +861,44 @@ export default function Onboarding() {
               </div>
             </div>
 
-            {/* Mock Chat 2: Customer Billing */}
-            <div className="flex items-center gap-3.5 px-4.5 py-3 hover:bg-slate-50 cursor-not-allowed opacity-75 border-b border-[#f0f2f5] relative">
-              <div className="w-12 h-12 bg-amber-500 rounded-full flex items-center justify-center text-white text-lg font-black shrink-0">
-                💳
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-baseline mb-0.5">
-                  <span className="font-bold text-sm text-slate-800">Billing Desk</span>
-                  <span className="text-[10px] text-slate-400">10:14 AM</span>
+            {/* Site Info Fields Panel */}
+            <div className="p-5 bg-emerald-50/20 border-t border-b border-emerald-100/30 flex-1 overflow-y-auto">
+              <h3 className="text-xs font-black text-emerald-800 uppercase tracking-widest flex items-center gap-1.5 mb-4">
+                📋 Site Info Fields
+              </h3>
+              <div className="space-y-3.5 text-xs">
+                <div className="flex flex-col bg-white p-3 rounded-2xl border border-slate-100 shadow-sm gap-1">
+                  <span className="text-slate-400 font-bold uppercase text-[9px] tracking-wider">Owner Name</span>
+                  <span className="font-extrabold text-slate-850 truncate">
+                    {siteData.ownerName || <span className="text-amber-500 font-bold italic">Waiting for input...</span>}
+                  </span>
                 </div>
-                <p className="text-xs text-slate-500 truncate">
-                  ₹99 Website plan active. No pending invoices.
-                </p>
-              </div>
-            </div>
-
-            {/* Mock Chat 3: Support Helpdesk */}
-            <div className="flex items-center gap-3.5 px-4.5 py-3 hover:bg-slate-50 cursor-not-allowed opacity-75 border-b border-[#f0f2f5] relative">
-              <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white text-lg font-black shrink-0">
-                🙋‍♂️
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-baseline mb-0.5">
-                  <span className="font-bold text-sm text-slate-800">Support Desk</span>
-                  <span className="text-[10px] text-slate-400">Yesterday</span>
+                <div className="flex flex-col bg-white p-3 rounded-2xl border border-slate-100 shadow-sm gap-1">
+                  <span className="text-slate-400 font-bold uppercase text-[9px] tracking-wider">Business Name</span>
+                  <span className="font-extrabold text-slate-850 truncate">
+                    {siteData.businessName || <span className="text-amber-500 font-bold italic">Waiting for input...</span>}
+                  </span>
                 </div>
-                <p className="text-xs text-slate-500 truncate">
-                  Hi! Let us know if you need help connecting domains.
-                </p>
-              </div>
-            </div>
-
-            {/* Mock Chat 4: Domains Desk */}
-            <div className="flex items-center gap-3.5 px-4.5 py-3 hover:bg-slate-50 cursor-not-allowed opacity-75 relative">
-              <div className="w-12 h-12 bg-indigo-500 rounded-full flex items-center justify-center text-white text-lg font-black shrink-0">
-                🌐
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex justify-between items-baseline mb-0.5">
-                  <span className="font-bold text-sm text-slate-800">Domains Desk</span>
-                  <span className="text-[10px] text-slate-400">Monday</span>
+                <div className="flex flex-col bg-white p-3 rounded-2xl border border-slate-100 shadow-sm gap-1">
+                  <span className="text-slate-400 font-bold uppercase text-[9px] tracking-wider">Category</span>
+                  <span className="font-extrabold text-slate-850 truncate">
+                    {siteData.category || <span className="text-amber-500 font-bold italic">Waiting for input...</span>}
+                  </span>
                 </div>
-                <p className="text-xs text-slate-500 truncate">
-                  Configure custom .in or .com domains for your business website.
-                </p>
+                <div className="flex flex-col bg-white p-3 rounded-2xl border border-slate-100 shadow-sm gap-1">
+                  <span className="text-slate-400 font-bold uppercase text-[9px] tracking-wider">Theme Preset</span>
+                  <span className="font-extrabold text-emerald-650 capitalize">
+                    {siteData.theme}
+                  </span>
+                </div>
+                <div className="flex flex-col bg-white p-3 rounded-2xl border border-slate-100 shadow-sm gap-1">
+                  <span className="text-slate-400 font-bold uppercase text-[9px] tracking-wider">Onboarding Step</span>
+                  <div>
+                    <span className="bg-emerald-500 text-white font-extrabold px-2.5 py-1 rounded text-[10px] inline-block shadow-sm">
+                      {step}
+                    </span>
+                  </div>
+                </div>
               </div>
             </div>
 
@@ -893,20 +931,14 @@ export default function Onboarding() {
               </div>
             </div>
 
-            {/* Mock Call Action Icons */}
-            <div className="flex gap-5 text-[#54656f] items-center">
-              <button disabled className="hover:text-slate-800 transition-colors cursor-not-allowed opacity-40">
-                <Video className="w-4.5 h-4.5" />
-              </button>
-              <button disabled className="hover:text-slate-800 transition-colors cursor-not-allowed opacity-40">
-                <Phone className="w-4 h-4" />
-              </button>
-              <div className="w-[1px] h-4 bg-slate-300"></div>
-              <button disabled className="hover:text-slate-800 transition-colors cursor-not-allowed opacity-40">
-                <Search className="w-4.5 h-4.5" />
-              </button>
-              <button disabled className="hover:text-slate-800 transition-colors cursor-not-allowed opacity-40">
-                <MoreVertical className="w-4.5 h-4.5" />
+            {/* Reset Bot Action */}
+            <div className="flex items-center gap-3">
+              <button
+                onClick={handleRestart}
+                className="bg-red-50 hover:bg-red-100 text-red-650 border border-red-200/50 font-black text-xs px-3.5 py-2 rounded-xl transition-all shadow-sm active:scale-95 cursor-pointer flex items-center gap-1.5"
+                title="Reset Bot and Start New Onboarding"
+              >
+                🔄 Reset Bot
               </button>
             </div>
           </div>
